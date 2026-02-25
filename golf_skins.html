@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>銳青科技｜高爾夫賽務系統 (專業抓球版)</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
+
+  <style>
+    :root { 
+      --eb-blue: #1a3a5f;    /* 銳青深藍 */
+      --eb-accent: #2d6a4f;  /* 運動綠 */
+      --eb-gold: #ff9f1c;    /* 結算金 */
+      --bg: #f4f7f9; 
+      --card: #ffffff; 
+    }
+    
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: var(--bg); color: #334155; padding-bottom: 50px; }
+    
+    /* 導航欄 */
+    .navbar { background: var(--eb-blue); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .navbar .brand { font-weight: bold; letter-spacing: 1px; font-size: 1.1rem; }
+
+    .container { max-width: 1400px; margin: 20px auto; padding: 0 15px; }
+    
+    /* 卡片樣式 */
+    .panel { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid var(--eb-blue); }
+    h2 { font-size: 1rem; margin: 0 0 15px 0; color: var(--eb-blue); display: flex; align-items: center; gap: 8px; }
+    h2::before { content: ""; display: inline-block; width: 4px; height: 16px; background: var(--eb-accent); border-radius: 2px; }
+
+    /* 賽事設定區 */
+    .setup-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+    @media (max-width: 900px) { .setup-grid { grid-template-columns: 1fr; } }
+
+    .course-info { background: #f1f5f9; padding: 15px; border-radius: 10px; }
+    .course-info select, .course-info input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    .course-info label { font-size: 12px; font-weight: bold; color: var(--eb-blue); }
+
+    .matrix-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; overflow-x: auto; }
+    .matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 450px; }
+    .matrix-table th { background: #f8fafc; padding: 8px; border: 1px solid #eee; }
+    .matrix-table td { padding: 5px; border: 1px solid #eee; text-align: center; }
+    .matrix-input { width: 50px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; }
+    .name-input { width: 100px; padding: 6px; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 4px; color: var(--eb-blue); }
+
+    /* 成績輸入表格 */
+    .table-section { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; }
+    table.score-table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+    table.score-table th { background: #f8fafc; color: var(--eb-blue); padding: 10px 5px; border: 1px solid #e2e8f0; font-size: 13px; }
+    table.score-table td { border: 1px solid #e2e8f0; text-align: center; }
+    
+    .score-input { width: 100%; border: none; padding: 10px 0; text-align: center; font-size: 18px; font-weight: bold; outline: none; background: transparent; }
+    .score-input:focus { background: #fef9c3; }
+
+    /* 結算區 */
+    .summary-section { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 20px; border-top: 4px solid var(--eb-gold); }
+    .settle-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .settle-table th { background: #f1f5f9; padding: 15px; border: 1px solid #e2e8f0; }
+    .settle-table td { border: 1px solid #e2e8f0; padding: 15px; text-align: center; }
+    
+    .win { color: #ef4444; font-weight: bold; font-size: 1.1rem; }
+    .lose { color: #16a34a; font-weight: bold; font-size: 1.1rem; }
+    .birdie-val { color: var(--eb-blue); font-weight: bold; background: #e0f2fe; padding: 4px 10px; border-radius: 20px; }
+
+    .btn-group { display: flex; gap: 10px; margin-top: 15px; justify-content: flex-end; }
+    .btn-clear { background: #94a3b8; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.3s; }
+    .btn-clear:hover { background: #64748b; }
+
+    footer { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">EDGEBLUE SYSTEMS 銳青科技整合</div>
+  <div style="font-size: 0.85rem; font-weight: bold;">⛳ 高爾夫賽務系統 (專業抓球版)</div>
+</nav>
+
+<div class="container">
+  <div class="panel">
+    <h2>1. 賽事與讓桿設定</h2>
+    <div class="setup-grid">
+      <div class="course-info">
+        <label>選擇比賽球場</label>
+        <select id="courseSelect" onchange="saveConfig(); loadCourse();">
+          <option value="nanfeng">南峰高爾夫球場</option>
+          <option value="changhua">彰化高爾夫球場</option>
+          <option value="wufeng">霧峰高爾夫球場</option>
+          <option value="fengyuan">豐原高爾夫球場</option>
+          <option value="songboling">松柏嶺高爾夫球場</option>
+          <option value="cck">清泉崗高爾夫球場 (CCK)</option>
+        </select>
+        <div style="margin-top:15px;">
+          <label>每點價值 (NTD)</label>
+          <input type="number" id="pointValue" value="50" onchange="saveConfig(); calc();">
+        </div>
+        <div class="btn-group">
+          <button class="btn-clear" onclick="clearAllData()">⚠️ 清空所有資料</button>
+        </div>
+      </div>
+      
+      <div class="matrix-box">
+        <label style="font-size: 12px; font-weight: bold; color: var(--eb-blue); margin-bottom: 10px; display: block;">讓桿設定 (橫列讓縱欄，單位：桿)</label>
+        <table class="matrix-table">
+          <thead id="matrixHead"></thead>
+          <tbody id="matrixBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-section">
+    <table class="score-table">
+      <thead>
+        <tr id="parRow"><th>Hole</th></tr>
+        <tr id="hdcpRow"><th>HDCP</th></tr>
+      </thead>
+      <tbody id="scoreBody"></tbody>
+    </table>
+  </div>
+
+  <div class="summary-section">
+    <h2>2. 個體對決結算表</h2>
+    <table class="settle-table">
+      <thead id="settleHead"></thead>
+      <tbody id="settleBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+  專注於高爾夫球隊賽務系統開發
+</footer>
+
+<script>
+// 保留原始球場數據庫
+const courseDB = {
+  nanfeng: { hdcps: [3,9,15,13,5,1,17,11,7, 4,18,10,6,14,2,8,12,16], pars: [5,4,4,3,4,4,3,5,4, 5,3,4,4,3,4,5,4,4] },
+  changhua: { hdcps: [1,17,1,11,7,13,9,5,15, 4,16,2,18,6,8,14,10,12], pars: [5,3,4,4,4,5,4,4,3, 5,3,4,4,4,4,3,5,5] },
+  wufeng: { hdcps: [3,9,7,15,17,5,1,13,11, 6,8,10,16,18,14,4,12,18], pars: [4,3,5,3,4,4,4,4,5, 4,4,5,3,4,5,4,3,4] },
+  fengyuan: { hdcps: [5,3,7,15,1,9,17,11,13, 4,18,2,16,8,14,12,10,6], pars: [4,5,5,3,4,4,3,4,3, 5,3,4,3,4,3,5,4,5] },
+  songboling: { hdcps: [3,13,9,17,1,15,5,11,7, 10,4,12,18,16,2,6,14,8], pars: [5,4,4,3,5,3,4,4,4, 4,5,4,3,4,4,4,3,5] },
+  cck: { hdcps: [11,3,5,17,7,13,1,9,15, 6,16,14,4,12,10,2,18,8], pars: [4,4,4,3,4,4,5,4,4, 4,3,4,5,4,4,5,3,4] }
+};
+
+let currentCourse = courseDB.nanfeng;
+
+window.onload = function() {
+  loadSavedData();
+  renderMatrixInputs();
+  loadCourse();
+};
+
+// --- 以下為原始邏輯核心 ---
+
+function syncNames() {
+  renderMatrixHead();
+  renderSettleHead();
+  saveConfig();
+  calc();
+}
+
+function renderMatrixHead() {
+  const head = document.getElementById('matrixHead');
+  const names = [1,2,3,4].map(i => document.getElementById('name'+i).value || `P${i}`);
+  head.innerHTML = `<tr><th>球員</th><th>讓 ${names[0]}</th><th>讓 ${names[1]}</th><th>讓 ${names[2]}</th><th>讓 ${names[3]}</th></tr>`;
+}
+
+function renderSettleHead() {
+  const head = document.getElementById('settleHead');
+  const names = [1,2,3,4].map(i => document.getElementById('name'+i).value || `P${i}`);
+  head.innerHTML = `<tr><th>姓名</th><th>${names[0]}</th><th>${names[1]}</th><th>${names[2]}</th><th>${names[3]}</th><th style="background:#fff3e0">今日 Birdie</th></tr>`;
+}
+
+function renderMatrixInputs() {
+  const tbody = document.getElementById('matrixBody');
+  tbody.innerHTML = "";
+  for(let i=1; i<=4; i++) {
+    let row = `<tr><td><input type="text" id="name${i}" class="name-input" oninput="syncNames()" placeholder="球員${i}"></td>`;
+    for(let j=1; j<=4; j++) {
+      if(i === j) row += `<td>-</td>`;
+      else row += `<td><input type="number" id="g${i}${j}" class="matrix-input" value="0" onchange="saveConfig(); calc();"></td>`;
+    }
+    tbody.innerHTML += row + `</tr>`;
+  }
+  const config = JSON.parse(localStorage.getItem('golf_skins_config'));
+  if(config && config.names) {
+    config.names.forEach((n, i) => document.getElementById('name'+(i+1)).value = n);
+  } else {
+    [1,2,3,4].forEach(i => document.getElementById('name'+i).value = `球員${i}`);
+  }
+  syncNames();
+}
+
+function loadCourse() {
+  currentCourse = courseDB[document.getElementById('courseSelect').value];
+  renderTable();
+  calc();
+}
+
+function renderTable() {
+  const pRow = document.getElementById('parRow');
+  const hRow = document.getElementById('hdcpRow');
+  const sBody = document.getElementById('scoreBody');
+  pRow.innerHTML = '<th>Hole</th>'; hRow.innerHTML = '<th>HDCP</th>';
+  for(let i=1; i<=18; i++) {
+    pRow.innerHTML += `<th>${i}<br><small>P${currentCourse.pars[i-1]}</small></th>`;
+    hRow.innerHTML += `<td>${currentCourse.hdcps[i-1]}</td>`;
+  }
+  sBody.innerHTML = "";
+  for(let p=1; p<=4; p++) {
+    let rowHtml = `<tr><td style="background:var(--eb-blue);color:white;font-weight:bold;font-size:12px;" id="dispName${p}">P${p}</td>`;
+    for(let i=0; i<18; i++) {
+      rowHtml += `<td><input type="number" inputmode="numeric" class="score-input skin-score-field" 
+        data-p="${p-1}" data-h="${i}"
+        oninput="autoNext(this, ${p-1}, ${i})"
+        onchange="saveScores(); calc();" id="s${p}-${i}"></td>`;
+    }
+    sBody.innerHTML += rowHtml + "</tr>";
+  }
+  loadSavedScores();
+}
+
+function autoNext(input, pIdx, hIdx) {
+    if (input.value.length >= 1) {
+        setTimeout(() => {
+            let nextH = hIdx + 1;
+            let nextP = pIdx;
+            if (nextH > 17) { nextH = 0; nextP = pIdx + 1; }
+            const nextInput = document.querySelector(`input[data-p="${nextP}"][data-h="${nextH}"]`);
+            if (nextInput) { nextInput.focus(); }
+        }, 180); 
+    }
+}
+
+function saveConfig() {
+  const config = {
+    course: document.getElementById('courseSelect').value,
+    pointValue: document.getElementById('pointValue').value,
+    names: [1,2,3,4].map(i => document.getElementById('name'+i).value),
+    matrix: {}
+  };
+  for(let i=1; i<=4; i++) {
+    for(let j=1; j<=4; j++) { if(i!==j) config.matrix[`g${i}${j}`] = document.getElementById(`g${i}${j}`).value; }
+  }
+  localStorage.setItem('golf_skins_config', JSON.stringify(config));
+}
+
+function saveScores() {
+  let scores = {};
+  for(let p=1; p<=4; p++) {
+    for(let i=0; i<18; i++) {
+      let val = document.getElementById(`s${p}-${i}`).value;
+      if(val) scores[`s${p}-${i}`] = val;
+    }
+  }
+  localStorage.setItem('golf_skins_scores', JSON.stringify(scores));
+}
+
+function loadSavedData() {
+  const config = JSON.parse(localStorage.getItem('golf_skins_config'));
+  if(config) {
+    document.getElementById('courseSelect').value = config.course;
+    document.getElementById('pointValue').value = config.pointValue;
+  }
+}
+
+function loadSavedScores() {
+  const scores = JSON.parse(localStorage.getItem('golf_skins_scores'));
+  if(scores) {
+    for(let key in scores) { if(document.getElementById(key)) document.getElementById(key).value = scores[key]; }
+    calc();
+  }
+}
+
+function clearAllData() {
+  if(confirm("確定要清空所有資料嗎？此操作無法還原。")) {
+    localStorage.removeItem('golf_skins_config');
+    localStorage.removeItem('golf_skins_scores');
+    location.reload();
+  }
+}
+
+function calc() {
+  const names = [1,2,3,4].map(i => document.getElementById('name'+i).value || `P${i}`);
+  names.forEach((n, i) => { if(document.getElementById('dispName'+(i+1))) document.getElementById('dispName'+(i+1)).innerText = n; });
+
+  let giveObj = {};
+  for(let i=1; i<=4; i++) {
+    giveObj[i] = {};
+    for(let j=1; j<=4; j++) {
+      const el = document.getElementById(`g${i}${j}`);
+      if(el) giveObj[i][j] = parseInt(el.value) || 0;
+    }
+  }
+
+  let vsMatrix = Array.from({length: 4}, () => Array(4).fill(0));
+  let birdCounts = [0, 0, 0, 0];
+
+  for (let i = 0; i < 18; i++) {
+    const par = currentCourse.pars[i];
+    const hdcp = currentCourse.hdcps[i];
+    const scores = [1,2,3,4].map(p => parseInt(document.getElementById(`s${p}-${i}`).value) || 0);
+
+    scores.forEach((s, idx) => { if(s > 0 && s < par) birdCounts[idx]++; });
+
+    for(let a=0; a<4; a++) {
+      for(let b=a+1; b<4; b++) {
+        let sA = scores[a]; let sB = scores[b];
+        if (sA > 0 && sB > 0) {
+          let effA = sA; let effB = sB;
+          if(giveObj[a+1][b+1] > 0 && hdcp <= giveObj[a+1][b+1]) effB -= 1; 
+          if(giveObj[b+1][a+1] > 0 && hdcp <= giveObj[b+1][a+1]) effA -= 1;
+          if (effA < effB) { vsMatrix[a][b]++; vsMatrix[b][a]--; }
+          else if (effB < effA) { vsMatrix[b][a]++; vsMatrix[a][b]--; }
+        }
+      }
+    }
+  }
+
+  const settleBody = document.getElementById('settleBody');
+  settleBody.innerHTML = "";
+  for(let i=0; i<4; i++) {
+    const hasAnyScore = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17].some(h => (parseInt(document.getElementById(`s${i+1}-${h}`).value)||0) > 0);
+    if (!hasAnyScore) continue;
+
+    let rowHtml = `<tr><td style="font-weight:bold; color:var(--eb-blue);">${names[i]}</td>`;
+    for(let j=0; j<4; j++) {
+      if(i === j) rowHtml += `<td style="color:#ccc;">-</td>`;
+      else {
+        let val = vsMatrix[i][j];
+        rowHtml += `<td class="${val > 0 ? 'win' : 'lose'}">${val > 0 ? '+' + val : val}</td>`;
+      }
+    }
+    rowHtml += `<td><span class="birdie-val">${birdCounts[i]} 鳥</span></td></tr>`;
+    settleBody.innerHTML += rowHtml;
+  }
+}
+</script>
+</body>
+</html>

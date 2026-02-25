@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>銳青科技｜高爾夫賽務系統 (新新貝利版)</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
+
+  <style>
+    :root { 
+      --eb-blue: #1a3a5f;    /* 銳青深藍 */
+      --eb-accent: #2d6a4f;  /* 運動綠 */
+      --eb-gold: #ff9f1c;    /* 點綴金 */
+      --bg: #f8fafc; 
+      --card: #ffffff; 
+    }
+    
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: var(--bg); color: #334155; padding-bottom: 50px; }
+    
+    /* 導航欄樣式 */
+    .navbar { background: var(--eb-blue); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .navbar .brand { font-weight: bold; letter-spacing: 1px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+    .navbar .brand span { font-size: 0.8rem; opacity: 0.8; font-weight: normal; }
+
+    .container { max-width: 1600px; margin: 20px auto; padding: 0 15px; }
+    .panel { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 4px solid var(--eb-accent); }
+    
+    h2 { font-size: 1.1rem; margin: 0 0 20px 0; color: var(--eb-blue); display: flex; align-items: center; gap: 8px; }
+    h2::before { content: ""; display: inline-block; width: 4px; height: 18px; background: var(--eb-accent); border-radius: 2px; }
+    
+    .admin-info { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 20px; margin-bottom: 25px; background: #f1f5f9; padding: 20px; border-radius: 10px; }
+    .admin-info div { display: flex; flex-direction: column; gap: 8px; }
+    .admin-info label { font-size: 13px; font-weight: bold; color: var(--eb-blue); }
+    .admin-info input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; transition: border 0.3s; }
+    .admin-info input:focus { border-color: var(--eb-blue); outline: none; box-shadow: 0 0 0 3px rgba(26, 58, 95, 0.1); }
+
+    .config-grid { display: grid; grid-template-columns: repeat(18, 1fr); gap: 6px; margin-bottom: 20px; }
+    @media (max-width: 1200px) { .config-grid { grid-template-columns: repeat(9, 1fr); } }
+    @media (max-width: 600px) { .config-grid { grid-template-columns: repeat(6, 1fr); } .admin-info { grid-template-columns: 1fr; } }
+    
+    .cfg-col { text-align: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 4px; transition: all 0.2s; }
+    .cfg-col:hover { border-color: var(--eb-accent); }
+    .cfg-col span { display: block; font-size: 12px; font-weight: bold; margin-bottom: 8px; color: #64748b; }
+    
+    .btn-toggle { width: 90%; font-size: 11px; padding: 6px 0; margin: 2px 0; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; background: #f8fafc; font-weight: 500; }
+    .btn-toggle.active-p3 { background: #3b82f6; color: white; border-color: #2563eb; }
+    .btn-toggle.active-p5 { background: #f97316; color: white; border-color: #ea580c; }
+    .btn-toggle.active-hidden { background: #eab308; color: #000; border-color: #ca8a04; font-weight: bold; }
+
+    .summary-bar { background: #fffbeb; padding: 12px 20px; border-radius: 8px; font-size: 15px; font-weight: 600; display: flex; gap: 30px; color: #b45309; border: 1px solid #fef3c7; }
+    
+    .btn-group { margin: 20px 0; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
+    .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .btn:active { transform: translateY(2px); }
+    .btn-calc { background: var(--eb-blue); }
+    .btn-sort { background: var(--eb-gold); }
+    .btn-export { background: #166534; }
+    .btn-clear { background: #94a3b8; }
+
+    .table-section { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 1300px; }
+    th { background: #f8fafc; color: var(--eb-blue); padding: 12px 5px; font-size: 13px; border: 1px solid #e2e8f0; }
+    td { padding: 0; text-align: center; border: 1px solid #e2e8f0; height: 42px; }
+    input.cell-input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 16px; outline: none; }
+    input.cell-input:focus { background: #fef9c3; font-weight: bold; }
+    
+    .is-hidden-col { background: #fefce8 !important; }
+    .total-col { font-weight: bold; background: #f1f5f9; color: var(--eb-blue); }
+    .rank-col { font-weight: 800; color: #ef4444; font-size: 18px; background: #fef2f2; }
+    .par-val { font-size: 10px; color: #94a3b8; display: block; margin-top: 2px; }
+
+    footer { text-align: center; padding: 30px; color: #94a3b8; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">EDGEBLUE SYSTEMS <span>銳青科技整合</span></div>
+  <div style="font-size: 0.9rem; font-weight: bold;">⛳ 高爾夫賽務系統 v2.1</div>
+</nav>
+
+<div class="container">
+  <div class="panel">
+    <h2>賽事基本資訊</h2>
+    <div class="admin-info">
+      <div><label>球隊名稱</label><input type="text" id="teamName" placeholder="例如：銳青長青隊" onchange="saveAll()"></div>
+      <div><label>比賽球場</label><input type="text" id="courseName" placeholder="例如：南峰球場" onchange="saveAll()"></div>
+      <div><label>比賽日期</label><input type="date" id="matchDate" onchange="saveAll()"></div>
+    </div>
+
+    <h2>球場配置 (P3/P5 與隱藏洞設定)</h2>
+    <div class="config-grid" id="configGrid"></div>
+    <div class="summary-bar">
+      <span id="courseParDisp">總標準桿：72</span>
+      <span id="hiddenCountDisp">已選隱藏洞：0 / 6</span>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-calc" onclick="processData(); saveAll();">🔄 更新計算</button>
+    <button class="btn btn-sort" onclick="sortAndRank(); saveAll();">🏆 名次排序</button>
+    <button class="btn btn-export" onclick="exportToExcel()">📊 匯出 CSV</button>
+    <button class="btn btn-clear" onclick="clearData()">⚠️ 清空資料</button>
+  </div>
+
+  <div class="table-section">
+    <table id="scoreTable">
+      <thead>
+        <tr>
+          <th width="45">項次</th><th width="120">姓名</th>
+          <script>for(let i=1; i<=18; i++) document.write(`<th>${i}<span class="par-val" id="head-p-${i}">P4</span></th>`);</script>
+          <th width="70">抽6和</th><th width="70">總桿</th><th width="70">差點</th><th width="70">淨桿</th><th class="rank-col" width="70">名次</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+  專業軟體開發與資訊技術服務
+</footer>
+
+<script>
+// ... (此處保留您原始的 JavaScript 邏輯即可，樣式已經透過 CSS 完全更新) ...
+// 為了確保完整性，我將您的 JS 核心邏輯嵌入在下方（包含自動跳格功能）
+
+let holeConfigs = Array.from({length: 18}, () => ({ par: 4, isHidden: false }));
+let players = Array.from({length: 30}, (_, i) => ({ // 預設增加到 30 位
+    idx: i + 1, name: "", scores: Array(18).fill(null), totalGross: 0, hiddenSum: 0, hdcp: 0, net: 0, back9: 0, rank: ""
+}));
+
+window.onload = function() {
+    loadSavedData();
+    renderConfig();
+    initTable();
+    processData();
+};
+
+function saveAll() {
+    const data = {
+        admin: {
+            teamName: document.getElementById('teamName').value,
+            courseName: document.getElementById('courseName').value,
+            matchDate: document.getElementById('matchDate').value
+        },
+        holeConfigs: holeConfigs,
+        players: players
+    };
+    localStorage.setItem('golf_peoria_data', JSON.stringify(data));
+}
+
+function loadSavedData() {
+    const saved = localStorage.getItem('golf_peoria_data');
+    if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('teamName').value = data.admin.teamName || "";
+        document.getElementById('courseName').value = data.admin.courseName || "";
+        document.getElementById('matchDate').value = data.admin.matchDate || new Date().toISOString().substr(0, 10);
+        holeConfigs = data.holeConfigs || holeConfigs;
+        players = data.players || players;
+    } else {
+        document.getElementById('matchDate').valueAsDate = new Date();
+    }
+}
+
+function clearData() {
+    if (confirm("確定要清空所有資料嗎？這將刪除目前所有成績。")) {
+        localStorage.removeItem('golf_peoria_data');
+        location.reload();
+    }
+}
+
+function renderConfig() {
+    const grid = document.getElementById('configGrid');
+    grid.innerHTML = "";
+    let totalPar = 0; let hiddenCount = 0;
+    holeConfigs.forEach((cfg, i) => {
+        totalPar += cfg.par; if(cfg.isHidden) hiddenCount++;
+        const col = document.createElement('div');
+        col.className = 'cfg-col';
+        col.innerHTML = `<span>H${i+1}</span>
+            <button class="btn-toggle ${cfg.par===3?'active-p3':''}" onclick="togglePar(${i}, 3)">P3</button>
+            <button class="btn-toggle ${cfg.par===5?'active-p5':''}" onclick="togglePar(${i}, 5)">P5</button>
+            <button class="btn-toggle ${cfg.isHidden?'active-hidden':''}" onclick="toggleHidden(${i})">隱藏</button>`;
+        grid.appendChild(col);
+        const headPar = document.getElementById(`head-p-${i+1}`);
+        if(headPar) headPar.innerText = `P${cfg.par}`;
+    });
+    document.getElementById('courseParDisp').innerText = `總標準桿：${totalPar}`;
+    const hDisp = document.getElementById('hiddenCountDisp');
+    hDisp.innerText = `已選隱藏洞：${hiddenCount} / 6`;
+    hDisp.style.color = (hiddenCount !== 6) ? '#e11d48' : '#166534';
+}
+
+function togglePar(holeIdx, pVal) {
+    holeConfigs[holeIdx].par = (holeConfigs[holeIdx].par === pVal) ? 4 : pVal;
+    renderConfig(); saveAll(); processData();
+}
+
+function toggleHidden(holeIdx) {
+    holeConfigs[holeIdx].isHidden = !holeConfigs[holeIdx].isHidden;
+    renderConfig(); saveAll(); processData();
+}
+
+function initTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = "";
+    players.forEach((p, pIdx) => {
+        let row = `<tr><td>${p.idx}</td>
+            <td><input type="text" class="cell-input" value="${p.name}" onchange="players[${pIdx}].name=this.value; saveAll();" placeholder="請輸入姓名"></td>`;
+        for(let i=0; i<18; i++) {
+            row += `<td id="cell-${pIdx}-${i}">
+                <input type="number" inputmode="numeric" class="cell-input score-field" 
+                data-p="${pIdx}" data-h="${i}"
+                oninput="autoNext(this, ${pIdx}, ${i})"
+                onchange="players[${pIdx}].scores[${i}]=parseInt(this.value)||0; saveAll();" 
+                value="${p.scores[i] || ''}"></td>`;
+        }
+        row += `<td id="hSum-${pIdx}"></td><td id="tg-${pIdx}" class="total-col"></td><td id="hdcp-${pIdx}"></td><td id="net-${pIdx}" class="total-col"></td><td id="rank-${pIdx}" class="rank-col"></td></tr>`;
+        tbody.innerHTML += row;
+    });
+}
+
+function autoNext(input, pIdx, hIdx) {
+    if (input.value.length >= 1) {
+        setTimeout(() => {
+            let nextH = hIdx + 1;
+            let nextP = pIdx;
+            if (nextH > 17) {
+                nextH = 0;
+                nextP = pIdx + 1;
+            }
+            const nextInput = document.querySelector(`input[data-p="${nextP}"][data-h="${nextH}"]`);
+            if (nextInput) nextInput.focus();
+        }, 150); 
+    }
+}
+
+function processData() {
+    let totalParSum = holeConfigs.reduce((sum, c) => sum + c.par, 0);
+    let hCount = holeConfigs.filter(c => c.isHidden).length;
+    players.forEach((p, pIdx) => {
+        let tg = 0, hSum = 0, filled = 0;
+        for(let i=0; i<18; i++) {
+            let score = p.scores[i] || 0;
+            const cell = document.getElementById(`cell-${pIdx}-${i}`);
+            if(cell) {
+                if(holeConfigs[i].isHidden) cell.classList.add('is-hidden-col');
+                else cell.classList.remove('is-hidden-col');
+            }
+            if(score > 0) {
+                tg += score; filled++;
+                if(holeConfigs[i].isHidden) {
+                    let limit = holeConfigs[i].par + 3;
+                    hSum += (score > limit) ? limit : score;
+                }
+            }
+        }
+        if(filled === 18 && hCount === 6) {
+            p.totalGross = tg; p.hiddenSum = hSum;
+            p.hdcp = Math.round(((tg - hSum) * 1.5 - totalParSum) * 0.8);
+            p.net = tg - p.hdcp;
+            document.getElementById(`hSum-${pIdx}`).innerText = hSum;
+            document.getElementById(`tg-${pIdx}`).innerText = tg;
+            document.getElementById(`hdcp-${pIdx}`).innerText = p.hdcp;
+            document.getElementById(`net-${pIdx}`).innerText = p.net;
+        } else {
+            ["hSum", "tg", "hdcp", "net"].forEach(id => {
+                const el = document.getElementById(`${id}-${pIdx}`);
+                if(el) el.innerText = "";
+            });
+        }
+    });
+}
+
+function sortAndRank() {
+    processData();
+    let active = players.filter(p => p.totalGross > 0);
+    // 排序邏輯：淨桿小者在前，若同分則比較差點（低者在前）
+    active.sort((a, b) => (a.net !== b.net) ? a.net - b.net : (a.hdcp !== b.hdcp) ? a.hdcp - b.hdcp : 0);
+    players.forEach((p, pIdx) => {
+        const el = document.getElementById(`rank-${pIdx}`);
+        if(el) el.innerText = "";
+        p.rank = "";
+    });
+    active.forEach((p, i) => {
+        const origIdx = players.findIndex(o => o.idx === p.idx);
+        p.rank = i + 1;
+        document.getElementById(`rank-${origIdx}`).innerText = i + 1;
+    });
+    saveAll();
+}
+
+function exportToExcel() {
+    const team = document.getElementById('teamName').value || "球隊";
+    const course = document.getElementById('courseName').value || "球場";
+    const date = document.getElementById('matchDate').value || "";
+    let csv = "\ufeff球隊名稱：," + team + "\n比賽球場：," + course + "\n比賽日期：," + date + "\n\n項次,姓名,";
+    for(let i=1; i<=18; i++) csv += `H${i}(P${holeConfigs[i-1].par}${holeConfigs[i-1].isHidden?'*':''}),`;
+    csv += "抽6和,總桿,差點,淨桿,名次\n";
+    players.filter(p => p.name || p.totalGross > 0).forEach(p => {
+        let row = [p.idx, p.name];
+        for(let i=0; i<18; i++) row.push(p.scores[i] || "");
+        row.push(p.hiddenSum || "", p.totalGross || "", p.hdcp || "", p.net || "", p.rank || "");
+        csv += row.join(",") + "\n";
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${team}_${course}_成績表.csv`;
+    link.click();
+}
+</script>
+</body>
+</html>
