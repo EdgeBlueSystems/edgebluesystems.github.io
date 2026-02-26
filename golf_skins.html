@@ -127,6 +127,34 @@
       <tbody id="settleBody"></tbody>
     </table>
   </div>
+  <div class="container">
+  <div class="panel" style="margin-top: 30px; border-top: 4px solid var(--eb-accent); line-height: 1.8;">
+    <h2 style="font-size: 1.2rem;">⛳ EdgeBlue 專業抓球版系統說明</h2>
+    <div style="font-size: 0.95rem; color: #475569;">
+      <p>本系統專為高爾夫球友小組競技設計，特別針對台灣球場常見的「抓球（Skins）」與「個體對決」邏輯進行深度開發。與一般大賽制計算機不同，本工具核心在於處理<strong>多向複雜讓桿</strong>與<strong>即時點對點結算</strong>。</p>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+        <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
+            <strong style="color: var(--eb-blue);">● 核心功能：交叉讓桿矩陣</strong>
+            <p style="font-size: 0.85rem; margin: 5px 0;">支援四人組內任意對象的讓桿設定（橫列讓縱欄）。系統會自動比對球場難度索引 (HDCP)，精確在特定洞數進行桿數折讓，免去人工比對 HDCP 表的煩瑣與爭議。</p>
+        </div>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
+            <strong style="color: var(--eb-blue);">● 自動化對決結算</strong>
+            <p style="font-size: 0.85rem; margin: 5px 0;">每一洞成績輸入後，系統即時運算六組對決關係（1v2, 1v3, 1v4, 2v3, 2v4, 3v4），並產出最終的淨勝點數表。支持即時點值 (Point Value) 換算，讓賽後結算一目瞭然。</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 15px;">
+        <strong style="color: var(--eb-blue);">● 內建球場資料庫</strong>
+        <p style="font-size: 0.85rem;">整合全台主流球場（如南峰、彰化、霧峰等）之標準桿 (Par) 與難度索引 (HDCP) 數據，確保計分邏輯與實際球場規範完全接軌。</p>
+      </div>
+      
+      <p style="font-size: 0.85rem; background: #fffbeb; padding: 10px; border-left: 4px solid var(--eb-gold); margin-top: 15px;">
+        <strong>使用提示：</strong> 讓桿設定區填入的是「總讓桿數」。例如 A 讓 B 兩桿，系統將自動在球場 HDCP 1 與 2 的洞進行計算折讓。
+      </p>
+    </div>
+  </div>
+  </div>
 </div>
 
 <footer>
@@ -340,4 +368,5 @@ function calc() {
 }
 </script>
 </body>
+
 </html>
