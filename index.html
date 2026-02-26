@@ -3,80 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>運動工具整合平台 - 銳青科技</title>
+    <title>EdgeBlue 運動賽務系統 | 專業高爾夫與保齡球數據計算</title>
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
 
     <style>
-        body {
-            font-family: "Microsoft JhengHei", Arial, sans-serif;
-            background-color: #f4f7f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-        }
-        h1 { color: #2c3e50; margin-bottom: 0.5rem; }
-        p { color: #7f8c8d; line-height: 1.6; }
-        .links { margin-top: 2rem; display: grid; gap: 1rem; }
-        .btn {
-            display: block;
-            padding: 15px;
-            text-decoration: none;
-            color: white;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: transform 0.2s, background 0.3s;
-        }
+        body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f8f9fa; color: #333; line-height: 1.6; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 40px auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+        h1 { color: #2c3e50; font-size: 2.2rem; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; font-size: 1.1rem; margin-bottom: 30px; }
+        
+        /* 文字內容區，專為通過 AdSense 審核設計 */
+        .content-section { text-align: left; background: #fdfdfd; padding: 25px; border: 1px solid #eee; border-radius: 10px; margin-bottom: 30px; }
+        .content-section h2 { color: #27ae60; font-size: 1.3rem; border-left: 4px solid #27ae60; padding-left: 10px; }
+        
+        .links { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .btn { display: flex; align-items: center; justify-content: center; padding: 20px; text-decoration: none; color: white; border-radius: 10px; font-weight: bold; font-size: 1.1rem; transition: all 0.3s; }
         .btn-golf { background-color: #27ae60; }
         .btn-bowling { background-color: #2980b9; }
-        .btn:hover { transform: translateY(-3px); opacity: 0.9; }
-        .footer { margin-top: 2rem; font-size: 0.8rem; color: #bdc3c7; }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0.9; }
+        .btn span { font-size: 1.5rem; margin-right: 10px; }
+
+        .footer { margin-top: 40px; font-size: 0.85rem; color: #95a5a6; border-top: 1px solid #eee; padding-top: 20px; }
+        
+        @media (max-width: 600px) { .links { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>EdgeBlue 運動賽務系統</h1>
-    <p>專業、精確、即時的數據計算解決方案</p>
+    <p class="subtitle">專業運動數據管理，讓每一場比賽更精確</p>
     
-    <div class="content-text" style="text-align: left; margin: 20px 0; color: #555;">
-        <h3>為什麼選擇 EdgeBlue？</h3>
-        <p>在長期的 IT 產業經驗中，我們發現運動賽事管理需要更直觀、更科技的輔助。EdgeBlue 賽務系統專為熱愛運動的社群設計，免去繁瑣的紙筆計算。</p>
-        <ul>
-            <li><strong>自動化計分：</strong> 支援複雜的保齡球格數與加分邏輯。</li>
-            <li><strong>精準讓桿：</strong> 高爾夫比賽中的差點與讓桿計算，一鍵完成。</li>
-            <li><strong>跨裝置支援：</strong> 手機即時輸入，戶外球場使用無障礙。</li>
+    <div class="content-section">
+        <h2>關於 EdgeBlue Systems</h2>
+        <p>EdgeBlue 專注於開發易於使用的運動科技工具，致力於協助球友與賽務人員從繁瑣的計算中解脫。我們相信科技應服務於運動愛好者，透過簡潔的介面與精確的演算法，讓計分、讓桿計算變得輕鬆愉快。</p>
+        
+        <h2>功能核心優勢</h2>
+        <p>我們的計算工具嚴格遵守國際比賽標準：</p>
+        <ul style="padding-left: 20px;">
+            <li><strong>保齡球賽務：</strong> 完整支援 Strike (全倒) 與 Spare (補中) 的連續加分邏輯，適合聯賽與多人比賽。</li>
+            <li><strong>高爾夫差點：</strong> 根據球場難度與選手水平，自動計算公平的讓桿點數。</li>
         </ul>
     </div>
 
     <div class="links">
-        <a href="./golf.html" class="btn btn-golf">⛳ 進入高爾夫球計算機</a>
+        <a href="./golfcalc.html" class="btn btn-golf">
+            <span>⛳</span> 高爾夫球計算機
+        </a>
         <a href="./bowling.html" class="btn btn-bowling">
-    <span style="font-size: 1.2em;">🎳</span> 進入保齡球比賽計算機 </a>
-        
+            <span>🎳</span> 保齡球比賽計算機
+        </a>
     </div>
-    <div style="margin-top: 40px; text-align: left; background: #eee; padding: 20px; border-radius: 8px;">
-    <h4 style="margin-top:0;">關於 EdgeBlue 保齡球賽務計算</h4>
-    <p style="font-size: 0.9em; color: #666;">
-        本系統支援標準保齡球比賽計分邏輯。在保齡球比賽中，每一局共有十格。前九格每格有兩次投球機會，第十格則視情況最多有三次投球。
-        我們的計算機不僅能處理簡單的加總，更支援自動計算全倒（Strike）與補中（Spare）的加分規則，確保聯賽與友誼賽的數據精確無誤。
-    </p>
-</div>
-    
+
+    <div class="footer">
+        © 2026 銳青科技整合有限公司 (EdgeBlue Systems) | 
+        <a href="./privacy.html" style="color:#95a5a6;">隱私權政策</a>
+    </div>
 </div>
 
 </body>
-
 </html>
-
