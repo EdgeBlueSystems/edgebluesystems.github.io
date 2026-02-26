@@ -49,6 +49,13 @@
   
 </head>
 <body>
+  <nav style="background: #333; padding: 10px 20px; text-align: left;">
+    <a href="./index.html" style="color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem;">
+        🏠 EdgeBlue 首頁
+    </a>
+    <span style="color: #666; margin: 0 10px;">|</span>
+    <span style="color: #ccc; font-size: 0.9rem;">運動賽務系統</span>
+  </nav>
 
 <div class="container">
   <div class="panel">
@@ -98,6 +105,17 @@
     </div>
 
     <div id="rankDisplay"></div>
+  </div>
+  <div style="margin-top: 40px; text-align: left; background: #fdfdfd; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+    <h4 style="margin-top:0; color: #2980b9;">EdgeBlue 保齡球賽務管理優勢</h4>
+    <p style="font-size: 0.9em; color: #666;">
+        在正式的保齡球聯賽或公司大型比賽中，主辦方往往需要處理大量的數據彙整。本工具跳過繁瑣的單格計分（由球館系統處理），專注於：
+    </p>
+    <ul style="font-size: 0.9em; color: #666; padding-left: 20px;">
+        <li><strong>快速錄入：</strong> 賽務人員僅需輸入各局最終總分，系統即刻完成累計。</li>
+        <li><strong>公平讓分：</strong> 支援根據球員平均分或固定分值進行讓分調整，自動產生含讓分後的總排名。</li>
+        <li><strong>多局匯總：</strong> 清楚呈現每位選手在 3 局、6 局或更多局數後的總表現，降低人工計算錯誤。</li>
+    </ul>
   </div>
 </div>
 
@@ -300,4 +318,5 @@ function renderResults(A, B, C, b3, bs, lList, lb3, lbs) {
 }
 </script>
 </body>
+
 </html>
