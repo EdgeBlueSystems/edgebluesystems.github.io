@@ -6,10 +6,29 @@
   <title>保齡球賽務系統｜即時排名結算版</title>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
   <style>
-    :root{ --bowl-blue:#023e8a; --accent:#f72585; --bg:#f4f7f6; --card:#ffffff; }
-    *{box-sizing:border-box}
-    body{ margin:0; font-family: sans-serif; background:var(--bg); color:#333; padding:15px; }
-    .container{ max-width: 1400px; margin: 0 auto; }
+    :root { --bowl-blue:#023e8a; --accent:#f72585; --bg:#f4f7f6; --card:#ffffff; }
+    * { box-sizing: border-box; }
+    
+    /* 修正 body 邊距以實現滿版導覽 */
+    body { margin: 0; padding: 0; font-family: sans-serif; background: var(--bg); color: #333; }
+    
+    /* 滿版導覽列樣式 */
+    nav { 
+      background: #333; 
+      padding: 12px 0; 
+      width: 100%; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+    }
+    .nav-content { 
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+      text-align: left; 
+    }
+    nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; }
+    nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid #2980b9; padding-bottom: 3px; }
+
+    .container { max-width: 1400px; margin: 20px auto; padding: 0 15px; }
     .panel { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
     h2 { border-left: 5px solid var(--bowl-blue); padding-left: 10px; font-size: 1.1rem; margin: 0 0 15px 0; }
     
@@ -45,17 +64,18 @@
     .rank-table { width: 100%; border-collapse: collapse; font-size: 14px; }
     .rank-table td { text-align: left; padding: 6px; border-bottom: 1px solid rgba(0,0,0,0.05); }
     .highlight { color: #d90429; font-weight: bold; }
+
+    footer { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.85rem; }
   </style>
-  
 </head>
 <body>
-  
-  <nav style="background: #333; padding: 12px 20px; text-align: left; border-radius: 0 0 8px 8px;">
-    <a href="./index.html" style="color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px;">🏠 首頁</a>
-    
-    <a href="./golf_calc.html" style="color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px;">⛳ 高爾夫</a>
-    
-    <span style="color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid #2980b9; padding-bottom: 3px;">🎳 保齡球 (目前位置)</span>
+
+  <nav>
+    <div class="nav-content">
+      <a href="./index.html">🏠 首頁</a>
+      <a href="./golf_calc.html">⛳ 高爾夫</a>
+      <span>🎳 保齡球 (目前位置)</span>
+    </div>
   </nav>
 
 <div class="container">
@@ -107,6 +127,7 @@
 
     <div id="rankDisplay"></div>
   </div>
+
   <div style="margin-top: 40px; text-align: left; background: #fdfdfd; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
     <h4 style="margin-top:0; color: #2980b9;">EdgeBlue 保齡球賽務管理優勢</h4>
     <p style="font-size: 0.9em; color: #666;">
@@ -120,11 +141,15 @@
   </div>
 </div>
 
+<footer>
+  © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+  專注於高爾夫與保齡球隊賽務系統開發 | <a href="./privacy.html" style="color:#94a3b8; text-decoration:none;">隱私權政策</a>
+</footer>
+
 <script>
+// --- 原有邏輯保持不變 ---
 let players = [];
-
 window.onload = function() { loadSavedData(); };
-
 function initSystem() {
   const gCount = parseInt(document.getElementById('gameCount').value);
   const pCount = parseInt(document.getElementById('playerCount').value);
@@ -139,13 +164,11 @@ function initSystem() {
   document.getElementById('resultPanel').style.display = "block";
   updateLiveRank();
 }
-
 function renderTableHead(gCount) {
   let html = `<tr><th>項次</th><th>姓名/身份</th>`;
   for(let g=1; g<=gCount; g++) html += `<th>G${g}</th>`;
   document.getElementById('tableHead').innerHTML = html + `<th>加分</th><th class="total-cell">總分</th></tr>`;
 }
-
 function renderTableBody(gCount) {
   let html = "";
   players.forEach((p, pIdx) => {
@@ -165,7 +188,6 @@ function renderTableBody(gCount) {
   });
   document.getElementById('tableBody').innerHTML = html;
 }
-
 function handleScoreInput(input, pIdx, gIdx) {
   let val = parseInt(input.value) || 0;
   if (val > 300) { val = 300; input.value = 300; }
@@ -179,7 +201,6 @@ function handleScoreInput(input, pIdx, gIdx) {
     input.jumpTimer = setTimeout(() => jumpToNext(pIdx, gIdx), 600);
   }
 }
-
 function jumpToNext(pIdx, gIdx) {
   const pCount = players.length;
   let nextP = pIdx + 1;
@@ -188,7 +209,6 @@ function jumpToNext(pIdx, gIdx) {
   const nextInput = document.querySelector(`input[data-p="${nextP}"][data-g="${nextG}"]`);
   if (nextInput) { nextInput.focus(); nextInput.setSelectionRange(0, nextInput.value.length); }
 }
-
 function updateTag(pIdx, tag) {
   players[pIdx].tag = tag;
   let b = (tag === "女生") ? parseInt(document.getElementById('bonusLady').value) : (tag === "長青" ? parseInt(document.getElementById('bonusElder').value) : 0);
@@ -198,11 +218,8 @@ function updateTag(pIdx, tag) {
   updateLiveRank();
   saveAll();
 }
-
 function updateManualBonus(pIdx, val) { players[pIdx].bonus = parseInt(val) || 0; calculateTotal(pIdx); updateLiveRank(); saveAll(); }
 function calculateTotal(pIdx) { players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus; document.getElementById(`total-${pIdx}`).innerText = players[pIdx].total; }
-
-// 即時更新甲組領先組
 function updateLiveRank() {
   const prizeLimit = parseInt(document.getElementById('prizeCount').value);
   let sorted = [...players].filter(p => p.total > 0).sort((a, b) => b.total - a.total);
@@ -212,7 +229,6 @@ function updateLiveRank() {
   });
   document.getElementById('liveRankContent').innerHTML = html || "尚無分數";
 }
-
 function saveAll() {
   const config = {
     gameCount: document.getElementById('gameCount').value,
@@ -227,7 +243,6 @@ function saveAll() {
   };
   localStorage.setItem('bowling_v4_data', JSON.stringify(config));
 }
-
 function loadSavedData() {
   const saved = localStorage.getItem('bowling_v4_data');
   if (saved) {
@@ -243,27 +258,20 @@ function loadSavedData() {
     players = data.players; initSystem();
   }
 }
-
 function clearData() { if (confirm("確定重置？")) { localStorage.removeItem('bowling_v4_data'); location.reload(); } }
-
 function manualSettle() {
   const prizeLimit = parseInt(document.getElementById('prizeCount').value);
   const ratioB = parseFloat(document.getElementById('manualRatio').value);
   const ratioC = parseFloat(document.getElementById('ratioC').value);
   const rankBArr = document.getElementById('manualRanks').value.split(',').map(n => parseInt(n.trim()));
-
   let sortedAll = [...players].sort((a, b) => b.total - a.total);
   let groupA = sortedAll.slice(0, prizeLimit);
-  
-  // 乙組
   let selectedScoresB = [];
   rankBArr.forEach(r => { if (groupA[r-1]) selectedScoresB.push(groupA[r-1].total); });
   if (selectedScoresB.length < 3) { alert("項次有誤"); return; }
   let avgB = selectedScoresB.reduce((a, b) => a + b, 0) / 3;
   let targetB = avgB * ratioB;
   let groupB = sortedAll.slice(prizeLimit).filter(p => p.total <= targetB).slice(0, prizeLimit);
-
-  // 丙組
   let groupC = [];
   let drawMsg = `乙門檻: ${targetB.toFixed(1)}`;
   if (groupB.length > 0) {
@@ -273,54 +281,37 @@ function manualSettle() {
     groupC = sortedAll.slice(bLastIdx + 1).filter(p => p.total <= targetC).slice(0, prizeLimit);
   }
   document.getElementById('drawInfo').innerHTML = drawMsg;
-
-  // 專項獎項計算
   const top3Avg = (p) => [...p.scores].sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0);
   const maxSingle = (p) => Math.max(...p.scores);
-
   const best3 = [...players].sort((a,b) => top3Avg(b) - top3Avg(a))[0];
   const bestSingle = [...players].sort((a,b) => maxSingle(b) - maxSingle(a))[0];
-  
   const ladies = players.filter(p => p.tag === "女生");
   const ladySorted = [...ladies].sort((a,b) => b.total - a.total);
   const ladyBest3 = [...ladies].sort((a,b) => top3Avg(b) - top3Avg(a))[0];
   const ladyBestSingle = [...ladies].sort((a,b) => maxSingle(b) - maxSingle(a))[0];
-
-  renderResults(groupA, groupB, groupC, best3, bestSingle, ladySorted, ladyBest3, ladyBestSingle);
+  renderResults(groupA, groupB, groupC, best3, bs, ladySorted, ladyBest3, ladyBestSingle);
 }
-
 function renderResults(A, B, C, b3, bs, lList, lb3, lbs) {
   let html = `<div class="rank-box rank-A"><span class="rank-title">🏆 甲組得獎</span><table class="rank-table">`;
   A.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
   html += `</table></div>`;
-
   html += `<div class="rank-box rank-B"><span class="rank-title">🥈 乙組得獎</span><table class="rank-table">`;
   B.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
   html += `</table></div>`;
-
   html += `<div class="rank-box rank-C"><span class="rank-title">🥉 丙組得獎</span><table class="rank-table">`;
   C.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
   html += `</table></div>`;
-
-  // 專項獎
   html += `<div class="rank-box rank-Special"><span class="rank-title">🎖️ 全場專項獎</span><table class="rank-table">`;
   html += `<tr><td>最高 3 局總分</td><td><b>${b3.name}</b></td><td>成績: ${[...b3.scores].sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0)}</td></tr>`;
   html += `<tr><td>全場單局最高</td><td><b>${bs.name}</b></td><td>成績: ${Math.max(...bs.scores)}</td></tr></table></div>`;
-
-  // 女子組
   html += `<div class="rank-box rank-A" style="background:#fff0f6; border-color:#ffadd2;"><span class="rank-title">👩 女子組專區</span><table class="rank-table">`;
   lList.slice(0, 3).forEach((p, i) => html += `<tr><td>女子第 ${i+1} 名</td><td><b>${p.name}</b></td><td>總分: ${p.total}</td></tr>`);
   if(lb3) html += `<tr><td>女子 3 局最高</td><td><b>${lb3.name}</b></td><td>成績: ${[...lb3.scores].sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0)}</td></tr>`;
   if(lbs) html += `<tr><td>女子單局最高</td><td><b>${lbs.name}</b></td><td>成績: ${Math.max(...lbs.scores)}</td></tr>`;
   html += `</table></div>`;
-
   document.getElementById('rankDisplay').innerHTML = html;
   window.scrollTo(0, document.body.scrollHeight);
 }
 </script>
 </body>
-
 </html>
-
-
-
