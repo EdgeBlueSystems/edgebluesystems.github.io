@@ -8,10 +8,12 @@
 
     <style>
         :root {
-            --primary-blue: #1a3a5f; /* 銳青科技代表色：深科技藍 */
-            --golf-green: #2d6a4f;  /* 高爾夫綠 */
+            --primary-blue: #1a3a5f; 
+            --golf-green: #2d6a4f;  
             --bg-color: #f4f7f6;
         }
+
+        * { box-sizing: border-box; } /* 確保 padding 不會撐破寬度 */
 
         body { 
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
@@ -23,9 +25,20 @@
             background: var(--bg-color); 
         }
 
+        /* 響應式導覽列 */
+        nav {
+            width: 100%;
+            background: #333; 
+            padding: 12px 20px; 
+            text-align: left; 
+            border-radius: 0 0 8px 8px;
+        }
+        nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; display: inline-block; }
+        nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid #27ae60; padding-bottom: 3px; }
+
         header {
             width: 100%;
-            padding: 40px 0 20px;
+            padding: 40px 15px 20px;
             text-align: center;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -41,25 +54,30 @@
             display: block;
         }
 
-        h2 { 
-            margin: 0; 
-            color: #333; 
-            font-size: 1.8rem;
-        }
+        h2 { margin: 0; color: #333; font-size: 1.6rem; }
 
         .container {
+            width: 100%;
+            max-width: 800px; /* 提高上限，在桌機才不會太擠 */
+            padding: 0 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        /* 按鈕容器在桌機變橫排，手機變直排 */
+        .btn-wrapper {
             width: 100%;
-            max-width: 400px;
-            padding: 0 20px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .btn { 
             width: 100%; 
             padding: 18px; 
-            margin: 12px 0; 
             text-align: center; 
             background: var(--primary-blue); 
             color: white; 
@@ -69,7 +87,7 @@
             font-size: 1.1rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border-left: 5px solid var(--golf-green); /* 側邊點綴高爾夫綠 */
+            border-left: 5px solid var(--golf-green);
         }
 
         .btn:hover {
@@ -78,71 +96,95 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
+        /* 內容說明區塊響應式 */
+        .info-section {
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            margin-top: 20px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            text-align: left; 
+            width: 100%; 
+        }
+
+        .info-section h3 { margin-top: 0; }
+
         footer {
             margin-top: auto;
-            padding: 20px;
+            padding: 30px 20px;
             font-size: 0.8rem;
             color: #888;
             text-align: center;
+            width: 100%;
+        }
+
+        /* 手機端微調 */
+        @media (max-width: 600px) {
+            h2 { font-size: 1.4rem; }
+            .info-section { padding: 20px; } /* 縮小內距，讓文字更多空間 */
+            nav { text-align: center; }
+            nav a, nav span { margin: 5px 8px; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
-    <nav style="background: #333; padding: 12px 20px; text-align: left; border-radius: 0 0 8px 8px;">
-    <a href="./index.html" style="color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px;">🏠 首頁</a>
-    
-    <span style="color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid #27ae60; padding-bottom: 3px; margin-right: 15px;">⛳ 高爾夫 (目前位置)</span>
-    
-    <a href="./bowling.html" style="color: #bbb; text-decoration: none; font-size: 0.9rem;">🎳 保齡球</a>
+    <nav>
+        <a href="./index.html">🏠 首頁</a>
+        <span>⛳ 高爾夫 (目前位置)</span>
+        <a href="./bowling.html">🎳 保齡球</a>
     </nav>
 
     <header>
         <span class="brand-name">EDGEBLUE SYSTEMS</span>
-        <h2>⛳ 銳青高爾夫賽務系統</h2>
+        <h2>銳青高爾夫賽務系統</h2>
     </header>
 
     <div class="container">
-        <a href="golf_peoria.html" class="btn">新新貝利計算 (全隊)</a>
-        <a href="golf_skins.html" class="btn">抓球比洞計算 (分組)</a>
-        <div class="info-section" style="background: white; padding: 30px; border-radius: 12px; margin-top: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: left; width: 100%; box-sizing: border-box;">
-    <h3 style="color: var(--primary-blue); font-size: 1.2rem; border-left: 5px solid var(--golf-green); padding-left: 15px; margin-bottom: 20px;">⛳ EdgeBlue 高爾夫賽務系統：專業賽制解析</h3>
-    
-    <p style="font-size: 0.95rem; color: #444; line-height: 1.8;">
-        在高爾夫球敘與社賽中，選擇公平且有趣的計算方式是賽務成功的關鍵。EdgeBlue 系統針對台灣常見的競技需求，開發了兩大核心計算模組，確保每一場比賽的成績都能精確呈現。
-    </p>
+        <div class="btn-wrapper">
+            <a href="golf_peoria.html" class="btn">新新貝利計算 (全隊)</a>
+            <a href="golf_skins.html" class="btn">專業抓球版 (組內)</a>
+        </div>
 
-    <div style="margin-top: 20px;">
-        <h4 style="color: var(--golf-green); margin-bottom: 8px;">1. 新新貝利 (New New Peoria) 計算系統</h4>
-        <p style="font-size: 0.9rem; color: #666;">
-            <strong>適用場景：</strong> 大型球隊月賽、不具備正式差點的球友聚會。<br>
-            <strong>核心邏輯：</strong> 系統從 18 洞中隨機抽取 12 個隱藏洞（總標準桿為 48 桿）。透過計算球員在這些隱藏洞的表現，推算出該名球員當日的「臨時差點」。相比傳統的皮奧里亞法，新新貝利更能降低「選洞運氣」帶來的偏差，是目前公認最公平的業餘讓桿計算方式。
-        </p>
+        <div class="info-section">
+            <h3 style="color: var(--primary-blue); font-size: 1.2rem; border-left: 5px solid var(--golf-green); padding-left: 15px; margin-bottom: 20px;">⛳ EdgeBlue 高爾夫賽務系統：專業賽制解析</h3>
+            
+            <p style="font-size: 0.95rem; color: #444; line-height: 1.8;">
+                在高爾夫球敘與社賽中，選擇公平且有趣的計算方式是賽務成功的關鍵。EdgeBlue 系統針對台灣常見的競技需求，開發了兩大核心計算模組。
+            </p>
+
+            <div style="margin-top: 20px;">
+                <h4 style="color: var(--golf-green); margin-bottom: 8px;">1. 新新貝利 (New New Peoria) 計算系統</h4>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>適用場景：</strong> 大型球隊月賽、不具備正式差點的球友聚會。
+                </p>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>核心邏輯：</strong> 系統從 18 洞中隨機抽取 12 個隱藏洞，透過計算球員在這些洞的表現來推算當日的「臨時差點」。
+                </p>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h4 style="color: var(--golf-green); margin-bottom: 8px;">2. 專業抓球版 (Skins Game) 對決系統</h4>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>適用場景：</strong> 四人組小隊競技、點對點交叉讓桿對決。
+                </p>
+                <p style="font-size: 0.9rem; color: #666;">
+                    <strong>核心邏輯：</strong> 處理「多向讓桿矩陣」。支援成員互相讓桿設定，自動結合球場難度索引 (HDCP) 進行扣桿。
+                </p>
+            </div>
+
+            <div style="margin-top: 25px; padding: 15px; background: #f0f7f4; border-radius: 8px;">
+                <h4 style="font-size: 0.95rem; margin-top: 0; color: var(--primary-blue);">🚀 系統技術特點</h4>
+                <ul style="font-size: 0.85rem; color: #555; padding-left: 20px; margin-bottom: 0;">
+                    <li><strong>內建球場數據：</strong> 整合全台主流球場之標準桿數據。</li>
+                    <li><strong>即時雲端結算：</strong> 手機端即時輸入，成績一目瞭然。</li>
+                    <li><strong>隱私優先：</strong> 數據僅存於您的裝置，保障資安。</li>
+                </ul>
+            </div>
+        </div>
     </div>
-
-        <div style="margin-top: 20px;">
-        <h4 style="color: var(--golf-green); margin-bottom: 8px;">2. 專業抓球版 (Skins Game) 對決系統</h4>
-        <p style="font-size: 0.9rem; color: #666;">
-            <strong>適用場景：</strong> 四人組小隊競技、點對點交叉讓桿對決。<br>
-            <strong>核心邏輯：</strong> 針對高手間的「抓球」競技設計。本系統最先進之處在於處理<strong>「多向讓桿矩陣」</strong>。支援組內成員互相讓桿設定，並自動結合球場難度索引 (HDCP) 進行扣桿。每一洞結束後即時結算六組對決點數，徹底解決人工比對 HDCP 表時容易產生的計算錯誤與爭議。
-        </p>
-        </div>
-
-        <div style="margin-top: 25px; padding: 15px; background: #f0f7f4; border-radius: 8px;">
-            <h4 style="font-size: 0.95rem; margin-top: 0; color: var(--primary-blue);">🚀 系統技術特點</h4>
-            <ul style="font-size: 0.85rem; color: #555; padding-left: 20px;">
-                <li><strong>內建球場數據：</strong> 整合全台主流球場之難度索引 (HDCP) 與標準桿數據。</li>
-                <li><strong>即時雲端結算：</strong> 支援手機端即時輸入與自動加總，成績一目瞭然。</li>
-                <li><strong>隱私優先：</strong> 採用前端計算技術，所有賽事數據僅存於您的裝置，保障資安。</li>
-            </ul>
-        </div>
-    </div>
-        </div>
 
     <footer>
-        © 2026 銳青科技整合有限公司 版權所有
+        © 2026 銳青科技整合有限公司 版權所有 | <a href="privacy.html" style="color: #888; text-decoration: none;">隱私權政策</a>
     </footer>
-
 </body>
-
 </html>
-
