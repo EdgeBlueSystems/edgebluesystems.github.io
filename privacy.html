@@ -3,37 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>隱私權政策 - 銳青科技整合有限公司</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
-
+    <title>隱私權政策 | EdgeBlue Systems 銳青科技整合</title>
     <style>
-        body { font-family: "Microsoft JhengHei", Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 40px 20px; background-color: #fff; }
-        h1 { border-bottom: 2px solid #27ae60; padding-bottom: 10px; color: #2c3e50; }
-        h2 { color: #2c3e50; margin-top: 30px; border-left: 5px solid #27ae60; padding-left: 10px; }
-        p { margin: 15px 0; }
-        .back-link { margin-top: 40px; display: block; color: #27ae60; text-decoration: none; font-weight: bold; }
+        :root {
+            --eb-blue: #1a3a5f;
+            --eb-accent: #2d6a4f;
+            --bg: #f8fafc;
+            --card: #ffffff;
+        }
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
+            background: var(--bg); 
+            color: #334155; 
+            line-height: 1.8;
+        }
+        
+        /* 統一全域導航列 */
+        nav { 
+            background: #333; 
+            padding: 12px 20px; 
+            text-align: left; 
+            width: 100%; 
+        }
+        nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; }
+        nav span { color: #fff; font-weight: bold; font-size: 0.9rem; }
+
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .panel { 
+            background: var(--card); 
+            border-radius: 12px; 
+            padding: 40px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            border-top: 4px solid var(--eb-blue);
+        }
+        
+        h1 { color: var(--eb-blue); font-size: 1.8rem; margin-top: 0; text-align: center; }
+        h2 { color: var(--eb-blue); font-size: 1.2rem; border-left: 4px solid var(--eb-accent); padding-left: 12px; margin-top: 30px; }
+        p, li { font-size: 0.95rem; color: #475569; }
+        ul { padding-left: 20px; }
+        
+        footer { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.85rem; }
+        .highlight { color: var(--eb-accent); font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>隱私權政策</h1>
-    <p>歡迎使用由「銳青科技整合有限公司」（以下簡稱本公司）開發之運動計算工具。我們非常重視您的隱私，特此說明我們的數據處理方式。</p>
 
-    <h2>1. 數據收集與使用</h2>
-    <p>本工具（高爾夫球計算機、保齡球比賽計算機）僅提供計算與賽制管理功能。我們不會主動要求您輸入姓名、身分證字號、電話或地址等個人識別資料。您在計算過程中所輸入的分數數據僅儲存於您的瀏覽器暫存空間中，本公司伺服器不會紀錄您的具體比賽內容。</p>
+    <nav>
+        <a href="./index.html">🏠 首頁</a>
+        <a href="./golf_calc.html">⛳ 高爾夫</a>
+        <a href="./bowling.html">🎳 保齡球</a>
+        <span style="border-bottom: 2px solid var(--eb-accent); padding-bottom: 3px; margin-left: 10px;">📜 隱私權政策</span>
+    </nav>
 
-    <h2>2. Google AdSense 廣告與 Cookie</h2>
-    <p>本網站使用 Google AdSense 投放廣告。Google 作為第三方供應商，會使用 Cookie 來根據使用者先前造訪本網站或其他網站的紀錄，向使用者投放廣告。</p>
-    <p>Google 使用廣告 Cookie 後，Google 及其合作夥伴就能根據使用者對本站及/或網路上其他網站的造訪紀錄，向使用者投放廣告。您可以造訪 <a href="https://www.google.com/settings/ads" target="_blank">Google 廣告設定</a> 網頁，自行決定是否停用個人化廣告。</p>
+    <div class="container">
+        <div class="panel">
+            <h1>隱私權政策</h1>
+            <p>歡迎造訪 <strong>EdgeBlue Systems 銳青科技整合</strong>（以下簡稱「本網站」）。我們極其重視您的個人隱私，並致力於保護您的資訊安全。本政策說明了我們如何處理您在使用本網站運動賽務工具時的數據。</p>
 
-    <h2>3. 外部連結</h2>
-    <p>本工具頁面可能包含指向其他網站的連結（如廣告連結）。請注意，我們不負責這些外部網站的隱私 practice 或內容，建議您在離開本站前先閱讀該網站的隱私權聲明。</p>
+            <h2>1. 資料收集與處理方式</h2>
+            <p>本網站提供之高爾夫與保齡球計算工具採用 <span class="highlight">「前端在地化計算」</span> 技術：</p>
+            <ul>
+                <li><strong>賽事數據</strong>：您輸入的球員姓名、桿數、分數等賽務數據，均儲存於您個人裝置的瀏覽器暫存空間（LocalStorage）。</li>
+                <li><strong>無後端傳輸</strong>：本網站不會將您的任何賽事數據上傳至我們的伺服器，亦不會進行任何形式的雲端紀錄。</li>
+            </ul>
 
-    <h2>4. 政策修訂</h2>
-    <p>我們可能會不時更新本隱私權政策以符合法規或服務變更。建議您定期查看本頁面。若您持續使用本工具，即代表您同意本政策之內容。</p>
-    
-    <p>如有任何建議或疑問，請聯繫本公司官方管道。</p>
-    <hr>
-    <p>最近更新日期：2026年2月25日</p>
-    <a href="/" class="back-link">← 回到工具首頁</a>
+            <h2>2. Google AdSense 廣告與 Cookie</h2>
+            <p>本網站使用 Google AdSense 投放廣告。為了提供更相關的廣告內容，Google 可能會使用 Cookie：</p>
+            <ul>
+                <li>Google 會使用 Cookie 根據使用者先前造訪本網站或其他網站的紀錄，向使用者投放個人化廣告。</li>
+                <li>使用者可以造訪 <a href="https://www.google.com/settings/ads" target="_blank">Google 廣告設定</a> 頁面，隨時停用個人化廣告功能。</li>
+            </ul>
+
+            <h2>3. 同意聲明與隱私權規範</h2>
+            <p>為了符合全球隱私規範（如 GDPR 與 CCPA），本網站採用 Google 認證的同意管理平台 (CMP)。當您來自歐洲經濟區 (EEA) 或特定法律規範區域時，系統會自動跳出訊息，詢問您對 Cookie 使用的同意傾向。</p>
+
+            <h2>4. 外部連結</h2>
+            <p>本網站可能包含指向其他網站的連結。請注意，我們對其他網站的隱私實踐不負責任，建議您在造訪這些網站時閱讀其隱私聲明。</p>
+
+            <h2>5. 政策修訂</h2>
+            <p>我們可能會不定期更新本隱私權政策。建議您定期查看本頁面以了解最新資訊。繼續使用本網站即代表您接受本政策的約束。</p>
+
+            <div style="margin-top: 40px; padding: 20px; background: #f1f5f9; border-radius: 8px; text-align: center;">
+                <p style="margin: 0; font-weight: bold;">如有任何疑問，歡迎與我們聯繫</p>
+                <p style="margin: 5px 0 0;">銳青科技整合有限公司 EdgeBlue Systems</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        © 2026 銳青科技整合有限公司 版權所有
+    </footer>
+
 </body>
 </html>
