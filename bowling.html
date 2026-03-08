@@ -154,13 +154,178 @@
 </footer>
 
 <script>
-// --- 保留您原本強大的保齡球邏輯 ---
 let players = [];
+
+// 網頁載入後先讀取快取資料
 window.onload = function() { loadSavedData(); };
 
+// 初始化系統：根據設定生成球員名單與表格
 function initSystem() {
   const gCount = parseInt(document.getElementById('gameCount').value);
   const pCount = parseInt(document.getElementById('playerCount').value);
   const newPlayers = [];
   for(let i=0; i<pCount; i++) {
-    newPlayers.push(players[i] || { id: i+1, name: `球員${i+1}`, tag: "一般", bonus: 0, scores: Array(gCount).fill(0
+    // 若已有舊資料則保留，否則建立新球員
+    newPlayers.push(players[i] || { id: i+1, name: `球員${i+1}`, tag: "一般", bonus: 0, scores: Array(gCount).fill(0), total: 0 });
+  }
+  players = newPlayers;
+  renderTableHead(gCount);
+  renderTableBody(gCount);
+  document.getElementById('scorePanel').style.display = "block";
+  document.getElementById('resultPanel').style.display = "block";
+  updateLiveRank();
+}
+
+// 產生表頭
+function renderTableHead(gCount) {
+  let html = `<tr><th width="60">項次</th><th width="150">姓名/身份</th>`;
+  for(let g=1; g<=gCount; g++) html += `<th>G${g}</th>`;
+  document.getElementById('tableHead').innerHTML = html + `<th width="80">加分</th><th width="100" class="total-cell">總分</th></tr>`;
+}
+
+// 產生表身
+function renderTableBody(gCount) {
+  let html = "";
+  players.forEach((p, pIdx) => {
+    html += `<tr><td>${p.id}</td><td>
+        <input type="text" class="score-input" value="${p.name}" onchange="players[${pIdx}].name=this.value; updateLiveRank();" style="font-size:14px; height: 30px;">
+        <select onchange="updateTag(${pIdx}, this.value)" style="font-size:12px; width:90%; border-radius: 4px; border: 1px solid #ddd;">
+          <option value="一般" ${p.tag==='一般'?'selected':''}>一般</option>
+          <option value="女生" ${p.tag==='女生'?'selected':''}>女生</option>
+          <option value="長青" ${p.tag==='長青'?'selected':''}>長青</option>
+        </select>
+      </td>`;
+    for(let g=0; g<gCount; g++) {
+      html += `<td><input type="number" inputmode="numeric" class="score-input" data-p="${pIdx}" data-g="${g}" oninput="handleScoreInput(this, ${pIdx}, ${g})" value="${p.scores[g] || ''}"></td>`;
+    }
+    html += `<td><input type="number" class="score-input" id="bonus-${pIdx}" value="${p.bonus}" onchange="updateManualBonus(${pIdx}, this.value)" style="font-size:14px;"></td>
+      <td id="total-${pIdx}" class="total-cell">${p.total}</td></tr>`;
+  });
+  document.getElementById('tableBody').innerHTML = html;
+}
+
+// 處理分數輸入與自動跳格
+function handleScoreInput(input, pIdx, gIdx) {
+  let val = parseInt(input.value) || 0;
+  if (val > 300) { val = 300; input.value = 300; }
+  players[pIdx].scores[gIdx] = val;
+  calculateTotal(pIdx);
+  updateLiveRank();
+  saveAll();
+  if (input.value.length >= 3) { jumpToNext(pIdx, gIdx); } 
+  else if (input.value.length >= 1) {
+    clearTimeout(input.jumpTimer);
+    input.jumpTimer = setTimeout(() => jumpToNext(pIdx, gIdx), 600);
+  }
+}
+
+function jumpToNext(pIdx, gIdx) {
+  const pCount = players.length;
+  let nextP = pIdx + 1;
+  let nextG = gIdx;
+  if (nextP >= pCount) { nextP = 0; nextG = gIdx + 1; }
+  const nextInput = document.querySelector(`input[data-p="${nextP}"][data-g="${nextG}"]`);
+  if (nextInput) { nextInput.focus(); nextInput.setSelectionRange(0, nextInput.value.length); }
+}
+
+function updateTag(pIdx, tag) {
+  players[pIdx].tag = tag;
+  let b = (tag === "女生") ? parseInt(document.getElementById('bonusLady').value) : (tag === "長青" ? parseInt(document.getElementById('bonusElder').value) : 0);
+  players[pIdx].bonus = b;
+  document.getElementById(`bonus-${pIdx}`).value = b;
+  calculateTotal(pIdx);
+  updateLiveRank();
+  saveAll();
+}
+
+function updateManualBonus(pIdx, val) { players[pIdx].bonus = parseInt(val) || 0; calculateTotal(pIdx); updateLiveRank(); saveAll(); }
+function calculateTotal(pIdx) { players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus; document.getElementById(`total-${pIdx}`).innerText = players[pIdx].total; }
+
+function updateLiveRank() {
+  const prizeLimit = parseInt(document.getElementById('prizeCount').value);
+  let sorted = [...players].filter(p => p.total > 0).sort((a, b) => b.total - a.total);
+  let html = "";
+  sorted.slice(0, prizeLimit).forEach((p, i) => {
+    html += `<div class="rank-item">第${i+1}名: ${p.name} <span style="color:var(--eb-pink)">(${p.total})</span></div>`;
+  });
+  document.getElementById('liveRankContent').innerHTML = html || "尚無分數";
+}
+
+function saveAll() {
+  const config = {
+    gameCount: document.getElementById('gameCount').value,
+    playerCount: document.getElementById('playerCount').value,
+    prizeCount: document.getElementById('prizeCount').value,
+    bonusLady: document.getElementById('bonusLady').value,
+    bonusElder: document.getElementById('bonusElder').value,
+    manualRanks: document.getElementById('manualRanks').value,
+    manualRatio: document.getElementById('manualRatio').value,
+    ratioC: document.getElementById('ratioC').value,
+    players: players
+  };
+  localStorage.setItem('bowling_v4_data', JSON.stringify(config));
+}
+
+function loadSavedData() {
+  const saved = localStorage.getItem('bowling_v4_data');
+  if (saved) {
+    const data = JSON.parse(saved);
+    document.getElementById('gameCount').value = data.gameCount;
+    document.getElementById('playerCount').value = data.playerCount;
+    document.getElementById('prizeCount').value = data.prizeCount;
+    document.getElementById('bonusLady').value = data.bonusLady;
+    document.getElementById('bonusElder').value = data.bonusElder;
+    document.getElementById('manualRanks').value = data.manualRanks;
+    document.getElementById('manualRatio').value = data.manualRatio;
+    document.getElementById('ratioC').value = data.ratioC || 0.95;
+    players = data.players; initSystem();
+  }
+}
+
+function clearData() { if (confirm("確定重置？")) { localStorage.removeItem('bowling_v4_data'); location.reload(); } }
+
+function manualSettle() {
+  const prizeLimit = parseInt(document.getElementById('prizeCount').value);
+  const ratioB = parseFloat(document.getElementById('manualRatio').value);
+  const ratioC = parseFloat(document.getElementById('ratioC').value);
+  const rankBArr = document.getElementById('manualRanks').value.split(',').map(n => parseInt(n.trim()));
+
+  let sortedAll = [...players].sort((a, b) => b.total - a.total);
+  let groupA = sortedAll.slice(0, prizeLimit);
+  
+  let selectedScoresB = [];
+  rankBArr.forEach(r => { if (groupA[r-1]) selectedScoresB.push(groupA[r-1].total); });
+  if (selectedScoresB.length < 3) { alert("項次有誤"); return; }
+  let avgB = selectedScoresB.reduce((a, b) => a + b, 0) / 3;
+  let targetB = avgB * ratioB;
+  let groupB = sortedAll.slice(prizeLimit).filter(p => p.total <= targetB).slice(0, prizeLimit);
+
+  let groupC = [];
+  let drawMsg = `乙組門檻: ${targetB.toFixed(1)}`;
+  if (groupB.length > 0) {
+    let targetC = groupB[0].total * ratioC;
+    drawMsg += ` | 丙組門檻: ${targetC.toFixed(1)}`;
+    let bLastIdx = sortedAll.findIndex(p => p.id === groupB[groupB.length-1].id);
+    groupC = sortedAll.slice(bLastIdx + 1).filter(p => p.total <= targetC).slice(0, prizeLimit);
+  }
+  document.getElementById('drawInfo').innerHTML = drawMsg;
+  renderResults(groupA, groupB, groupC);
+}
+
+function renderResults(A, B, C) {
+  let html = `<div class="rank-box rank-A"><span class="rank-title">🏆 甲組得獎</span><table class="rank-table">`;
+  A.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
+  html += `</table></div>`;
+
+  html += `<div class="rank-box rank-B" style="border-top-color: var(--eb-gold);"><span class="rank-title">🥈 乙組得獎</span><table class="rank-table">`;
+  B.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
+  html += `</table></div>`;
+
+  html += `<div class="rank-box rank-C" style="border-top-color: var(--eb-pink);"><span class="rank-title">🥉 丙組得獎</span><table class="rank-table">`;
+  C.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
+  html += `</table></div>`;
+
+  document.getElementById('rankDisplay').innerHTML = html;
+  window.scrollTo(0, document.body.scrollHeight);
+}
+</script>
