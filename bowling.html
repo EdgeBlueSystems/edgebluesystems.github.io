@@ -157,16 +157,13 @@
 <script>
 let players = [];
 
-// 網頁載入後先讀取快取資料
 window.onload = function() { loadSavedData(); };
 
-// 初始化系統：根據設定生成球員名單與表格
 function initSystem() {
   const gCount = parseInt(document.getElementById('gameCount').value);
   const pCount = parseInt(document.getElementById('playerCount').value);
   const newPlayers = [];
   for(let i=0; i<pCount; i++) {
-    // 若已有舊資料則保留，否則建立新球員
     newPlayers.push(players[i] || { id: i+1, name: `球員${i+1}`, tag: "一般", bonus: 0, scores: Array(gCount).fill(0), total: 0 });
   }
   players = newPlayers;
@@ -177,14 +174,12 @@ function initSystem() {
   updateLiveRank();
 }
 
-// 產生表頭
 function renderTableHead(gCount) {
   let html = `<tr><th width="60">項次</th><th width="150">姓名/身份</th>`;
   for(let g=1; g<=gCount; g++) html += `<th>G${g}</th>`;
   document.getElementById('tableHead').innerHTML = html + `<th width="80">加分</th><th width="100" class="total-cell">總分</th></tr>`;
 }
 
-// 產生表身
 function renderTableBody(gCount) {
   let html = "";
   players.forEach((p, pIdx) => {
@@ -205,26 +200,14 @@ function renderTableBody(gCount) {
   document.getElementById('tableBody').innerHTML = html;
 }
 
-// 處理分數輸入與自動跳格
 function handleScoreInput(input, pIdx, gIdx) {
   let val = parseInt(input.value) || 0;
-  
-  // 1. 強制限制最高 300 分
-  if (val > 300) { 
-    val = 300; 
-    input.value = 300; 
-  }
-  
+  if (val > 300) { val = 300; input.value = 300; }
   players[pIdx].scores[gIdx] = val;
   calculateTotal(pIdx);
   updateLiveRank();
   saveAll();
-
-  // 2. 改進跳格邏輯：只有在「輸入滿 3 位數」時才自動跳下一格
-  // 這樣 0-99 分的球員可以慢慢輸入，不會被強制踢走
-  if (input.value.length >= 3) { 
-    jumpToNext(pIdx, gIdx); 
-  }
+  if (input.value.length >= 3) { jumpToNext(pIdx, gIdx); } 
 }
 
 function jumpToNext(pIdx, gIdx) {
@@ -247,7 +230,11 @@ function updateTag(pIdx, tag) {
 }
 
 function updateManualBonus(pIdx, val) { players[pIdx].bonus = parseInt(val) || 0; calculateTotal(pIdx); updateLiveRank(); saveAll(); }
-function calculateTotal(pIdx) { players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus; document.getElementById(`total-${pIdx}`).innerText = players[pIdx].total; }
+
+function calculateTotal(pIdx) { 
+  players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus; 
+  document.getElementById(`total-${pIdx}`).innerText = players[pIdx].total; 
+}
 
 function updateLiveRank() {
   const prizeLimit = parseInt(document.getElementById('prizeCount').value);
@@ -292,91 +279,162 @@ function loadSavedData() {
 
 function clearData() { if (confirm("確定重置？")) { localStorage.removeItem('bowling_v4_data'); location.reload(); } }
 
+// --- 核心結算邏輯 (獎項不重複) ---
 function manualSettle() {
   const prizeLimit = parseInt(document.getElementById('prizeCount').value);
   const ratioB = parseFloat(document.getElementById('manualRatio').value);
   const ratioC = parseFloat(document.getElementById('ratioC').value);
   const rankBArr = document.getElementById('manualRanks').value.split(',').map(n => parseInt(n.trim()));
+  const gCount = parseInt(document.getElementById('gameCount').value);
 
-  let sortedAll = [...players].sort((a, b) => b.total - a.total);
+  // 初始化每位球員的獎項
+  players.forEach(p => p.award = "");
+
+  // 1. 取得總分排名 (全場)
+  let sortedAll = [...players].filter(p => p.total > 0).sort((a, b) => b.total - a.total);
+  if(sortedAll.length === 0) { alert("無參賽數據"); return; }
+
+  // --- [優先級 1] 甲組 ---
   let groupA = sortedAll.slice(0, prizeLimit);
-  
+  groupA.forEach((p, i) => p.award = `甲組-${i+1}`);
+  let awardedIds = new Set(groupA.map(p => p.id));
+
+  // --- [優先級 2] 前三局冠軍 (未得獎者中找) ---
+  let front3Pool = sortedAll.filter(p => !awardedIds.has(p.id));
+  if(front3Pool.length > 0) {
+      front3Pool.sort((a, b) => {
+          let sumA = a.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
+          let sumB = b.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
+          return sumB - sumA;
+      });
+      front3Pool[0].award = "前三冠";
+      awardedIds.add(front3Pool[0].id);
+  }
+
+  // --- [優先級 3] 後二/三局冠軍 (未得獎者中找) ---
+  let backPool = sortedAll.filter(p => !awardedIds.has(p.id));
+  if(backPool.length > 0) {
+      backPool.sort((a, b) => {
+          let sumA = a.scores.slice(3, gCount).reduce((acc, v) => acc + v, 0);
+          let sumB = b.scores.slice(3, gCount).reduce((acc, v) => acc + v, 0);
+          return sumB - sumA;
+      });
+      backPool[0].award = "後組冠";
+      awardedIds.add(backPool[0].id);
+  }
+
+  // --- [優先級 4] 單局最高 (未得獎者中找) ---
+  let singlePool = sortedAll.filter(p => !awardedIds.has(p.id));
+  if(singlePool.length > 0) {
+      singlePool.sort((a, b) => Math.max(...b.scores) - Math.max(...a.scores));
+      singlePool[0].award = `單局冠(${Math.max(...singlePool[0].scores)})`;
+      awardedIds.add(singlePool[0].id);
+  }
+
+  // --- [優先級 5] 乙組 ---
   let selectedScoresB = [];
   rankBArr.forEach(r => { if (groupA[r-1]) selectedScoresB.push(groupA[r-1].total); });
-  if (selectedScoresB.length < 3) { alert("項次有誤"); return; }
-  let avgB = selectedScoresB.reduce((a, b) => a + b, 0) / 3;
-  let targetB = avgB * ratioB;
-  let groupB = sortedAll.slice(prizeLimit).filter(p => p.total <= targetB).slice(0, prizeLimit);
+  let targetB = (selectedScoresB.length > 0 ? (selectedScoresB.reduce((a, b) => a + b, 0) / selectedScoresB.length) : 0) * ratioB;
+  
+  let groupB = sortedAll.filter(p => !awardedIds.has(p.id) && p.total <= targetB).slice(0, prizeLimit);
+  groupB.forEach((p, i) => {
+      p.award = `乙組-${i+1}`;
+      awardedIds.add(p.id);
+  });
 
+  // --- [優先級 6] 丙組 ---
   let groupC = [];
-  let drawMsg = `乙組門檻: ${targetB.toFixed(1)}`;
   if (groupB.length > 0) {
-    let targetC = groupB[0].total * ratioC;
-    drawMsg += ` | 丙組門檻: ${targetC.toFixed(1)}`;
-    let bLastIdx = sortedAll.findIndex(p => p.id === groupB[groupB.length-1].id);
-    groupC = sortedAll.slice(bLastIdx + 1).filter(p => p.total <= targetC).slice(0, prizeLimit);
+      let targetC = groupB[0].total * ratioC;
+      groupC = sortedAll.filter(p => !awardedIds.has(p.id) && p.total <= targetC).slice(0, prizeLimit);
+      groupC.forEach((p, i) => {
+          p.award = `丙組-${i+1}`;
+          awardedIds.add(p.id);
+      });
   }
-  document.getElementById('drawInfo').innerHTML = drawMsg;
-  renderResults(groupA, groupB, groupC);
+
+  // --- [優先級 7] 女子組冠軍 (未得獎者中找) ---
+  let ladyPool = sortedAll.filter(p => !awardedIds.has(p.id) && p.tag === "女生");
+  if(ladyPool.length > 0) {
+      ladyPool[0].award = "女子冠";
+      awardedIds.add(ladyPool[0].id);
+  }
+
+  // --- [優先級 8] 長青組冠軍 (未得獎者中找) ---
+  let elderPool = sortedAll.filter(p => !awardedIds.has(p.id) && p.tag === "長青");
+  if(elderPool.length > 0) {
+      elderPool[0].award = "長青冠";
+      awardedIds.add(elderPool[0].id);
+  }
+
+  document.getElementById('drawInfo').innerHTML = `乙組門檻: ${targetB.toFixed(1)}`;
+  renderResults(groupA, groupB, groupC, awardedIds);
 }
 
-function renderResults(A, B, C) {
-  let html = `<div class="rank-box rank-A"><span class="rank-title">🏆 甲組得獎</span><table class="rank-table">`;
-  A.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
-  html += `</table></div>`;
+function renderResults(A, B, C, awardedIds) {
+  let html = `<div class="rank-box rank-A"><span class="rank-title">🏆 獲獎名單 (依優先順序結算)</span><table class="rank-table" style="width:100%; text-align:left; border-collapse:collapse;">`;
+  
+  // 顯示所有有獎項的球員，按原總分排名顯示或按獎項類別
+  let winners = players.filter(p => p.award !== "").sort((a, b) => {
+      // 這裡簡單按 ID 順序或總分顯示，也可自定義
+      return b.total - a.total;
+  });
 
-  html += `<div class="rank-box rank-B" style="border-top-color: var(--eb-gold);"><span class="rank-title">🥈 乙組得獎</span><table class="rank-table">`;
-  B.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
+  winners.forEach(p => {
+      html += `<tr style="border-bottom:1px solid #eee;">
+                <td width="120" style="padding:8px; font-weight:bold; color:var(--eb-pink);">${p.award}</td>
+                <td width="100">${p.name}</td>
+                <td>總分: ${p.total}</td>
+               </tr>`;
+  });
   html += `</table></div>`;
-
-  html += `<div class="rank-box rank-C" style="border-top-color: var(--eb-pink);"><span class="rank-title">🥉 丙組得獎</span><table class="rank-table">`;
-  C.forEach((p, i) => html += `<tr><td width="80">第 ${i+1} 名</td><td width="120">${p.name}</td><td>總分: ${p.total}</td></tr>`);
-  html += `</table></div>`;
-
   document.getElementById('rankDisplay').innerHTML = html;
   window.scrollTo(0, document.body.scrollHeight);
 }
-// 匯出 CSV 功能
-function exportToCSV() {
-  if (players.length === 0) {
-    alert("尚無資料可匯出");
-    return;
-  }
 
+// 匯出功能 (包含您要求的格式更新)
+function exportToCSV() {
+  if (players.length === 0) { alert("尚無資料"); return; }
   const gCount = parseInt(document.getElementById('gameCount').value);
-  let csv = "\ufeff項次,姓名/身份,"; // 加上 BOM 以防止 Excel 開啟時亂碼
   
-  // 建立表頭
+  // 1. 準備表頭
+  let csv = "\ufeff項次,姓名/身份,";
   for (let g = 1; g <= gCount; g++) {
     csv += `G${g},`;
+    if (g === 3) csv += "前三局總分,";
+    if (gCount === 5 && g === 5) csv += "後二局總分,";
+    else if (gCount > 5 && g === gCount) csv += `後${gCount-3}局總分,`;
   }
-  csv += "加分,總分\n";
+  csv += "加分,總分,全場名次,獲得獎項\n";
 
-  // 建立內容
+  // 2. 計算全場排名名次
+  let rankMap = new Map();
+  let sortedForRank = [...players].filter(p => p.total > 0).sort((a,b) => b.total - a.total);
+  sortedForRank.forEach((p, i) => rankMap.set(p.id, i + 1));
+
+  // 3. 填充內容
   players.forEach(p => {
     let row = `${p.id},${p.name}(${p.tag}),`;
+    let front3 = p.scores.slice(0, 3).reduce((a, b) => a + b, 0);
+    let backSum = p.scores.slice(3, gCount).reduce((a, b) => a + b, 0);
+
     for (let g = 0; g < gCount; g++) {
       row += `${p.scores[g] || 0},`;
+      if (g === 2) row += `${front3},`; // G3 之後
+      if (g === gCount - 1) row += `${backSum},`; // 最後一局之後
     }
-    row += `${p.bonus},${p.total}\n`;
+
+    row += `${p.bonus},${p.total},${rankMap.get(p.id) || ""},${p.award || "無"}\n`;
     csv += row;
   });
 
-  // 下載檔案
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  
-  const now = new Date();
-  const dateStr = `${now.getFullYear()}${now.getMonth()+1}${now.getDate()}`;
-  
-  link.setAttribute("href", url);
-  link.setAttribute("download", `EdgeBlue_Bowling_${dateStr}.csv`);
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
+  link.href = URL.createObjectURL(blob);
+  link.download = `EdgeBlue_結算表_${new Date().toLocaleDateString()}.csv`;
   link.click();
-  document.body.removeChild(link);
-}  
+}
 </script>
+
 
 
