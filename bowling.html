@@ -208,15 +208,22 @@ function renderTableBody(gCount) {
 // 處理分數輸入與自動跳格
 function handleScoreInput(input, pIdx, gIdx) {
   let val = parseInt(input.value) || 0;
-  if (val > 300) { val = 300; input.value = 300; }
+  
+  // 1. 強制限制最高 300 分
+  if (val > 300) { 
+    val = 300; 
+    input.value = 300; 
+  }
+  
   players[pIdx].scores[gIdx] = val;
   calculateTotal(pIdx);
   updateLiveRank();
   saveAll();
-  if (input.value.length >= 3) { jumpToNext(pIdx, gIdx); } 
-  else if (input.value.length >= 1) {
-    clearTimeout(input.jumpTimer);
-    input.jumpTimer = setTimeout(() => jumpToNext(pIdx, gIdx), 600);
+
+  // 2. 改進跳格邏輯：只有在「輸入滿 3 位數」時才自動跳下一格
+  // 這樣 0-99 分的球員可以慢慢輸入，不會被強制踢走
+  if (input.value.length >= 3) { 
+    jumpToNext(pIdx, gIdx); 
   }
 }
 
@@ -371,4 +378,5 @@ function exportToCSV() {
   document.body.removeChild(link);
 }  
 </script>
+
 
