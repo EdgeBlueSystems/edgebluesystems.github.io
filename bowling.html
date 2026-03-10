@@ -372,24 +372,51 @@ function manualSettle() {
 }
 
 function renderResults(A, B, C, awardedIds) {
-  let html = `<div class="rank-box rank-A"><span class="rank-title">🏆 獲獎名單 (依優先順序結算)</span><table class="rank-table" style="width:100%; text-align:left; border-collapse:collapse;">`;
+  let html = `
+    <div class="rank-box" style="border-top: 4px solid var(--eb-blue); background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+      <h2 style="text-align: center; color: var(--eb-blue); font-size: 1.5rem; margin-bottom: 25px;">
+        🏆 EdgeBlue 賽務結算英雄榜
+      </h2>
+      <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+  `;
   
-  // 顯示所有有獎項的球員，按原總分排名顯示或按獎項類別
-  let winners = players.filter(p => p.award !== "").sort((a, b) => {
-      // 這裡簡單按 ID 順序或總分顯示，也可自定義
-      return b.total - a.total;
+  // 過濾出所有得獎者並依照總分排序
+  let winners = players.filter(p => p.award !== "").sort((a, b) => b.total - a.total);
+
+  winners.forEach((p, index) => {
+      // 根據獎項類別設定不同顏色
+      let badgeColor = "#64748b"; // 預設灰色
+      if (p.award.includes("甲組")) badgeColor = "#d4af37"; // 金色
+      else if (p.award.includes("冠")) badgeColor = "#ef4444"; // 紅色 (單局/前三/後二冠)
+      else if (p.award.includes("乙組")) badgeColor = "#94a3b8"; // 銀色
+      else if (p.award.includes("丙組")) badgeColor = "#cd7f32"; // 銅色
+
+      html += `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: #f8fafc; border-radius: 10px; border-left: 5px solid ${badgeColor}; transition: transform 0.2s;">
+          <div style="display: flex; align-items: center; gap: 20px;">
+            <span style="background: ${badgeColor}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; min-width: 80px; text-align: center;">
+              ${p.award}
+            </span>
+            <span style="font-size: 1.1rem; font-weight: bold; color: var(--eb-blue);">${p.name}</span>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.85rem; color: #64748b; margin-right: 10px;">總分</span>
+            <span style="font-size: 1.2rem; font-weight: 800; color: #334155;">${p.total}</span>
+          </div>
+        </div>
+      `;
   });
 
-  winners.forEach(p => {
-      html += `<tr style="border-bottom:1px solid #eee;">
-                <td width="120" style="padding:8px; font-weight:bold; color:var(--eb-pink);">${p.award}</td>
-                <td width="100">${p.name}</td>
-                <td>總分: ${p.total}</td>
-               </tr>`;
-  });
-  html += `</table></div>`;
+  html += `
+      </div>
+      <p style="text-align: center; font-size: 0.8rem; color: #94a3b8; margin-top: 25px;">
+        * 本榜單已依據優先順序執行「獎項不重複」過濾 *
+      </p>
+    </div>
+  `;
+  
   document.getElementById('rankDisplay').innerHTML = html;
-  window.scrollTo(0, document.body.scrollHeight);
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 // 匯出功能 (包含您要求的格式更新)
@@ -435,6 +462,7 @@ function exportToCSV() {
   link.click();
 }
 </script>
+
 
 
 
