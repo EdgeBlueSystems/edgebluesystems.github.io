@@ -102,6 +102,7 @@
     </div>
     <div class="btn-group">
       <button class="btn btn-calc" onclick="initSystem()">🔄 刷新成績表</button>
+      <button class="btn" style="background:#166534;" onclick="exportToCSV()">📊 匯出 CSV</button>
       <button class="btn btn-clear" onclick="clearData()">⚠️ 清空資料</button>
     </div>
   </div>
@@ -328,4 +329,46 @@ function renderResults(A, B, C) {
   document.getElementById('rankDisplay').innerHTML = html;
   window.scrollTo(0, document.body.scrollHeight);
 }
+// 匯出 CSV 功能
+function exportToCSV() {
+  if (players.length === 0) {
+    alert("尚無資料可匯出");
+    return;
+  }
+
+  const gCount = parseInt(document.getElementById('gameCount').value);
+  let csv = "\ufeff項次,姓名/身份,"; // 加上 BOM 以防止 Excel 開啟時亂碼
+  
+  // 建立表頭
+  for (let g = 1; g <= gCount; g++) {
+    csv += `G${g},`;
+  }
+  csv += "加分,總分\n";
+
+  // 建立內容
+  players.forEach(p => {
+    let row = `${p.id},${p.name}(${p.tag}),`;
+    for (let g = 0; g < gCount; g++) {
+      row += `${p.scores[g] || 0},`;
+    }
+    row += `${p.bonus},${p.total}\n`;
+    csv += row;
+  });
+
+  // 下載檔案
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}${now.getMonth()+1}${now.getDate()}`;
+  
+  link.setAttribute("href", url);
+  link.setAttribute("download", `EdgeBlue_Bowling_${dateStr}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}  
 </script>
+
