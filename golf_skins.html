@@ -234,27 +234,49 @@ function loadCourse() {
   calc();
 }
 
+// 1. 修改表格渲染邏輯：將 HDCP 變為 input
 function renderTable() {
-  const pRow = document.getElementById('parRow');
-  const hRow = document.getElementById('hdcpRow');
-  const sBody = document.getElementById('scoreBody');
-  pRow.innerHTML = '<th>Hole</th>'; hRow.innerHTML = '<th>HDCP</th>';
-  for(let i=1; i<=18; i++) {
-    pRow.innerHTML += `<th>${i}<br><small>P${currentCourse.pars[i-1]}</small></th>`;
-    hRow.innerHTML += `<td>${currentCourse.hdcps[i-1]}</td>`;
-  }
-  sBody.innerHTML = "";
-  for(let p=1; p<=4; p++) {
-    let rowHtml = `<tr><td style="background:var(--eb-blue);color:white;font-weight:bold;font-size:12px;" id="dispName${p}">P${p}</td>`;
-    for(let i=0; i<18; i++) {
-      rowHtml += `<td><input type="number" inputmode="numeric" class="score-input skin-score-field" 
-        data-p="${p-1}" data-h="${i}"
-        oninput="autoNext(this, ${p-1}, ${i})"
-        onchange="saveScores(); calc();" id="s${p}-${i}"></td>`;
+    const pRow = document.getElementById('parRow');
+    const hRow = document.getElementById('hdcpRow');
+    const sBody = document.getElementById('scoreBody');
+    
+    pRow.innerHTML = '<th>Hole</th>'; 
+    hRow.innerHTML = '<th>HDCP</th>';
+    
+    for(let i=1; i<=18; i++) {
+        pRow.innerHTML += `<th>${i}<br><small>P${currentCourse.pars[i-1]}</small></th>`;
+        // 將 HDCP 欄位改為可編輯的 input
+        hRow.innerHTML += `<td>
+            <input type="number" class="hdcp-edit-input" 
+                value="${currentCourse.hdcps[i-1]}" 
+                onchange="updateLiveHdcp(${i-1}, this.value)"
+                style="width:100%; border:none; text-align:center; background:#fff7ed; font-weight:bold; color:#c2410c;">
+        </td>`;
     }
-    sBody.innerHTML += rowHtml + "</tr>";
-  }
-  loadSavedScores();
+    
+    sBody.innerHTML = "";
+    for(let p=1; p<=4; p++) {
+        let rowHtml = `<tr><td style="background:var(--eb-blue);color:white;font-weight:bold;font-size:12px;" id="dispName${p}">P${p}</td>`;
+        for(let i=0; i<18; i++) {
+            rowHtml += `<td><input type="number" inputmode="numeric" class="score-input skin-score-field" 
+                data-p="${p-1}" data-h="${i}"
+                oninput="autoNext(this, ${p-1}, ${i})"
+                onchange="saveScores(); calc();" id="s${p}-${i}"></td>`;
+        }
+        sBody.innerHTML += rowHtml + "</tr>";
+    }
+    loadSavedScores();
+}
+
+// 2. 新增即時更新 HDCP 的邏輯
+function updateLiveHdcp(index, newValue) {
+    const val = parseInt(newValue) || 0;
+    // 更新目前記憶體中的球場 HDCP 設定
+    currentCourse.hdcps[index] = val;
+    // 立即重新計算
+    calc();
+    // 儲存至本地，避免重新整理後消失
+    saveConfig();
 }
 
 function autoNext(input, pIdx, hIdx) {
@@ -376,5 +398,6 @@ function calc() {
 </body>
 
 </html>
+
 
 
