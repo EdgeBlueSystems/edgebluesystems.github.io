@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>銳青科技整合 - 高爾夫賽務系統</title>
+    <title>銳青科技整合 - 高爾夫賽務系統 | 專業賽制與 HDCP 深度解析</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
 
     <style>
@@ -11,9 +11,10 @@
             --primary-blue: #1a3a5f; 
             --golf-green: #2d6a4f;  
             --bg-color: #f4f7f6;
+            --eb-accent: #2d6a4f;
         }
 
-        * { box-sizing: border-box; } /* 確保 padding 不會撐破寬度 */
+        * { box-sizing: border-box; }
 
         body { 
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
@@ -25,7 +26,6 @@
             background: var(--bg-color); 
         }
 
-        /* 響應式導覽列 */
         nav {
             width: 100%;
             background: #333; 
@@ -58,14 +58,13 @@
 
         .container {
             width: 100%;
-            max-width: 800px; /* 提高上限，在桌機才不會太擠 */
+            max-width: 900px; 
             padding: 0 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* 按鈕容器在桌機變橫排，手機變直排 */
         .btn-wrapper {
             width: 100%;
             max-width: 500px;
@@ -96,32 +95,31 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
-        /* 內容說明區塊響應式 */
         .info-section {
             background: white; 
-            padding: 30px; 
+            padding: 35px; 
             border-radius: 12px; 
             margin-top: 20px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
             text-align: left; 
             width: 100%; 
+            border-top: 4px solid var(--eb-accent);
         }
 
-        .info-section h3 { margin-top: 0; }
+        .seo-content { font-size: 0.95rem; color: #475569; text-align: justify; line-height: 1.8; }
 
         footer {
             margin-top: auto;
-            padding: 30px 20px;
+            padding: 40px 20px;
             font-size: 0.8rem;
             color: #888;
             text-align: center;
             width: 100%;
         }
 
-        /* 手機端微調 */
         @media (max-width: 600px) {
             h2 { font-size: 1.4rem; }
-            .info-section { padding: 20px; } /* 縮小內距，讓文字更多空間 */
+            .info-section { padding: 25px; } 
             nav { text-align: center; }
             nav a, nav span { margin: 5px 8px; font-size: 0.8rem; }
         }
@@ -146,45 +144,50 @@
         </div>
 
         <div class="info-section">
-            <h3 style="color: var(--primary-blue); font-size: 1.2rem; border-left: 5px solid var(--golf-green); padding-left: 15px; margin-bottom: 20px;">⛳ EdgeBlue 高爾夫賽務系統：專業賽制解析</h3>
+            <h3 style="color: var(--primary-blue); font-size: 1.25rem; border-left: 5px solid var(--golf-green); padding-left: 15px; margin-bottom: 25px;">⛳ 專業高爾夫賽務自動化：新新貝利算法與動態難度權重解析</h3>
             
-            <p style="font-size: 0.95rem; color: #444; line-height: 1.8;">
-                在高爾夫球敘與社賽中，選擇公平且有趣的計算方式是賽務成功的關鍵。EdgeBlue 系統針對台灣常見的競技需求，開發了兩大核心計算模組。
-            </p>
+            <div class="seo-content">
+                <p>
+                    在推動業餘高爾夫球敘與社團聯賽中，如何精準計算球員的「讓桿 (Handicap)」一直是賽務組最核心的挑戰。為了確保不同差點的球友能在同一平台公平競技，<b>銳青科技整合 (EdgeBlue Systems)</b> 開發了針對台灣球場環境優化的自動化結算模組。
+                </p>
 
-            <div style="margin-top: 20px;">
-                <h4 style="color: var(--golf-green); margin-bottom: 8px;">1. 新新貝利 (New New Peoria) 計算系統</h4>
-                <p style="font-size: 0.9rem; color: #666;">
-                    <strong>適用場景：</strong> 大型球隊月賽、不具備正式差點的球友聚會。
-                </p>
-                <p style="font-size: 0.9rem; color: #666;">
-                    <strong>核心邏輯：</strong> 系統從 18 洞中隨機抽取 12 個隱藏洞，透過計算球員在這些洞的表現來推算當日的「臨時差點」。
-                </p>
-            </div>
+                <div style="background: #f0fdf4; padding: 20px; border-radius: 10px; margin: 25px 0; border-left: 4px solid var(--eb-accent);">
+                    <strong style="color: var(--eb-blue); display: block; margin-bottom: 8px;">● 新新貝利 (New New Peoria) 算法的公正性</strong>
+                    <p style="font-size: 0.9rem; margin: 0;">
+                        相較於傳統貝利法，<b>新新貝利法</b>透過 18 洞中隨機抽取的 12 個隱藏洞進行計算。這種方式能更有效地過濾掉球員單一洞的偶發失誤，真實反映其當日的競技水平。EdgeBlue 系統內建精密演算法，支援自動扣桿限制，大幅縮短了賽後核對成績所需的時間。
+                    </p>
+                </div>
 
-            <div style="margin-top: 20px;">
-                <h4 style="color: var(--golf-green); margin-bottom: 8px;">2. 專業抓球版 (Skins Game) 對決系統</h4>
-                <p style="font-size: 0.9rem; color: #666;">
-                    <strong>適用場景：</strong> 四人組小隊競技、點對點交叉讓桿對決。
+                <strong style="color: var(--eb-blue); display: block; margin-bottom: 8px;">● 應對球場難度異動：即時 HDCP 編輯功能</strong>
+                <p>
+                    根據我們在 2026 年初針對<b>霧峰高爾夫球場</b>等在地球場的實地觀察，球場會根據球道狀況重新評定各洞的難度索引 (HDCP)。這對於採取「抓球 (Skins)」對決的球友影響巨大，因為讓桿的發生點將會隨之位移。
                 </p>
-                <p style="font-size: 0.9rem; color: #666;">
-                    <strong>核心邏輯：</strong> 處理「多向讓桿矩陣」。支援成員互相讓桿設定，自動結合球場難度索引 (HDCP) 進行扣桿。
+                <p>
+                    本系統領先導入了「可編輯式 HDCP 矩陣」，賽務組可根據當日計分卡上的最新標註，直接在系統中微調難度權重。這項技術整合不僅解決了傳統紙本計分數據落後的問題，更能確保每一場對決都符合當下球場的最佳實踐。
                 </p>
-            </div>
 
-            <div style="margin-top: 25px; padding: 15px; background: #f0f7f4; border-radius: 8px;">
-                <h4 style="font-size: 0.95rem; margin-top: 0; color: var(--primary-blue);">🚀 系統技術特點</h4>
-                <ul style="font-size: 0.85rem; color: #555; padding-left: 20px; margin-bottom: 0;">
-                    <li><strong>內建球場數據：</strong> 整合全台主流球場之標準桿數據。</li>
-                    <li><strong>即時雲端結算：</strong> 手機端即時輸入，成績一目瞭然。</li>
-                    <li><strong>隱私優先：</strong> 數據僅存於您的裝置，保障資安。</li>
-                </ul>
+                <strong style="color: var(--eb-blue); display: block; margin-bottom: 8px;">● 數據驅動的賽務轉型</strong>
+                <p>
+                    透過 <b>CSV 數據匯出</b>與即時排名預覽，我們協助彰化、台中地區的高爾夫社團與企業盃賽實現數位化管理。系統自動處理繁瑣的加總與排序，讓主辦方能將精力專注於頒獎與球友交流，這正是資訊技術為傳統運動帶來的核心價值。
+                </p>
+
+                <div style="margin-top: 25px; padding: 20px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                    <h4 style="font-size: 1rem; margin-top: 0; color: var(--primary-blue); display: flex; align-items: center; gap: 8px;">
+                        🚀 系統技術特點摘要
+                    </h4>
+                    <ul style="font-size: 0.9rem; color: #555; padding-left: 20px; margin-bottom: 0; line-height: 2;">
+                        <li><strong>內建球場數據：</strong> 整合全台主流球場之標準桿與難度數據。</li>
+                        <li><strong>專業讓桿矩陣：</strong> 支持成員交叉讓桿設定，自動計算扣桿點。</li>
+                        <li><strong>隱私優先架構：</strong> 數據僅暫存於您的裝置，無需註冊即可使用。</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
     <footer>
-        © 2026 銳青科技整合有限公司 版權所有 | <a href="privacy.html" style="color: #888; text-decoration: none;">隱私權政策</a>
+        © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+        彰化地區專業資訊委外與賽務自動化服務商 | <a href="privacy.html" style="color: #888; text-decoration: none;">隱私權政策</a>
     </footer>
 </body>
 </html>
