@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>銳青科技｜保齡球賽務系統 (即時排名版)</title>
+  <title>銳青科技｜保齡球賽務系統 - 專業結算與動態門檻分析</title>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
 
   <style>
@@ -12,42 +12,78 @@
       --eb-accent: #023e8a;  /* 保齡球深藍 */
       --eb-pink: #f72585;    /* 亮粉紅點綴 */
       --eb-gold: #ff9f1c;    /* 結算金 */
-      --bg: #f8fafc; 
+      --bg: #f4f7f6; 
       --card: #ffffff; 
     }
     
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: var(--bg); color: #334155; padding-bottom: 50px; }
+    body { 
+        margin: 0; 
+        font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
+        background: var(--bg); 
+        color: #334155; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        min-height: 100vh;
+    }
     
-    /* 導航欄樣式 - 對齊高爾夫 */
-    .navbar { background: var(--eb-blue); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .navbar .brand { font-weight: bold; letter-spacing: 1px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-    .navbar .brand span { font-size: 0.8rem; opacity: 0.8; font-weight: normal; }
+    /* --- 導覽列與標頭：完全對齊高爾夫頁面樣式 --- */
+    nav {
+        width: 100%;
+        background: #333; 
+        padding: 12px 20px; 
+        text-align: left; 
+        border-radius: 0 0 8px 8px;
+    }
+    nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; display: inline-block; }
+    nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid #27ae60; padding-bottom: 3px; }
 
-    /* 全域導航 */
-    .global-nav { background: #333; padding: 12px 20px; text-align: left; width: 100%; box-sizing: border-box; }
-    .global-nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; }
-    .global-nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid var(--eb-accent); padding-bottom: 3px; }
+    header {
+        width: 100%;
+        padding: 40px 15px 20px;
+        text-align: center;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
 
-    .container { max-width: 1600px; margin: 20px auto; padding: 0 15px; }
+    .brand-name {
+        font-size: 0.9rem;
+        color: var(--eb-blue);
+        letter-spacing: 2px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    h2 { margin: 0; color: #333; font-size: 1.6rem; }
+
+    /* 容器設定 */
+    .container { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 15px; }
     
-    /* 卡片面板樣式 - 對齊高爾夫 */
-    .panel { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 4px solid var(--eb-accent); }
+    /* 卡片面板樣式 */
+    .panel { 
+        background: var(--card); 
+        border-radius: 12px; 
+        padding: 25px; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+        margin-bottom: 25px; 
+        border-top: 4px solid var(--eb-accent); 
+    }
     
-    h2 { font-size: 1.1rem; margin: 0 0 20px 0; color: var(--eb-blue); display: flex; align-items: center; gap: 8px; }
-    h2::before { content: ""; display: inline-block; width: 4px; height: 18px; background: var(--eb-accent); border-radius: 2px; }
+    .panel h2 { font-size: 1.1rem; margin: 0 0 20px 0; color: var(--eb-blue); display: flex; align-items: center; gap: 8px; }
+    .panel h2::before { content: ""; display: inline-block; width: 4px; height: 18px; background: var(--eb-accent); border-radius: 2px; }
     
     /* 設定區域佈局 */
     .admin-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 25px; background: #f1f5f9; padding: 20px; border-radius: 10px; }
     .admin-info div { display: flex; flex-direction: column; gap: 8px; }
     .admin-info label { font-size: 13px; font-weight: bold; color: var(--eb-blue); }
     .admin-info input, .admin-info select { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; transition: all 0.3s; }
-    .admin-info input:focus { border-color: var(--eb-blue); outline: none; box-shadow: 0 0 0 3px rgba(26, 58, 95, 0.1); }
 
-    /* 按鈕樣式 - 對齊高爾夫 */
+    /* 按鈕樣式 */
     .btn-group { margin: 20px 0; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
     .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .btn:active { transform: translateY(2px); }
     .btn-calc { background: var(--eb-blue); }
     .btn-draw { background: var(--eb-pink); }
     .btn-clear { background: #94a3b8; }
@@ -59,22 +95,23 @@
     .draw-section { background: #fff9db; padding: 20px; border-radius: 10px; margin-bottom: 25px; border: 2px dashed #fab005; }
     .draw-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; align-items: end; }
 
-    /* 表格樣式 - 對齊高爾夫 */
-    .table-section { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow-x: auto; }
+    /* 表格樣式 */
+    .table-section { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 25px; }
     table { width: 100%; border-collapse: collapse; min-width: 1100px; }
     th { background: #f8fafc; color: var(--eb-blue); padding: 12px 5px; font-size: 13px; border: 1px solid #e2e8f0; }
     td { border: 1px solid #e2e8f0; text-align: center; height: 45px; }
     input.score-input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 18px; font-weight: bold; outline: none; }
-    input.score-input:focus { background: #fef9c3; }
     .total-cell { font-weight: bold; background: #fef2f2; color: #ef4444; }
 
-    /* 結果排名箱 */
-    .rank-box { padding: 20px; border-radius: 10px; margin-bottom: 20px; border-top: 4px solid var(--eb-blue); }
-    .rank-A { background: #fff5f5; border-color: #ffc9c9; }
-    .rank-B { background: #f0f7ff; border-color: #a5d8ff; }
-    .rank-title { font-weight: bold; font-size: 1.1rem; color: var(--eb-blue); margin-bottom: 15px; display: block; }
+    .seo-content { font-size: 0.95rem; color: #475569; text-align: justify; line-height: 1.8; }
 
-    footer { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.9rem; }
+    footer { text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 0.9rem; border-top: 1px solid #e2e8f0; width: 100%; }
+
+    @media (max-width: 600px) {
+        h2 { font-size: 1.4rem; }
+        nav { text-align: center; }
+        nav a, nav span { margin: 5px 8px; font-size: 0.8rem; }
+    }
   </style>
 </head>
 <body>
@@ -86,10 +123,10 @@
     <a href="./about.html">👤 關於我們</a>
 </nav>
 
-<nav class="navbar">
-  <div class="brand">EDGEBLUE SYSTEMS <span>銳青科技整合</span></div>
-  <div style="font-size: 0.9rem; font-weight: bold;">🎳 保齡球賽務系統 v4.2</div>
-</nav>
+<header>
+    <span class="brand-name">EDGEBLUE SYSTEMS</span>
+    <h2>銳青保齡球賽務系統</h2>
+</header>
 
 <div class="container">
   <div class="panel">
@@ -108,8 +145,8 @@
     </div>
   </div>
 
-  <div class="table-section" id="scorePanel" style="display:none; margin-bottom: 25px;">
-    <h2>2. 成績輸入與統計</h2>
+  <div class="table-section" id="scorePanel" style="display:none;">
+    <h2 style="font-size: 1.1rem; color: var(--eb-blue); margin-bottom: 20px;">2. 成績輸入與統計</h2>
     <table>
       <thead id="tableHead"></thead>
       <tbody id="tableBody"></tbody>
@@ -137,9 +174,9 @@
     <div id="rankDisplay"></div>
   </div>
 
-  <div class="panel" style="background: #fdfdfd; border-top: 4px solid var(--eb-pink); line-height: 1.8;">
+  <div class="panel" style="background: #fdfdfd; border-top: 4px solid var(--eb-pink);">
     <h2 style="color: var(--eb-blue); font-size: 1.2rem;">🎳 專業保齡球賽務自動化：提升業餘聯賽的公平性與趣味性</h2>
-    <div class="seo-content" style="font-size: 0.95rem; color: #475569; text-align: justify;">
+    <div class="seo-content">
         <p>
             在推動中彰投地區的中小企業員工活動與業餘保齡球聯賽時，賽務人員常面臨最棘手的挑戰：<b>如何在不同球技水準的參賽者之間取得競爭平衡？</b> 傳統的單一總分制往往讓獎項集中在少數高水平球員手中，進而降低了其他業餘愛好者的參與熱情。
         </p>
@@ -165,20 +202,18 @@
             </p>
         </div>
     </div>
-</div>
-</div>
+  </div>
 </div>
 
 <footer>
   © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
-  專業軟體開發與資訊技術服務 | <a href="./privacy.html" style="color: #94a3b8; text-decoration: none;">隱私權政策</a>
+  彰化地區專業資訊委外與賽務自動化服務商 | <a href="./privacy.html" style="color: #94a3b8; text-decoration: none;">隱私權政策</a>
 </footer>
 
 <script>
+// 此處維持原本的 JavaScript 邏輯不變
 let players = [];
-
 window.onload = function() { loadSavedData(); };
-
 function initSystem() {
   const gCount = parseInt(document.getElementById('gameCount').value);
   const pCount = parseInt(document.getElementById('playerCount').value);
@@ -193,13 +228,11 @@ function initSystem() {
   document.getElementById('resultPanel').style.display = "block";
   updateLiveRank();
 }
-
 function renderTableHead(gCount) {
   let html = `<tr><th width="60">項次</th><th width="150">姓名/身份</th>`;
   for(let g=1; g<=gCount; g++) html += `<th>G${g}</th>`;
   document.getElementById('tableHead').innerHTML = html + `<th width="80">加分</th><th width="100" class="total-cell">總分</th></tr>`;
 }
-
 function renderTableBody(gCount) {
   let html = "";
   players.forEach((p, pIdx) => {
@@ -219,7 +252,6 @@ function renderTableBody(gCount) {
   });
   document.getElementById('tableBody').innerHTML = html;
 }
-
 function handleScoreInput(input, pIdx, gIdx) {
   let val = parseInt(input.value) || 0;
   if (val > 300) { val = 300; input.value = 300; }
@@ -229,7 +261,6 @@ function handleScoreInput(input, pIdx, gIdx) {
   saveAll();
   if (input.value.length >= 3) { jumpToNext(pIdx, gIdx); } 
 }
-
 function jumpToNext(pIdx, gIdx) {
   const pCount = players.length;
   let nextP = pIdx + 1;
@@ -238,7 +269,6 @@ function jumpToNext(pIdx, gIdx) {
   const nextInput = document.querySelector(`input[data-p="${nextP}"][data-g="${nextG}"]`);
   if (nextInput) { nextInput.focus(); nextInput.setSelectionRange(0, nextInput.value.length); }
 }
-
 function updateTag(pIdx, tag) {
   players[pIdx].tag = tag;
   let b = (tag === "女生") ? parseInt(document.getElementById('bonusLady').value) : (tag === "長青" ? parseInt(document.getElementById('bonusElder').value) : 0);
@@ -248,14 +278,11 @@ function updateTag(pIdx, tag) {
   updateLiveRank();
   saveAll();
 }
-
 function updateManualBonus(pIdx, val) { players[pIdx].bonus = parseInt(val) || 0; calculateTotal(pIdx); updateLiveRank(); saveAll(); }
-
 function calculateTotal(pIdx) { 
   players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus; 
   document.getElementById(`total-${pIdx}`).innerText = players[pIdx].total; 
 }
-
 function updateLiveRank() {
   const prizeLimit = parseInt(document.getElementById('prizeCount').value);
   let sorted = [...players].filter(p => p.total > 0).sort((a, b) => b.total - a.total);
@@ -265,7 +292,6 @@ function updateLiveRank() {
   });
   document.getElementById('liveRankContent').innerHTML = html || "尚無分數";
 }
-
 function saveAll() {
   const config = {
     gameCount: document.getElementById('gameCount').value,
@@ -280,7 +306,6 @@ function saveAll() {
   };
   localStorage.setItem('bowling_v4_data', JSON.stringify(config));
 }
-
 function loadSavedData() {
   const saved = localStorage.getItem('bowling_v4_data');
   if (saved) {
@@ -296,30 +321,19 @@ function loadSavedData() {
     players = data.players; initSystem();
   }
 }
-
 function clearData() { if (confirm("確定重置？")) { localStorage.removeItem('bowling_v4_data'); location.reload(); } }
-
-// --- 核心結算邏輯 (獎項不重複) ---
 function manualSettle() {
   const prizeLimit = parseInt(document.getElementById('prizeCount').value);
   const ratioB = parseFloat(document.getElementById('manualRatio').value);
   const ratioC = parseFloat(document.getElementById('ratioC').value);
   const rankBArr = document.getElementById('manualRanks').value.split(',').map(n => parseInt(n.trim()));
   const gCount = parseInt(document.getElementById('gameCount').value);
-
-  // 初始化每位球員的獎項
   players.forEach(p => p.award = "");
-
-  // 1. 取得總分排名 (全場)
   let sortedAll = [...players].filter(p => p.total > 0).sort((a, b) => b.total - a.total);
   if(sortedAll.length === 0) { alert("無參賽數據"); return; }
-
-  // --- [優先級 1] 甲組 ---
   let groupA = sortedAll.slice(0, prizeLimit);
   groupA.forEach((p, i) => p.award = `甲組-${i+1}`);
   let awardedIds = new Set(groupA.map(p => p.id));
-
-  // --- [優先級 2] 前三局冠軍 (未得獎者中找) ---
   let front3Pool = sortedAll.filter(p => !awardedIds.has(p.id));
   if(front3Pool.length > 0) {
       front3Pool.sort((a, b) => {
@@ -330,8 +344,6 @@ function manualSettle() {
       front3Pool[0].award = "前三冠";
       awardedIds.add(front3Pool[0].id);
   }
-
-  // --- [優先級 3] 後二/三局冠軍 (未得獎者中找) ---
   let backPool = sortedAll.filter(p => !awardedIds.has(p.id));
   if(backPool.length > 0) {
       backPool.sort((a, b) => {
@@ -342,27 +354,20 @@ function manualSettle() {
       backPool[0].award = "後組冠";
       awardedIds.add(backPool[0].id);
   }
-
-  // --- [優先級 4] 單局最高 (未得獎者中找) ---
   let singlePool = sortedAll.filter(p => !awardedIds.has(p.id));
   if(singlePool.length > 0) {
       singlePool.sort((a, b) => Math.max(...b.scores) - Math.max(...a.scores));
       singlePool[0].award = `單局冠(${Math.max(...singlePool[0].scores)})`;
       awardedIds.add(singlePool[0].id);
   }
-
-  // --- [優先級 5] 乙組 ---
   let selectedScoresB = [];
   rankBArr.forEach(r => { if (groupA[r-1]) selectedScoresB.push(groupA[r-1].total); });
   let targetB = (selectedScoresB.length > 0 ? (selectedScoresB.reduce((a, b) => a + b, 0) / selectedScoresB.length) : 0) * ratioB;
-  
   let groupB = sortedAll.filter(p => !awardedIds.has(p.id) && p.total <= targetB).slice(0, prizeLimit);
   groupB.forEach((p, i) => {
       p.award = `乙組-${i+1}`;
       awardedIds.add(p.id);
   });
-
-  // --- [優先級 6] 丙組 ---
   let groupC = [];
   if (groupB.length > 0) {
       let targetC = groupB[0].total * ratioC;
@@ -372,25 +377,19 @@ function manualSettle() {
           awardedIds.add(p.id);
       });
   }
-
-  // --- [優先級 7] 女子組冠軍 (未得獎者中找) ---
   let ladyPool = sortedAll.filter(p => !awardedIds.has(p.id) && p.tag === "女生");
   if(ladyPool.length > 0) {
       ladyPool[0].award = "女子冠";
       awardedIds.add(ladyPool[0].id);
   }
-
-  // --- [優先級 8] 長青組冠軍 (未得獎者中找) ---
   let elderPool = sortedAll.filter(p => !awardedIds.has(p.id) && p.tag === "長青");
   if(elderPool.length > 0) {
       elderPool[0].award = "長青冠";
       awardedIds.add(elderPool[0].id);
   }
-
   document.getElementById('drawInfo').innerHTML = `乙組門檻: ${targetB.toFixed(1)}`;
   renderResults(groupA, groupB, groupC, awardedIds);
 }
-
 function renderResults(A, B, C, awardedIds) {
   let html = `
     <div class="rank-box" style="border-top: 4px solid var(--eb-blue); background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
@@ -399,18 +398,13 @@ function renderResults(A, B, C, awardedIds) {
       </h2>
       <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
   `;
-  
-  // 過濾出所有得獎者並依照總分排序
   let winners = players.filter(p => p.award !== "").sort((a, b) => b.total - a.total);
-
   winners.forEach((p, index) => {
-      // 根據獎項類別設定不同顏色
-      let badgeColor = "#64748b"; // 預設灰色
-      if (p.award.includes("甲組")) badgeColor = "#d4af37"; // 金色
-      else if (p.award.includes("冠")) badgeColor = "#ef4444"; // 紅色 (單局/前三/後二冠)
-      else if (p.award.includes("乙組")) badgeColor = "#94a3b8"; // 銀色
-      else if (p.award.includes("丙組")) badgeColor = "#cd7f32"; // 銅色
-
+      let badgeColor = "#64748b";
+      if (p.award.includes("甲組")) badgeColor = "#d4af37";
+      else if (p.award.includes("冠")) badgeColor = "#ef4444";
+      else if (p.award.includes("乙組")) badgeColor = "#94a3b8";
+      else if (p.award.includes("丙組")) badgeColor = "#cd7f32";
       html += `
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: #f8fafc; border-radius: 10px; border-left: 5px solid ${badgeColor}; transition: transform 0.2s;">
           <div style="display: flex; align-items: center; gap: 20px;">
@@ -426,25 +420,13 @@ function renderResults(A, B, C, awardedIds) {
         </div>
       `;
   });
-
-  html += `
-      </div>
-      <p style="text-align: center; font-size: 0.8rem; color: #94a3b8; margin-top: 25px;">
-        * 本榜單已依據優先順序執行「獎項不重複」過濾 *
-      </p>
-    </div>
-  `;
-  
+  html += `</div><p style="text-align: center; font-size: 0.8rem; color: #94a3b8; margin-top: 25px;">* 本榜單已依據優先順序執行「獎項不重複」過濾 *</p></div>`;
   document.getElementById('rankDisplay').innerHTML = html;
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
-
-// 匯出功能 (包含您要求的格式更新)
 function exportToCSV() {
   if (players.length === 0) { alert("尚無資料"); return; }
   const gCount = parseInt(document.getElementById('gameCount').value);
-  
-  // 1. 準備表頭
   let csv = "\ufeff項次,姓名/身份,";
   for (let g = 1; g <= gCount; g++) {
     csv += `G${g},`;
@@ -453,28 +435,21 @@ function exportToCSV() {
     else if (gCount > 5 && g === gCount) csv += `後${gCount-3}局總分,`;
   }
   csv += "加分,總分,全場名次,獲得獎項\n";
-
-  // 2. 計算全場排名名次
   let rankMap = new Map();
   let sortedForRank = [...players].filter(p => p.total > 0).sort((a,b) => b.total - a.total);
   sortedForRank.forEach((p, i) => rankMap.set(p.id, i + 1));
-
-  // 3. 填充內容
   players.forEach(p => {
     let row = `${p.id},${p.name}(${p.tag}),`;
     let front3 = p.scores.slice(0, 3).reduce((a, b) => a + b, 0);
     let backSum = p.scores.slice(3, gCount).reduce((a, b) => a + b, 0);
-
     for (let g = 0; g < gCount; g++) {
       row += `${p.scores[g] || 0},`;
-      if (g === 2) row += `${front3},`; // G3 之後
-      if (g === gCount - 1) row += `${backSum},`; // 最後一局之後
+      if (g === 2) row += `${front3},`;
+      if (g === gCount - 1) row += `${backSum},`;
     }
-
     row += `${p.bonus},${p.total},${rankMap.get(p.id) || ""},${p.award || "無"}\n`;
     csv += row;
   });
-
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -482,7 +457,5 @@ function exportToCSV() {
   link.click();
 }
 </script>
-
-
-
-
+</body>
+</html>
