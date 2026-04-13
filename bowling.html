@@ -91,12 +91,15 @@
   <div class="panel">
     <h2>1. 賽事與錄取設定</h2>
     <div class="admin-info">
-      <div><label>比賽局數 (G)</label><input type="number" id="gameCount" value="5" onchange="initSystem()"></div>
-      <div><label>每球道人數</label><input type="number" id="playersPerLane" value="5" onchange="initSystem()"></div>
-      <div><label>球道總數</label><input type="number" id="laneCount" value="6" onchange="initSystem()"></div>
+      <div><label>比賽局數 (G)</label><input type="number" id="gameCount" value="5"></div>
+      <div><label>每球道人數</label><input type="number" id="playersPerLane" value="5"></div>
+      <div><label>球道總數</label><input type="number" id="laneCount" value="6"></div>
       <div><label>甲組錄取</label><input type="number" id="prizeCount" value="5"></div>
       <div><label>女子組錄取</label><input type="number" id="ladyPrizeCount" value="1"></div>
       <div><label>長青組錄取</label><input type="number" id="elderPrizeCount" value="1"></div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-calc" style="background:#023e8a; color:white;" onclick="initSystem()">🚀 1-1. 生成/套用球道配置 (顯示表格)</button>
     </div>
   </div>
 
@@ -108,22 +111,24 @@
     <table class="bonus-table">
         <thead>
             <tr>
-                <th>組別名稱 (如：青少年)</th>
+                <th>組別名稱</th>
                 <th>加分點數</th>
                 <th width="80">操作</th>
             </tr>
         </thead>
-        <tbody id="bonusTableBody">
-            </tbody>
+        <tbody id="bonusTableBody"></tbody>
     </table>
-    <p style="font-size: 12px; color: #666; margin-top: 10px;">※ 修改後請點擊下方的「同步加分至成績表」以套用設定。</p>
     <div class="btn-group" style="margin-top: 10px;">
-        <button class="btn" style="background: var(--eb-accent);" onclick="syncBonusToPlayers()">🔄 同步加分至成績表</button>
+        <button class="btn" style="background: var(--eb-blue);" onclick="syncBonusToPlayers()">🔄 同步加分設定至下方成績表</button>
     </div>
   </div>
 
   <div class="table-section" id="scorePanel" style="display:none;">
     <h2>3. 成績輸入與統計 (依球道分組)</h2>
+    <div class="btn-group" style="justify-content: flex-start; margin-bottom:10px;">
+        <button class="btn" style="background:#166534;" onclick="exportToCSV()">📊 匯出 CSV 檔案</button>
+        <button class="btn btn-clear" onclick="clearData()">⚠️ 清空所有資料</button>
+    </div>
     <table id="mainTable">
       <thead id="tableHead"></thead>
       <tbody id="tableBody"></tbody>
@@ -162,8 +167,6 @@ window.onload = function() {
     renderBonusTable();
 };
 
-// --- 加分組管理邏輯 ---
-
 function renderBonusTable() {
     const tbody = document.getElementById('bonusTableBody');
     tbody.innerHTML = "";
@@ -172,7 +175,7 @@ function renderBonusTable() {
         tr.innerHTML = `
             <td><input type="text" value="${rule.name}" onchange="updateRuleName(${index}, this.value)"></td>
             <td><input type="number" value="${rule.score}" onchange="updateRuleScore(${index}, this.value)"></td>
-            <td><button style="color:red; cursor:pointer;" onclick="removeRow(${index})">刪除</button></td>
+            <td><button style="color:red; border:none; background:none; cursor:pointer;" onclick="removeRow(${index})">刪除</button></td>
         `;
         tbody.appendChild(tr);
     });
@@ -193,27 +196,34 @@ function updateRuleName(index, val) { bonusRules[index].name = val.trim(); }
 function updateRuleScore(index, val) { bonusRules[index].score = parseInt(val) || 0; }
 
 function syncBonusToPlayers() {
-    // 更新所有球員的下拉選單並重新計算分數
+    if (players.length === 0) {
+        alert("請先執行「1-1. 生成球道配置」以顯示表格。");
+        return;
+    }
     renderTableBody(parseInt(document.getElementById('gameCount').value));
     players.forEach((p, idx) => {
         const currentRule = bonusRules.find(r => r.name === p.tag);
         if(currentRule) {
             p.bonus = currentRule.score;
-            document.getElementById(`bonus-${idx}`).value = p.bonus;
+            const bInput = document.getElementById(`bonus-${idx}`);
+            if (bInput) bInput.value = p.bonus;
             calculatePlayerTotal(idx);
         }
     });
     saveAll();
-    alert("加分設定已同步！");
+    alert("加分設定已成功同步至下方表格！");
 }
-
-// --- 成績表邏輯 ---
 
 function initSystem() {
     const gCount = parseInt(document.getElementById('gameCount').value);
     const pPerLane = parseInt(document.getElementById('playersPerLane').value);
     const lCount = parseInt(document.getElementById('laneCount').value);
     
+    if (isNaN(gCount) || isNaN(pPerLane) || isNaN(lCount)) {
+        alert("請輸入正確的數字格式");
+        return;
+    }
+
     const totalPlayers = pPerLane * lCount;
     const newPlayers = [];
 
@@ -234,10 +244,14 @@ function initSystem() {
         });
     }
     players = newPlayers;
-    renderTableHead(gCount);
-    renderTableBody(gCount);
+    
+    // 強制顯示面板
     document.getElementById('scorePanel').style.display = "block";
     document.getElementById('resultPanel').style.display = "block";
+    
+    renderTableHead(gCount);
+    renderTableBody(gCount);
+    saveAll();
 }
 
 function renderTableHead(gCount) {
@@ -293,7 +307,8 @@ function updatePlayerTag(pIdx, tag) {
     players[pIdx].tag = tag;
     const rule = bonusRules.find(r => r.name === tag);
     players[pIdx].bonus = rule ? rule.score : 0;
-    document.getElementById(`bonus-${pIdx}`).value = players[pIdx].bonus;
+    const bInput = document.getElementById(`bonus-${pIdx}`);
+    if (bInput) bInput.value = players[pIdx].bonus;
     calculatePlayerTotal(pIdx);
     saveAll();
 }
@@ -306,17 +321,15 @@ function updateManualBonus(pIdx, val) {
 
 function calculatePlayerTotal(pIdx) {
     players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus;
-    document.getElementById(`total-${pIdx}`).innerText = players[pIdx].total;
+    const totalTd = document.getElementById(`total-${pIdx}`);
+    if (totalTd) totalTd.innerText = players[pIdx].total;
 }
 
-// 核心同分判別：穩定度計算 (Range = Max - Min)
 function getStability(scores) {
     const validScores = scores.filter(s => s > 0);
     if(validScores.length === 0) return 999;
     return Math.max(...validScores) - Math.min(...validScores);
 }
-
-// --- 結算邏輯 ---
 
 function manualSettle() {
     const pLimit = parseInt(document.getElementById('prizeCount').value);
@@ -329,7 +342,6 @@ function manualSettle() {
     players.forEach(p => p.award = "");
     let pool = [...players].filter(p => p.total > 0);
 
-    // 排序：總分高者前；同分則穩定度(Range小)者前
     const customSort = (a, b) => {
         if (b.total !== a.total) return b.total - a.total;
         return getStability(a.scores) - getStability(b.scores);
@@ -338,11 +350,9 @@ function manualSettle() {
     pool.sort(customSort);
     let awardedIds = new Set();
 
-    // 1. 甲組
     let groupA = pool.slice(0, pLimit);
     groupA.forEach((p, i) => { p.award = `甲組-${i+1}`; awardedIds.add(p.displayId); });
 
-    // 2. 單項獎
     const getWinner = (list, sortFn, label) => {
         let subPool = list.filter(p => !awardedIds.has(p.displayId));
         if(subPool.length > 0) {
@@ -365,7 +375,6 @@ function manualSettle() {
         return getStability(a.scores.slice(0, 3)) - getStability(b.scores.slice(0, 3));
     }, "前三局冠");
 
-    // 3. 乙組計算
     let bTargetBase = [];
     rankBArr.forEach(r => { if(groupA[r-1]) bTargetBase.push(groupA[r-1].total); });
     let bThreshold = (bTargetBase.length > 0 ? (bTargetBase.reduce((a,b)=>a+b)/bTargetBase.length) : 0) * ratioB;
@@ -373,14 +382,12 @@ function manualSettle() {
     let groupB = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= bThreshold).slice(0, pLimit);
     groupB.forEach((p, i) => { p.award = `乙組-${i+1}`; awardedIds.add(p.displayId); });
 
-    // 4. 丙組計算
     if(groupB.length > 0) {
         let cThreshold = groupB[0].total * ratioC;
         let groupC = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= cThreshold).slice(0, pLimit);
         groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
     }
 
-    // 5. 特殊組別 (根據加分表名稱自動過濾)
     const settleSpecial = (tagName, limit, label) => {
         let sPool = pool.filter(p => !awardedIds.has(p.displayId) && p.tag === tagName);
         sPool.slice(0, limit).forEach((p, i) => {
@@ -415,25 +422,33 @@ function saveAll() {
     const data = {
         pPerLane: document.getElementById('playersPerLane').value,
         laneCount: document.getElementById('laneCount').value,
+        gameCount: document.getElementById('gameCount').value,
+        prizeCount: document.getElementById('prizeCount').value,
+        ladyPrizeCount: document.getElementById('ladyPrizeCount').value,
+        elderPrizeCount: document.getElementById('elderPrizeCount').value,
         bonusRules: bonusRules,
         players: players
     };
-    localStorage.setItem('eb_bowling_pro_v2', JSON.stringify(data));
+    localStorage.setItem('eb_bowling_pro_v3', JSON.stringify(data));
 }
 
 function loadSavedData() {
-    const saved = localStorage.getItem('eb_bowling_pro_v2');
+    const saved = localStorage.getItem('eb_bowling_pro_v3');
     if (saved) {
         const d = JSON.parse(saved);
         document.getElementById('playersPerLane').value = d.pPerLane;
         document.getElementById('laneCount').value = d.laneCount;
+        document.getElementById('gameCount').value = d.gameCount;
+        document.getElementById('prizeCount').value = d.prizeCount;
+        document.getElementById('ladyPrizeCount').value = d.ladyPrizeCount;
+        document.getElementById('elderPrizeCount').value = d.elderPrizeCount;
         bonusRules = d.bonusRules;
         players = d.players;
-        initSystem();
+        initSystem(); // 載入存檔時也會自動執行初始化
     }
 }
 
-function clearData() { if(confirm("確定重置所有資料？")) { localStorage.removeItem('eb_bowling_pro_v2'); location.reload(); } }
+function clearData() { if(confirm("確定重置所有資料？這將會清除目前錄入的所有成績。")) { localStorage.removeItem('eb_bowling_pro_v3'); location.reload(); } }
 
 function exportToCSV() {
     let csv = "\ufeff球道位置,姓名,組別,加分,";
