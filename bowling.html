@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>銳青科技｜保齡球賽務系統 - 專業完整版</title>
+  <title>銳青科技｜保齡球賽務系統 - 即時監控加強版</title>
   <style>
     :root { 
       --eb-blue: #1a3a5f;    
@@ -43,13 +43,11 @@
     .admin-info label { font-size: 13px; font-weight: bold; color: var(--eb-blue); }
     .admin-info input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
 
-    /* 方格勾選樣式 */
     .selector-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
     .check-btn { display: flex; align-items: center; gap: 5px; background: white; padding: 8px 15px; border-radius: 8px; border: 1px solid #cbd5e1; cursor: pointer; font-size: 13px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .check-btn:hover { border-color: var(--eb-accent); }
     .check-btn input { width: 18px; height: 18px; cursor: pointer; }
 
-    /* 加分組表格 */
     .bonus-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     .bonus-table th, .bonus-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; }
     .bonus-table th { background: #f8fafc; font-size: 13px; color: var(--eb-blue); }
@@ -72,7 +70,6 @@
     input.pos-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: #f1f5f9; color: var(--eb-blue); border-radius: 4px; }
     .total-cell { font-weight: bold; background: #fef2f2; color: #ef4444; }
 
-    /* 修正姓名儲存格，讓下拉選單不被擋住 */
     .name-cell-wrapper {
         display: flex;
         flex-direction: column;
@@ -99,8 +96,18 @@
         cursor: pointer;
     }
 
+    /* 即時監控面板樣式 */
+    .live-monitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .live-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .live-box h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--eb-blue); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
+    .pot-game-row { margin-bottom: 8px; font-size: 0.9rem; }
+    .pot-game-title { font-weight: bold; color: var(--eb-pink); margin-right: 8px; }
+    .pot-winner-tag { display: inline-block; background: #fff0f6; border: 1px solid #ffadd2; padding: 2px 8px; border-radius: 4px; margin-right: 5px; font-size: 12px; }
+
     .draw-section { background: #fff9db; padding: 20px; border-radius: 12px; border: 2px dashed #fab005; margin: 20px 0; }
-    .draw-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: end; }
+    .draw-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: start; }
+    .coeff-group { display: flex; flex-direction: column; gap: 8px; }
+    .coeff-group label { font-size: 11px; color: #856404; font-weight: bold; }
 
     .rank-box { background: white; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
     .rank-table { width: 100%; border-collapse: collapse; }
@@ -131,7 +138,7 @@
       <div><label>每馬人數</label><input type="number" id="playersPerPair" value="9"></div>
       <div><label>總馬數</label><input type="number" id="pairCount" value="6"></div>
       <div><label>錄取名額</label><input type="number" id="prizeCount" value="5" onchange="refreshSelectors()"></div>
-      <div><label>標會門檻分數 (≧)</label><input type="number" id="potTargetScore" value="227" onchange="saveAll()"></div>
+      <div><label>標會門檻分數 (≧)</label><input type="number" id="potTargetScore" value="227" onchange="updateLiveResults()"></div>
     </div>
     
     <div style="margin-top:20px;">
@@ -165,6 +172,27 @@
     </div>
   </div>
 
+  <!-- 即時監控面板 -->
+  <div id="livePanel" style="display:none; width: 100%;">
+    <div class="live-monitor-grid">
+        <!-- 1. 即時標會 -->
+        <div class="live-box">
+            <h3>🎯 每局標會即時統計</h3>
+            <div id="livePotResults">尚未開始比賽...</div>
+        </div>
+        <!-- 2. 即時會外會 -->
+        <div class="live-box">
+            <h3>🎰 即時會外會預覽 (最高分)</h3>
+            <div id="liveSideBetPreview">等待局數勾選與成績錄入...</div>
+        </div>
+        <!-- 3. 甲組預覽 -->
+        <div class="live-box">
+            <h3>🏆 甲組即時領先預覽 (參考)</h3>
+            <div id="liveGroupAPreview">尚無成績錄入...</div>
+        </div>
+    </div>
+  </div>
+
   <!-- 3. 成績輸入表 -->
   <div class="table-section" id="scorePanel" style="display:none;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -186,18 +214,24 @@
     <div class="draw-section">
       <div class="draw-controls">
         <div>
-            <label style="font-weight:bold; color:#856404;">🎲 乙組採計項次 (勾選 3 名)：</label>
+            <label style="font-weight:bold; color:#856404; display: block; margin-bottom: 5px;">🎲 乙組採計項次 (勾選 3 名)：</label>
             <div id="rankSelector" class="selector-grid"></div>
         </div>
-        <div>
-            <label style="font-weight:bold; color:#856404;">📐 結算係數：</label>
-            <div style="display:flex; gap:10px;">
-                <input type="number" id="manualRatio" step="0.01" value="0.86" title="乙組係數" style="width:50%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                <input type="number" id="ratioC" step="0.01" value="0.95" title="丙組係數" style="width:50%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+        <div class="coeff-group">
+            <label style="font-weight:bold; color:#856404;">📐 結算係數設定：</label>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div>
+                  <label>乙組係數</label>
+                  <input type="number" id="manualRatio" step="0.01" value="0.86" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                </div>
+                <div>
+                  <label>丙組係數</label>
+                  <input type="number" id="ratioC" step="0.01" value="0.95" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                </div>
             </div>
         </div>
       </div>
-      <button class="btn btn-draw" style="width:100%; margin-top:20px; font-size:1.1rem;" onclick="manualSettle()">🏆 執行全場三組結算</button>
+      <button class="btn btn-draw" style="width:100%; margin-top:20px; font-size:1.1rem;" onclick="manualSettle()">🏆 執行全場三組結算 (產生榜單)</button>
       <div id="drawInfo" style="margin-top:15px; font-weight: bold; color: #d9480f; text-align:center;"></div>
     </div>
     <div id="rankDisplay"></div>
@@ -241,17 +275,18 @@ function removeRow(index) { if(bonusRules.length <= 1) return alert("至少保�
 
 function syncBonusRules() {
     initSystem();
-    alert("加分規則已同步至成績表下拉選單。");
+    alert("加分規則已同步。");
 }
 
 function refreshSelectors() {
     const gCount = parseInt(document.getElementById('gameCount').value);
     const pCount = parseInt(document.getElementById('prizeCount').value);
     
+    // 會外會局數勾選：增加 onchange 監聽以即時更新監控面板
     const sbArea = document.getElementById('sideBetSelector');
     sbArea.innerHTML = "";
     for(let i=1; i<=gCount; i++) {
-        sbArea.innerHTML += `<label class="check-btn"><input type="checkbox" name="sbCheck" value="${i}"> G${i}</label>`;
+        sbArea.innerHTML += `<label class="check-btn"><input type="checkbox" name="sbCheck" value="${i}" onchange="updateLiveResults()"> G${i}</label>`;
     }
 
     const rArea = document.getElementById('rankSelector');
@@ -288,8 +323,10 @@ function initSystem() {
     players = newPlayers;
     document.getElementById('scorePanel').style.display = "block";
     document.getElementById('resultPanel').style.display = "block";
+    document.getElementById('livePanel').style.display = "block";
     renderTableHead(gCount);
     renderTableBody(gCount);
+    updateLiveResults();
     saveAll();
 }
 
@@ -309,7 +346,7 @@ function renderTableHead(gCount) {
 function renderTableBody(gCount) {
     let html = "";
     const pPerPair = parseInt(document.getElementById('playersPerPair').value);
-    const pairLabels = ["第一馬", "第二馬", "第三馬", "第四馬", "第五馬", "第六馬", "第七馬", "第八馬", "第九馬", "第十馬"];
+    const pairLabels = ["第一馬", "第二馬", "第三馬", "第四馬", "第五馬", "第六馬", "第七馬", "第八馬"];
     
     let currentPlayerCountInPair = 0;
     players.forEach((p, idx) => {
@@ -322,20 +359,19 @@ function renderTableBody(gCount) {
 
         html += `<tr>
             <td style="background:#f9f9f9;">
-                <input type="checkbox" title="標" ${p.isPot?'checked':''} onchange="players[${idx}].isPot=this.checked; saveAll();">
-                <input type="checkbox" title="外" ${p.isSideBet?'checked':''} onchange="players[${idx}].isSideBet=this.checked; saveAll();" style="accent-color:var(--eb-pink)">
+                <input type="checkbox" title="標" ${p.isPot?'checked':''} onchange="players[${idx}].isPot=this.checked; updateLiveResults(); saveAll();">
+                <input type="checkbox" title="外" ${p.isSideBet?'checked':''} onchange="players[${idx}].isSideBet=this.checked; updateLiveResults(); saveAll();" style="accent-color:var(--eb-pink)">
             </td>
             <td><input type="text" class="pos-input" value="${p.displayId}" onchange="players[${idx}].displayId=this.value; saveAll();"></td>
             <td style="padding: 0;">
                 <div class="name-cell-wrapper">
-                    <input type="text" value="${p.name}" onchange="players[${idx}].name=this.value; saveAll();" placeholder="請輸入姓名">
+                    <input type="text" value="${p.name}" onchange="players[${idx}].name=this.value; updateLiveResults(); saveAll();" placeholder="請輸入姓名">
                     <select onchange="updatePlayerTag(${idx}, this.value)">${options}</select>
                 </div>
             </td>`;
         for(let g=0; g<gCount; g++) html += `<td><input type="number" class="score-input" data-idx="${idx}" data-g="${g}" oninput="handleInput(this, ${idx}, ${g})" value="${p.scores[g] || ''}"></td>`;
         html += `<td><input type="number" class="score-input" value="${p.bonus}" onchange="players[${idx}].bonus=parseInt(this.value)||0; calcTotal(${idx}); saveAll();"></td>
                  <td id="total-${idx}" class="total-cell">${p.total}</td></tr>`;
-        
         currentPlayerCountInPair++;
         if (currentPlayerCountInPair >= pPerPair) currentPlayerCountInPair = 0;
     });
@@ -347,6 +383,7 @@ function handleInput(input, pIdx, gIdx) {
     if (val > 300) val = 300; input.value = val;
     players[pIdx].scores[gIdx] = val;
     calcTotal(pIdx);
+    updateLiveResults();
     saveAll();
     if(input.value.length >= 3) {
         const next = document.querySelector(`input[data-idx="${pIdx + 1}"][data-g="${gIdx}"]`);
@@ -367,12 +404,63 @@ function updatePlayerTag(pIdx, tag) {
     initSystem();
 }
 
+// 核心即時功能：更新標會、會外會與排名預覽
+function updateLiveResults() {
+    const potTarget = parseInt(document.getElementById('potTargetScore').value) || 227;
+    const gCount = parseInt(document.getElementById('gameCount').value);
+    const prizeLimit = parseInt(document.getElementById('prizeCount').value);
+    const sbConfig = Array.from(document.querySelectorAll('input[name="sbCheck"]:checked')).map(cb => parseInt(cb.value) - 1);
+
+    // 1. 即時標會 (分局顯示)
+    let potHtml = "";
+    for(let g=1; g<=gCount; g++) {
+        let winners = players.filter(p => p.isPot && p.scores[g-1] >= potTarget);
+        if (winners.length > 0) {
+            potHtml += `<div class="pot-game-row"><span class="pot-game-title">G${g}:</span>`;
+            winners.forEach(w => {
+                potHtml += `<span class="pot-winner-tag">${w.name}(${w.scores[g-1]})</span>`;
+            });
+            potHtml += `</div>`;
+        }
+    }
+    document.getElementById('livePotResults').innerHTML = potHtml || "尚未有達標成績";
+
+    // 2. 即時會外會預覽 (僅顯示最高分)
+    let sbPreviewHtml = "";
+    if (sbConfig.length === 0) {
+        sbPreviewHtml = `<div style="font-size:0.8rem; color:#999;">尚未勾選採計局數</div>`;
+    } else {
+        let sideBetPool = players.filter(p => p.isSideBet).map(p => {
+            let sum = sbConfig.reduce((acc, gi) => acc + (p.scores[gi] || 0), 0);
+            return { name: p.name, sum };
+        }).sort((a,b) => b.sum - a.sum);
+
+        if (sideBetPool.length > 0 && sideBetPool[0].sum > 0) {
+            let maxSideSum = sideBetPool[0].sum;
+            let winners = sideBetPool.filter(p => p.sum === maxSideSum);
+            winners.forEach(p => {
+                sbPreviewHtml += `<div style="margin-bottom:5px;"><b>${p.name}</b> 領先中 (<span style="color:var(--eb-accent); font-weight:bold;">${p.sum}</span> 分)</div>`;
+            });
+            sbPreviewHtml += `<div style="font-size:0.75rem; color:#666; margin-top:5px;">(採計 G${sbConfig.map(n=>n+1).join(',')})</div>`;
+        } else {
+            sbPreviewHtml = `<div style="font-size:0.8rem; color:#999;">等待錄入勾選局數成績...</div>`;
+        }
+    }
+    document.getElementById('liveSideBetPreview').innerHTML = sbPreviewHtml;
+
+    // 3. 甲組預覽
+    let sorted = [...players].filter(p => p.total > 0).sort((a,b) => b.total - a.total);
+    let previewHtml = "";
+    sorted.slice(0, prizeLimit).forEach((p, i) => {
+        previewHtml += `<div style="font-size:0.9rem; margin-bottom:5px;">第${i+1}名: <b>${p.name}</b> (${p.total})</div>`;
+    });
+    document.getElementById('liveGroupAPreview').innerHTML = previewHtml || "等待成績錄入...";
+}
+
 function manualSettle() {
     const pLimit = parseInt(document.getElementById('prizeCount').value);
     const ratioB = parseFloat(document.getElementById('manualRatio').value);
     const ratioC = parseFloat(document.getElementById('ratioC').value);
-    const potTarget = parseInt(document.getElementById('potTargetScore').value) || 227;
-    
     const rankBArr = Array.from(document.querySelectorAll('input[name="rankCheck"]:checked')).map(cb => parseInt(cb.value));
     const sbConfig = Array.from(document.querySelectorAll('input[name="sbCheck"]:checked')).map(cb => parseInt(cb.value) - 1);
 
@@ -394,30 +482,31 @@ function manualSettle() {
     let groupC = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= cThresh).slice(0, pLimit);
     groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
 
-    let pot = [];
-    players.filter(p => p.isPot).forEach(p => p.scores.forEach((s, i) => { if(s >= potTarget) pot.push({name: p.name, g: i+1, s}); }));
-
-    let side = players.filter(p => p.isSideBet).map(p => {
+    let sideBetPool = players.filter(p => p.isSideBet).map(p => {
         let sum = sbConfig.reduce((acc, gi) => acc + (p.scores[gi] || 0), 0);
         return { name: p.name, sum };
     }).sort((a,b) => b.sum - a.sum);
 
-    document.getElementById('drawInfo').innerHTML = `乙門檻: ${bThresh.toFixed(1)} | 丙門檻: ${cThresh.toFixed(1)} | 標會門檻: ${potTarget}`;
+    document.getElementById('drawInfo').innerHTML = `乙門檻: ${bThresh.toFixed(1)} | 丙門檻: ${cThresh.toFixed(1)}`;
     
-    let resHtml = `<div class="rank-box"><h3>🏆 賽務英雄榜</h3>`;
+    let resHtml = `<div class="rank-box"><h3>🏆 全場結算英雄榜</h3>`;
     const drawGroup = (title, list) => {
         resHtml += `<div style="margin-bottom:15px;"><b>${title}</b><table class="rank-table">`;
         list.forEach((p, i) => resHtml += `<tr><td>第${i+1}名</td><td>${p.name}</td><td>${p.total || p.sum}</td></tr>`);
         resHtml += `</table></div>`;
     };
-    drawGroup("甲組", groupA); drawGroup("乙組", groupB); drawGroup("丙組", groupC);
-    
-    resHtml += `<div style="background:#fff0f6; padding:10px; border-radius:8px;"><b>🎯 標會 (${potTarget}分及以上)</b>: `;
-    pot.forEach(w => resHtml += `<small>${w.name}(G${w.g}:${w.s}) </small> `);
-    resHtml += `</div>`;
+    drawGroup("甲組名單", groupA); 
+    drawGroup("乙組名單", groupB); 
+    drawGroup("丙組名單", groupC);
 
-    resHtml += `<div style="background:#e6f7ff; padding:10px; border-radius:8px; margin-top:10px;"><b>🎰 會外會 (G${sbConfig.map(n=>n+1).join(',')})</b><table class="rank-table">`;
-    side.slice(0,3).forEach((p, i) => resHtml += `<tr><td>第${i+1}名</td><td>${p.name}</td><td>${p.sum}</td></tr>`);
+    resHtml += `<div style="background:#e6f7ff; padding:10px; border-radius:8px; margin-top:10px;"><b>🎰 會外會最終結果 (採計 G${sbConfig.map(n=>n+1).join(',')})</b><table class="rank-table">`;
+    if (sideBetPool.length === 0) {
+        resHtml += `<tr><td>無符合名單</td></tr>`;
+    } else {
+        let maxSideSum = sideBetPool[0].sum;
+        let winners = sideBetPool.filter(p => p.sum === maxSideSum && maxSideSum > 0);
+        winners.forEach(p => resHtml += `<tr><td>會外會冠軍</td><td><b>${p.name}</b></td><td>最終加總: ${p.sum}</td></tr>`);
+    }
     resHtml += `</table></div></div>`;
     
     document.getElementById('rankDisplay').innerHTML = resHtml;
@@ -433,11 +522,11 @@ function saveAll() {
         potTargetScore: document.getElementById('potTargetScore').value,
         bonusRules, players
     };
-    localStorage.setItem('eb_bowling_final_v3', JSON.stringify(data));
+    localStorage.setItem('eb_bowling_final_v6', JSON.stringify(data));
 }
 
 function loadSavedData() {
-    const saved = localStorage.getItem('eb_bowling_final_v3');
+    const saved = localStorage.getItem('eb_bowling_final_v6');
     if (saved) {
         const d = JSON.parse(saved);
         document.getElementById('playersPerPair').value = d.pPerPair;
@@ -449,8 +538,8 @@ function loadSavedData() {
     }
 }
 
-function clearData() { if(confirm("重置所有資料？")) { localStorage.removeItem('eb_bowling_final_v3'); location.reload(); } }
-function exportToCSV() { /* CSV 匯出邏輯 */ }
+function clearData() { if(confirm("重置所有？")) { localStorage.removeItem('eb_bowling_final_v6'); location.reload(); } }
+function exportToCSV() { /* CSV 匯出邏輯可視需求實作 */ }
 </script>
 </body>
 </html>
