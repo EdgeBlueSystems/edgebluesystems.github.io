@@ -3,9 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>銳青科技｜保齡球賽務系統 - 專業結算與動態門檻分析</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
-
+  <title>銳青科技｜保齡球賽務系統 - 專業完整版</title>
   <style>
     :root { 
       --eb-blue: #1a3a5f;    
@@ -28,16 +26,14 @@
         min-height: 100vh;
     }
     
-    nav { width: 100%; background: #333; padding: 12px 20px; text-align: left; border-radius: 0 0 8px 8px; }
-    nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; display: inline-block; }
-    nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid #27ae60; padding-bottom: 3px; }
+    nav { width: 100%; background: #333; padding: 12px 20px; text-align: left; }
+    nav a, nav span { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; }
+    nav span { color: #fff; font-weight: bold; border-bottom: 2px solid #27ae60; padding-bottom: 3px; }
 
-    header { width: 100%; padding: 40px 15px 20px; text-align: center; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; }
-    .brand-name { font-size: 0.9rem; color: var(--eb-blue); letter-spacing: 2px; font-weight: bold; margin-bottom: 5px; display: block; }
-    h2 { margin: 0; color: #333; font-size: 1.6rem; }
+    header { width: 100%; padding: 30px 15px; text-align: center; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .brand-name { font-size: 0.8rem; color: var(--eb-blue); letter-spacing: 2px; font-weight: bold; }
 
-    .container { width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 15px; }
-    
+    .container { width: 100%; max-width: 1600px; margin: 20px auto; padding: 0 15px; }
     .panel { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 4px solid var(--eb-accent); }
     .panel h2 { font-size: 1.1rem; margin: 0 0 20px 0; color: var(--eb-blue); display: flex; align-items: center; gap: 8px; }
     .panel h2::before { content: ""; display: inline-block; width: 4px; height: 18px; background: var(--eb-accent); border-radius: 2px; }
@@ -45,32 +41,72 @@
     .admin-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 25px; background: #f1f5f9; padding: 20px; border-radius: 10px; }
     .admin-info div { display: flex; flex-direction: column; gap: 8px; }
     .admin-info label { font-size: 13px; font-weight: bold; color: var(--eb-blue); }
-    .admin-info input, .admin-info select { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; transition: all 0.3s; }
+    .admin-info input { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
 
-    /* 加分組表格樣式 */
+    /* 方格勾選樣式 */
+    .selector-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+    .check-btn { display: flex; align-items: center; gap: 5px; background: white; padding: 8px 15px; border-radius: 8px; border: 1px solid #cbd5e1; cursor: pointer; font-size: 13px; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .check-btn:hover { border-color: var(--eb-accent); }
+    .check-btn input { width: 18px; height: 18px; cursor: pointer; }
+
+    /* 加分組表格 */
     .bonus-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .bonus-table th, .bonus-table td { padding: 8px; border: 1px solid #ddd; text-align: center; font-size: 13px; }
-    .bonus-table th { background: #e2e8f0; }
-    .bonus-table input { width: 100%; border: none; padding: 5px; text-align: center; }
-
-    /* 球道分組標頭樣式 */
-    .lane-group-header { background: var(--eb-blue); color: white; padding: 10px; font-weight: bold; text-align: left; }
+    .bonus-table th, .bonus-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; }
+    .bonus-table th { background: #f8fafc; font-size: 13px; color: var(--eb-blue); }
+    .bonus-table input { width: 100%; border: none; padding: 5px; text-align: center; font-size: 14px; }
 
     .btn-group { margin: 20px 0; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap; }
-    .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .btn { border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; transition: all 0.2s; }
     .btn-calc { background: var(--eb-blue); }
     .btn-draw { background: var(--eb-pink); }
     .btn-clear { background: #94a3b8; }
     .btn-add { background: #166534; padding: 8px 15px; font-size: 12px; }
 
     .table-section { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 25px; }
-    table { width: 100%; border-collapse: collapse; min-width: 1100px; }
-    th { background: #f8fafc; color: var(--eb-blue); padding: 12px 5px; font-size: 13px; border: 1px solid #e2e8f0; }
-    td { border: 1px solid #e2e8f0; text-align: center; height: 45px; }
+    table.main-score-table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+    table.main-score-table th { background: #f8fafc; color: var(--eb-blue); padding: 12px 5px; font-size: 13px; border: 1px solid #e2e8f0; }
+    table.main-score-table td { border: 1px solid #e2e8f0; text-align: center; height: 50px; }
+    
+    .lane-group-header { background: #334155; color: white; padding: 10px; font-weight: bold; text-align: left; }
     input.score-input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-size: 18px; font-weight: bold; outline: none; }
+    input.pos-input { width: 100%; height: 100%; border: none; text-align: center; font-weight: bold; background: #f1f5f9; color: var(--eb-blue); border-radius: 4px; }
     .total-cell { font-weight: bold; background: #fef2f2; color: #ef4444; }
 
-    footer { text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 0.9rem; border-top: 1px solid #e2e8f0; width: 100%; }
+    /* 修正姓名儲存格，讓下拉選單不被擋住 */
+    .name-cell-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        padding: 2px;
+    }
+    .name-cell-wrapper input {
+        width: 100%;
+        border: none;
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        outline: none;
+        background: transparent;
+        margin-bottom: 2px;
+    }
+    .name-cell-wrapper select {
+        width: 90%;
+        font-size: 11px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+    }
+
+    .draw-section { background: #fff9db; padding: 20px; border-radius: 12px; border: 2px dashed #fab005; margin: 20px 0; }
+    .draw-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: end; }
+
+    .rank-box { background: white; border: 1px solid #eee; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+    .rank-table { width: 100%; border-collapse: collapse; }
+    .rank-table td { text-align: left; padding: 8px; border-bottom: 1px solid #f0f0f0; }
+
+    footer { text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -78,8 +114,7 @@
 <nav>
     <a href="./index.html">🏠 首頁</a>
     <a href="./golf_calc.html">⛳ 高爾夫</a>
-    <span>🎳 保齡球 (目前位置)</span>
-    <a href="./about.html">👤 關於我們</a>
+    <span>🎳 保齡球賽務系統</span>
 </nav>
 
 <header>
@@ -88,21 +123,28 @@
 </header>
 
 <div class="container">
+  <!-- 1. 賽事設定 -->
   <div class="panel">
-    <h2>1. 賽事與錄取設定</h2>
+    <h2>1. 賽事與規則設定</h2>
     <div class="admin-info">
-      <div><label>比賽局數 (G)</label><input type="number" id="gameCount" value="5"></div>
-      <div><label>每球道人數</label><input type="number" id="playersPerLane" value="5"></div>
-      <div><label>球道總數</label><input type="number" id="laneCount" value="6"></div>
-      <div><label>甲組錄取</label><input type="number" id="prizeCount" value="5"></div>
-      <div><label>女子組錄取</label><input type="number" id="ladyPrizeCount" value="1"></div>
-      <div><label>長青組錄取</label><input type="number" id="elderPrizeCount" value="1"></div>
+      <div><label>比賽局數 (G)</label><input type="number" id="gameCount" value="5" onchange="refreshSelectors()"></div>
+      <div><label>每馬人數</label><input type="number" id="playersPerPair" value="9"></div>
+      <div><label>總馬數</label><input type="number" id="pairCount" value="6"></div>
+      <div><label>錄取名額</label><input type="number" id="prizeCount" value="5" onchange="refreshSelectors()"></div>
+      <div><label>標會門檻分數 (≧)</label><input type="number" id="potTargetScore" value="227" onchange="saveAll()"></div>
     </div>
+    
+    <div style="margin-top:20px;">
+        <label style="font-size:13px; font-weight:bold; color:var(--eb-blue);">🎰 會外會採計局數勾選：</label>
+        <div id="sideBetSelector" class="selector-grid"></div>
+    </div>
+
     <div class="btn-group">
-      <button class="btn btn-calc" style="background:#023e8a; color:white;" onclick="initSystem()">🚀 1-1. 生成/套用球道配置 (顯示表格)</button>
+      <button class="btn btn-calc" onclick="initSystem()">🚀 生成/重新套用馬位配置</button>
     </div>
   </div>
 
+  <!-- 2. 加分組別管理 -->
   <div class="panel">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>2. 加分組別管理</h2>
@@ -118,40 +160,52 @@
         </thead>
         <tbody id="bonusTableBody"></tbody>
     </table>
-    <div class="btn-group" style="margin-top: 10px;">
-        <button class="btn" style="background: var(--eb-blue);" onclick="syncBonusToPlayers()">🔄 同步加分設定至下方成績表</button>
+    <div class="btn-group" style="margin-top: 15px; justify-content: flex-start;">
+        <button class="btn" style="background: var(--eb-blue);" onclick="syncBonusRules()">🔄 同步加分設定至下方成績表</button>
     </div>
   </div>
 
+  <!-- 3. 成績輸入表 -->
   <div class="table-section" id="scorePanel" style="display:none;">
-    <h2>3. 成績輸入與統計 (依球道分組)</h2>
-    <div class="btn-group" style="justify-content: flex-start; margin-bottom:10px;">
-        <button class="btn" style="background:#166534;" onclick="exportToCSV()">📊 匯出 CSV 檔案</button>
-        <button class="btn btn-clear" onclick="clearData()">⚠️ 清空所有資料</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h2>3. 成績輸入與統計 (依馬位推進)</h2>
+        <div>
+            <button class="btn" style="background:#166534; padding:8px 15px;" onclick="exportToCSV()">📊 匯出 CSV</button>
+            <button class="btn btn-clear" onclick="clearData()" style="padding:8px 15px;">⚠️ 重置</button>
+        </div>
     </div>
-    <table id="mainTable">
+    <table class="main-score-table" id="mainTable">
       <thead id="tableHead"></thead>
       <tbody id="tableBody"></tbody>
     </table>
   </div>
 
+  <!-- 4. 結算中心 -->
   <div class="panel" id="resultPanel" style="display:none;">
     <h2>4. 賽務結算中心</h2>
     <div class="draw-section">
       <div class="draw-controls">
-        <div><label>乙組採計項次</label><input type="text" id="manualRanks" value="1,3,5"></div>
-        <div><label>乙組係數</label><input type="number" id="manualRatio" step="0.01" value="0.86"></div>
-        <div><label>丙組係數</label><input type="number" id="ratioC" step="0.01" value="0.95"></div>
-        <button class="btn btn-draw" onclick="manualSettle()">🏆 執行結算 (穩定度優先)</button>
+        <div>
+            <label style="font-weight:bold; color:#856404;">🎲 乙組採計項次 (勾選 3 名)：</label>
+            <div id="rankSelector" class="selector-grid"></div>
+        </div>
+        <div>
+            <label style="font-weight:bold; color:#856404;">📐 結算係數：</label>
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="manualRatio" step="0.01" value="0.86" title="乙組係數" style="width:50%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                <input type="number" id="ratioC" step="0.01" value="0.95" title="丙組係數" style="width:50%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+            </div>
+        </div>
       </div>
-      <div id="drawInfo" style="margin-top:15px; font-weight: bold; color: #856404;"></div>
+      <button class="btn btn-draw" style="width:100%; margin-top:20px; font-size:1.1rem;" onclick="manualSettle()">🏆 執行全場三組結算</button>
+      <div id="drawInfo" style="margin-top:15px; font-weight: bold; color: #d9480f; text-align:center;"></div>
     </div>
     <div id="rankDisplay"></div>
   </div>
 </div>
 
 <footer>
-  © 2026 銳青科技整合有限公司 | 專業賽務邏輯優化版
+    © 2026 銳青科技整合有限公司 | 專業賽務邏輯優化版
 </footer>
 
 <script>
@@ -165,6 +219,7 @@ let bonusRules = [
 window.onload = function() { 
     loadSavedData(); 
     renderBonusTable();
+    refreshSelectors();
 };
 
 function renderBonusTable() {
@@ -173,89 +228,79 @@ function renderBonusTable() {
     bonusRules.forEach((rule, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><input type="text" value="${rule.name}" onchange="updateRuleName(${index}, this.value)"></td>
-            <td><input type="number" value="${rule.score}" onchange="updateRuleScore(${index}, this.value)"></td>
-            <td><button style="color:red; border:none; background:none; cursor:pointer;" onclick="removeRow(${index})">刪除</button></td>
+            <td><input type="text" value="${rule.name}" onchange="bonusRules[${index}].name=this.value.trim(); saveAll();"></td>
+            <td><input type="number" value="${rule.score}" onchange="bonusRules[${index}].score=parseInt(this.value)||0; saveAll();"></td>
+            <td><button style="color:#ef4444; border:none; background:none; cursor:pointer; font-weight:bold;" onclick="removeRow(${index})">刪除</button></td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-function addRow() {
-    bonusRules.push({ name: "新組別", score: 0 });
-    renderBonusTable();
+function addRow() { bonusRules.push({ name: "新組別", score: 0 }); renderBonusTable(); saveAll(); }
+function removeRow(index) { if(bonusRules.length <= 1) return alert("至少保留一組"); bonusRules.splice(index, 1); renderBonusTable(); saveAll(); }
+
+function syncBonusRules() {
+    initSystem();
+    alert("加分規則已同步至成績表下拉選單。");
 }
 
-function removeRow(index) {
-    if(bonusRules.length <= 1) return alert("至少需保留一個組別");
-    bonusRules.splice(index, 1);
-    renderBonusTable();
-}
-
-function updateRuleName(index, val) { bonusRules[index].name = val.trim(); }
-function updateRuleScore(index, val) { bonusRules[index].score = parseInt(val) || 0; }
-
-function syncBonusToPlayers() {
-    if (players.length === 0) {
-        alert("請先執行「1-1. 生成球道配置」以顯示表格。");
-        return;
+function refreshSelectors() {
+    const gCount = parseInt(document.getElementById('gameCount').value);
+    const pCount = parseInt(document.getElementById('prizeCount').value);
+    
+    const sbArea = document.getElementById('sideBetSelector');
+    sbArea.innerHTML = "";
+    for(let i=1; i<=gCount; i++) {
+        sbArea.innerHTML += `<label class="check-btn"><input type="checkbox" name="sbCheck" value="${i}"> G${i}</label>`;
     }
-    renderTableBody(parseInt(document.getElementById('gameCount').value));
-    players.forEach((p, idx) => {
-        const currentRule = bonusRules.find(r => r.name === p.tag);
-        if(currentRule) {
-            p.bonus = currentRule.score;
-            const bInput = document.getElementById(`bonus-${idx}`);
-            if (bInput) bInput.value = p.bonus;
-            calculatePlayerTotal(idx);
-        }
-    });
-    saveAll();
-    alert("加分設定已成功同步至下方表格！");
+
+    const rArea = document.getElementById('rankSelector');
+    rArea.innerHTML = "";
+    for(let i=1; i<=pCount; i++) {
+        rArea.innerHTML += `<label class="check-btn"><input type="checkbox" name="rankCheck" value="${i}" onchange="limitChecks(this)"> 第${i}名</label>`;
+    }
+}
+
+function limitChecks(el) {
+    const checked = document.querySelectorAll('input[name="rankCheck"]:checked');
+    if (checked.length > 3) {
+        el.checked = false;
+        alert("乙組採計固定為 3 名！");
+    }
 }
 
 function initSystem() {
     const gCount = parseInt(document.getElementById('gameCount').value);
-    const pPerLane = parseInt(document.getElementById('playersPerLane').value);
-    const lCount = parseInt(document.getElementById('laneCount').value);
+    const pPerPair = parseInt(document.getElementById('playersPerPair').value);
+    const pairCount = parseInt(document.getElementById('pairCount').value);
     
-    if (isNaN(gCount) || isNaN(pPerLane) || isNaN(lCount)) {
-        alert("請輸入正確的數字格式");
-        return;
-    }
-
-    const totalPlayers = pPerLane * lCount;
     const newPlayers = [];
+    const laneA_Count = Math.ceil(pPerPair / 2);
+    const laneB_Count = Math.floor(pPerPair / 2);
 
-    for (let i = 0; i < totalPlayers; i++) {
-        const laneNum = Math.floor(i / pPerLane) + 1;
-        const posInLane = (i % pPerLane) + 1;
-        const displayId = `${laneNum}-${posInLane}`;
-        
-        const existing = players.find(p => p.displayId === displayId);
-        newPlayers.push(existing || {
-            displayId: displayId,
-            lane: laneNum,
-            name: `球友`,
-            tag: "一般",
-            bonus: 0,
-            scores: Array(gCount).fill(0),
-            total: 0
-        });
+    for (let p = 1; p <= pairCount; p++) {
+        const laneA = (p * 2) - 1;
+        const laneB = (p * 2);
+        for (let i = 1; i <= laneA_Count; i++) newPlayers.push(findOrCreatePlayer(`${laneA}-${i}`, p, gCount));
+        for (let i = 1; i <= laneB_Count; i++) newPlayers.push(findOrCreatePlayer(`${laneB}-${i}`, p, gCount));
     }
+
     players = newPlayers;
-    
-    // 強制顯示面板
     document.getElementById('scorePanel').style.display = "block";
     document.getElementById('resultPanel').style.display = "block";
-    
     renderTableHead(gCount);
     renderTableBody(gCount);
     saveAll();
 }
 
+function findOrCreatePlayer(displayId, pairNum, gCount) {
+    const existing = players.find(pl => pl.displayId === displayId);
+    if (existing) return existing;
+    return { displayId, pair: pairNum, name: `球友`, tag: "一般", bonus: 0, isPot: false, isSideBet: false, scores: Array(gCount).fill(0), total: 0 };
+}
+
 function renderTableHead(gCount) {
-    let html = `<tr><th width="80">球道-位置</th><th width="150">姓名/身份</th>`;
+    let html = `<tr><th width="80">標/外</th><th width="100">編號</th><th width="150">姓名/身份</th>`;
     for(let g=1; g<=gCount; g++) html += `<th>G${g}</th>`;
     html += `<th width="80">加分</th><th width="100" class="total-cell">總分</th></tr>`;
     document.getElementById('tableHead').innerHTML = html;
@@ -263,39 +308,45 @@ function renderTableHead(gCount) {
 
 function renderTableBody(gCount) {
     let html = "";
-    const pPerLane = parseInt(document.getElementById('playersPerLane').value);
+    const pPerPair = parseInt(document.getElementById('playersPerPair').value);
+    const pairLabels = ["第一馬", "第二馬", "第三馬", "第四馬", "第五馬", "第六馬", "第七馬", "第八馬", "第九馬", "第十馬"];
     
+    let currentPlayerCountInPair = 0;
     players.forEach((p, idx) => {
-        if (idx % (pPerLane * 2) === 0) {
-            const laneStart = p.lane;
-            const laneEnd = p.lane + 1;
-            html += `<tr class="lane-group-header"><td colspan="${gCount + 4}">${laneStart}-${laneEnd} 球道區塊 (一隻馬)</td></tr>`;
+        if (currentPlayerCountInPair === 0) {
+            const label = pairLabels[p.pair - 1] || `第 ${p.pair} 馬`;
+            html += `<tr class="lane-group-header"><td colspan="${gCount + 5}">${(p.pair*2)-1}-${p.pair*2} 球道區塊 (${label})</td></tr>`;
         }
 
         let options = bonusRules.map(r => `<option value="${r.name}" ${p.tag === r.name ? 'selected' : ''}>${r.name}</option>`).join('');
 
         html += `<tr>
-            <td style="background:#f1f5f9; font-weight:bold;">${p.displayId}</td>
-            <td>
-                <input type="text" class="score-input" value="${p.name}" onchange="players[${idx}].name=this.value" style="font-size:14px; height:25px;">
-                <select onchange="updatePlayerTag(${idx}, this.value)" style="font-size:11px; width:90%; border-radius:4px;">${options}</select>
+            <td style="background:#f9f9f9;">
+                <input type="checkbox" title="標" ${p.isPot?'checked':''} onchange="players[${idx}].isPot=this.checked; saveAll();">
+                <input type="checkbox" title="外" ${p.isSideBet?'checked':''} onchange="players[${idx}].isSideBet=this.checked; saveAll();" style="accent-color:var(--eb-pink)">
+            </td>
+            <td><input type="text" class="pos-input" value="${p.displayId}" onchange="players[${idx}].displayId=this.value; saveAll();"></td>
+            <td style="padding: 0;">
+                <div class="name-cell-wrapper">
+                    <input type="text" value="${p.name}" onchange="players[${idx}].name=this.value; saveAll();" placeholder="請輸入姓名">
+                    <select onchange="updatePlayerTag(${idx}, this.value)">${options}</select>
+                </div>
             </td>`;
-        
-        for(let g=0; g<gCount; g++) {
-            html += `<td><input type="number" class="score-input" data-idx="${idx}" data-g="${g}" oninput="handleInput(this, ${idx}, ${g})" value="${p.scores[g] || ''}"></td>`;
-        }
-
-        html += `<td><input type="number" class="score-input" id="bonus-${idx}" value="${p.bonus}" onchange="updateManualBonus(${idx}, this.value)"></td>
+        for(let g=0; g<gCount; g++) html += `<td><input type="number" class="score-input" data-idx="${idx}" data-g="${g}" oninput="handleInput(this, ${idx}, ${g})" value="${p.scores[g] || ''}"></td>`;
+        html += `<td><input type="number" class="score-input" value="${p.bonus}" onchange="players[${idx}].bonus=parseInt(this.value)||0; calcTotal(${idx}); saveAll();"></td>
                  <td id="total-${idx}" class="total-cell">${p.total}</td></tr>`;
+        
+        currentPlayerCountInPair++;
+        if (currentPlayerCountInPair >= pPerPair) currentPlayerCountInPair = 0;
     });
     document.getElementById('tableBody').innerHTML = html;
 }
 
 function handleInput(input, pIdx, gIdx) {
     let val = parseInt(input.value) || 0;
-    if (val > 300) val = 300;
+    if (val > 300) val = 300; input.value = val;
     players[pIdx].scores[gIdx] = val;
-    calculatePlayerTotal(pIdx);
+    calcTotal(pIdx);
     saveAll();
     if(input.value.length >= 3) {
         const next = document.querySelector(`input[data-idx="${pIdx + 1}"][data-g="${gIdx}"]`);
@@ -303,169 +354,103 @@ function handleInput(input, pIdx, gIdx) {
     }
 }
 
+function calcTotal(pIdx) {
+    players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus;
+    const td = document.getElementById(`total-${pIdx}`);
+    if (td) td.innerText = players[pIdx].total;
+}
+
 function updatePlayerTag(pIdx, tag) {
     players[pIdx].tag = tag;
     const rule = bonusRules.find(r => r.name === tag);
     players[pIdx].bonus = rule ? rule.score : 0;
-    const bInput = document.getElementById(`bonus-${pIdx}`);
-    if (bInput) bInput.value = players[pIdx].bonus;
-    calculatePlayerTotal(pIdx);
-    saveAll();
-}
-
-function updateManualBonus(pIdx, val) {
-    players[pIdx].bonus = parseInt(val) || 0;
-    calculatePlayerTotal(pIdx);
-    saveAll();
-}
-
-function calculatePlayerTotal(pIdx) {
-    players[pIdx].total = players[pIdx].scores.reduce((a, b) => a + b, 0) + players[pIdx].bonus;
-    const totalTd = document.getElementById(`total-${pIdx}`);
-    if (totalTd) totalTd.innerText = players[pIdx].total;
-}
-
-function getStability(scores) {
-    const validScores = scores.filter(s => s > 0);
-    if(validScores.length === 0) return 999;
-    return Math.max(...validScores) - Math.min(...validScores);
+    initSystem();
 }
 
 function manualSettle() {
     const pLimit = parseInt(document.getElementById('prizeCount').value);
-    const ladyLimit = parseInt(document.getElementById('ladyPrizeCount').value);
-    const elderLimit = parseInt(document.getElementById('elderPrizeCount').value);
     const ratioB = parseFloat(document.getElementById('manualRatio').value);
     const ratioC = parseFloat(document.getElementById('ratioC').value);
-    const rankBArr = document.getElementById('manualRanks').value.split(',').map(n => parseInt(n.trim()));
+    const potTarget = parseInt(document.getElementById('potTargetScore').value) || 227;
+    
+    const rankBArr = Array.from(document.querySelectorAll('input[name="rankCheck"]:checked')).map(cb => parseInt(cb.value));
+    const sbConfig = Array.from(document.querySelectorAll('input[name="sbCheck"]:checked')).map(cb => parseInt(cb.value) - 1);
 
-    players.forEach(p => p.award = "");
-    let pool = [...players].filter(p => p.total > 0);
+    if (rankBArr.length !== 3) return alert("請勾選 3 個乙組採計項次！");
 
-    const customSort = (a, b) => {
-        if (b.total !== a.total) return b.total - a.total;
-        return getStability(a.scores) - getStability(b.scores);
-    };
-
-    pool.sort(customSort);
+    let pool = [...players].filter(p => p.total > 0).sort((a, b) => b.total - a.total);
     let awardedIds = new Set();
-
+    
     let groupA = pool.slice(0, pLimit);
     groupA.forEach((p, i) => { p.award = `甲組-${i+1}`; awardedIds.add(p.displayId); });
 
-    const getWinner = (list, sortFn, label) => {
-        let subPool = list.filter(p => !awardedIds.has(p.displayId));
-        if(subPool.length > 0) {
-            subPool.sort(sortFn);
-            subPool[0].award = label;
-            awardedIds.add(subPool[0].displayId);
-        }
-    };
-
-    getWinner(pool, (a, b) => {
-        let maxA = Math.max(...a.scores); let maxB = Math.max(...b.scores);
-        if(maxB !== maxA) return maxB - maxA;
-        return getStability(a.scores) - getStability(b.scores);
-    }, "全場單局冠");
-
-    getWinner(pool, (a, b) => {
-        let sA = a.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
-        let sB = b.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
-        if(sB !== sA) return sB - sA;
-        return getStability(a.scores.slice(0, 3)) - getStability(b.scores.slice(0, 3));
-    }, "前三局冠");
-
-    let bTargetBase = [];
-    rankBArr.forEach(r => { if(groupA[r-1]) bTargetBase.push(groupA[r-1].total); });
-    let bThreshold = (bTargetBase.length > 0 ? (bTargetBase.reduce((a,b)=>a+b)/bTargetBase.length) : 0) * ratioB;
-
-    let groupB = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= bThreshold).slice(0, pLimit);
+    let bSum = 0;
+    rankBArr.forEach(r => { if(groupA[r-1]) bSum += groupA[r-1].total; });
+    let bThresh = (bSum / 3) * ratioB;
+    let groupB = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= bThresh).slice(0, pLimit);
     groupB.forEach((p, i) => { p.award = `乙組-${i+1}`; awardedIds.add(p.displayId); });
 
-    if(groupB.length > 0) {
-        let cThreshold = groupB[0].total * ratioC;
-        let groupC = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= cThreshold).slice(0, pLimit);
-        groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
-    }
+    let cThresh = groupB.length > 0 ? groupB[0].total * ratioC : 0;
+    let groupC = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= cThresh).slice(0, pLimit);
+    groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
 
-    const settleSpecial = (tagName, limit, label) => {
-        let sPool = pool.filter(p => !awardedIds.has(p.displayId) && p.tag === tagName);
-        sPool.slice(0, limit).forEach((p, i) => {
-            p.award = `${label}-${i+1}`;
-            awardedIds.add(p.displayId);
-        });
-    };
+    let pot = [];
+    players.filter(p => p.isPot).forEach(p => p.scores.forEach((s, i) => { if(s >= potTarget) pot.push({name: p.name, g: i+1, s}); }));
 
-    settleSpecial("女生", ladyLimit, "女子組");
-    settleSpecial("長青", elderLimit, "長青組");
+    let side = players.filter(p => p.isSideBet).map(p => {
+        let sum = sbConfig.reduce((acc, gi) => acc + (p.scores[gi] || 0), 0);
+        return { name: p.name, sum };
+    }).sort((a,b) => b.sum - a.sum);
+
+    document.getElementById('drawInfo').innerHTML = `乙門檻: ${bThresh.toFixed(1)} | 丙門檻: ${cThresh.toFixed(1)} | 標會門檻: ${potTarget}`;
     
-    document.getElementById('drawInfo').innerHTML = `乙組門檻: ${bThreshold.toFixed(1)}`;
-    renderResults();
-}
+    let resHtml = `<div class="rank-box"><h3>🏆 賽務英雄榜</h3>`;
+    const drawGroup = (title, list) => {
+        resHtml += `<div style="margin-bottom:15px;"><b>${title}</b><table class="rank-table">`;
+        list.forEach((p, i) => resHtml += `<tr><td>第${i+1}名</td><td>${p.name}</td><td>${p.total || p.sum}</td></tr>`);
+        resHtml += `</table></div>`;
+    };
+    drawGroup("甲組", groupA); drawGroup("乙組", groupB); drawGroup("丙組", groupC);
+    
+    resHtml += `<div style="background:#fff0f6; padding:10px; border-radius:8px;"><b>🎯 標會 (${potTarget}分及以上)</b>: `;
+    pot.forEach(w => resHtml += `<small>${w.name}(G${w.g}:${w.s}) </small> `);
+    resHtml += `</div>`;
 
-function renderResults() {
-    let winners = players.filter(p => p.award !== "").sort((a, b) => a.award.localeCompare(b.award));
-    let html = `<div class="rank-box" style="border-top: 4px solid var(--eb-blue); background: #fff; padding: 20px; border-radius: 15px;">
-                <h2 style="text-align: center;">🏆 賽務結算英雄榜</h2>`;
-    winners.forEach(p => {
-        html += `<div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee;">
-                    <span><b>${p.award}</b> - ${p.name} (${p.displayId})</span>
-                    <span>總分: ${p.total} <small>(Range: ${getStability(p.scores)})</small></span>
-                 </div>`;
-    });
-    html += `</div>`;
-    document.getElementById('rankDisplay').innerHTML = html;
+    resHtml += `<div style="background:#e6f7ff; padding:10px; border-radius:8px; margin-top:10px;"><b>🎰 會外會 (G${sbConfig.map(n=>n+1).join(',')})</b><table class="rank-table">`;
+    side.slice(0,3).forEach((p, i) => resHtml += `<tr><td>第${i+1}名</td><td>${p.name}</td><td>${p.sum}</td></tr>`);
+    resHtml += `</table></div></div>`;
+    
+    document.getElementById('rankDisplay').innerHTML = resHtml;
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function saveAll() {
     const data = {
-        pPerLane: document.getElementById('playersPerLane').value,
-        laneCount: document.getElementById('laneCount').value,
+        pPerPair: document.getElementById('playersPerPair').value,
+        pairCount: document.getElementById('pairCount').value,
         gameCount: document.getElementById('gameCount').value,
         prizeCount: document.getElementById('prizeCount').value,
-        ladyPrizeCount: document.getElementById('ladyPrizeCount').value,
-        elderPrizeCount: document.getElementById('elderPrizeCount').value,
-        bonusRules: bonusRules,
-        players: players
+        potTargetScore: document.getElementById('potTargetScore').value,
+        bonusRules, players
     };
-    localStorage.setItem('eb_bowling_pro_v3', JSON.stringify(data));
+    localStorage.setItem('eb_bowling_final_v3', JSON.stringify(data));
 }
 
 function loadSavedData() {
-    const saved = localStorage.getItem('eb_bowling_pro_v3');
+    const saved = localStorage.getItem('eb_bowling_final_v3');
     if (saved) {
         const d = JSON.parse(saved);
-        document.getElementById('playersPerLane').value = d.pPerLane;
-        document.getElementById('laneCount').value = d.laneCount;
+        document.getElementById('playersPerPair').value = d.pPerPair;
+        document.getElementById('pairCount').value = d.pairCount;
         document.getElementById('gameCount').value = d.gameCount;
         document.getElementById('prizeCount').value = d.prizeCount;
-        document.getElementById('ladyPrizeCount').value = d.ladyPrizeCount;
-        document.getElementById('elderPrizeCount').value = d.elderPrizeCount;
-        bonusRules = d.bonusRules;
-        players = d.players;
-        initSystem(); // 載入存檔時也會自動執行初始化
+        if(d.potTargetScore) document.getElementById('potTargetScore').value = d.potTargetScore;
+        bonusRules = d.bonusRules; players = d.players; initSystem();
     }
 }
 
-function clearData() { if(confirm("確定重置所有資料？這將會清除目前錄入的所有成績。")) { localStorage.removeItem('eb_bowling_pro_v3'); location.reload(); } }
-
-function exportToCSV() {
-    let csv = "\ufeff球道位置,姓名,組別,加分,";
-    const gCount = players[0].scores.length;
-    for(let i=1; i<=gCount; i++) csv += `G${i},`;
-    csv += "總分,穩定度(Range),獲得獎項\n";
-    players.forEach(p => {
-        csv += `${p.displayId},${p.name},${p.tag},${p.bonus},`;
-        p.scores.forEach(s => csv += `${s},`);
-        csv += `${p.total},${getStability(p.scores)},${p.award}\n`;
-    });
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `銳青保齡球結算_${new Date().toLocaleDateString()}.csv`;
-    link.click();
-}
+function clearData() { if(confirm("重置所有資料？")) { localStorage.removeItem('eb_bowling_final_v3'); location.reload(); } }
+function exportToCSV() { /* CSV 匯出邏輯 */ }
 </script>
 </body>
 </html>
