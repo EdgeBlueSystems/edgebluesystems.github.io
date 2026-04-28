@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>銳青科技｜保齡球賽務系統 - 即時監控加強版</title>
+  <title>銳青科技｜保齡球賽務系統 - 專業完整結算版</title>
   <style>
     :root { 
       --eb-blue: #1a3a5f;    
@@ -96,7 +96,6 @@
         cursor: pointer;
     }
 
-    /* 即時監控面板樣式 */
     .live-monitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .live-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
     .live-box h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--eb-blue); border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
@@ -183,7 +182,7 @@
         <!-- 2. 即時會外會 -->
         <div class="live-box">
             <h3>🎰 即時會外會預覽 (最高分)</h3>
-            <div id="liveSideBetPreview">等待局數勾選與成績錄入...</div>
+            <div id="liveSideBetPreview">等待錄入成績...</div>
         </div>
         <!-- 3. 甲組預覽 -->
         <div class="live-box">
@@ -231,7 +230,7 @@
             </div>
         </div>
       </div>
-      <button class="btn btn-draw" style="width:100%; margin-top:20px; font-size:1.1rem;" onclick="manualSettle()">🏆 執行全場三組結算 (產生榜單)</button>
+      <button class="btn btn-draw" style="width:100%; margin-top:20px; font-size:1.1rem;" onclick="manualSettle()">🏆 執行全場所有獎項結算</button>
       <div id="drawInfo" style="margin-top:15px; font-weight: bold; color: #d9480f; text-align:center;"></div>
     </div>
     <div id="rankDisplay"></div>
@@ -246,8 +245,9 @@
 let players = [];
 let bonusRules = [
     { name: "一般", score: 0 },
-    { name: "女生", score: 40 },
-    { name: "長青", score: 20 }
+    { name: "女子", score: 40 },
+    { name: "長青", score: 20 },
+    { name: "青少年", score: 25 }
 ];
 
 window.onload = function() { 
@@ -282,7 +282,6 @@ function refreshSelectors() {
     const gCount = parseInt(document.getElementById('gameCount').value);
     const pCount = parseInt(document.getElementById('prizeCount').value);
     
-    // 會外會局數勾選：增加 onchange 監聽以即時更新監控面板
     const sbArea = document.getElementById('sideBetSelector');
     sbArea.innerHTML = "";
     for(let i=1; i<=gCount; i++) {
@@ -404,14 +403,12 @@ function updatePlayerTag(pIdx, tag) {
     initSystem();
 }
 
-// 核心即時功能：更新標會、會外會與排名預覽
 function updateLiveResults() {
     const potTarget = parseInt(document.getElementById('potTargetScore').value) || 227;
     const gCount = parseInt(document.getElementById('gameCount').value);
     const prizeLimit = parseInt(document.getElementById('prizeCount').value);
     const sbConfig = Array.from(document.querySelectorAll('input[name="sbCheck"]:checked')).map(cb => parseInt(cb.value) - 1);
 
-    // 1. 即時標會 (分局顯示)
     let potHtml = "";
     for(let g=1; g<=gCount; g++) {
         let winners = players.filter(p => p.isPot && p.scores[g-1] >= potTarget);
@@ -425,7 +422,6 @@ function updateLiveResults() {
     }
     document.getElementById('livePotResults').innerHTML = potHtml || "尚未有達標成績";
 
-    // 2. 即時會外會預覽 (僅顯示最高分)
     let sbPreviewHtml = "";
     if (sbConfig.length === 0) {
         sbPreviewHtml = `<div style="font-size:0.8rem; color:#999;">尚未勾選採計局數</div>`;
@@ -443,18 +439,22 @@ function updateLiveResults() {
             });
             sbPreviewHtml += `<div style="font-size:0.75rem; color:#666; margin-top:5px;">(採計 G${sbConfig.map(n=>n+1).join(',')})</div>`;
         } else {
-            sbPreviewHtml = `<div style="font-size:0.8rem; color:#999;">等待錄入勾選局數成績...</div>`;
+            sbPreviewHtml = `<div style="font-size:0.8rem; color:#999;">等待錄入成績...</div>`;
         }
     }
     document.getElementById('liveSideBetPreview').innerHTML = sbPreviewHtml;
 
-    // 3. 甲組預覽
     let sorted = [...players].filter(p => p.total > 0).sort((a,b) => b.total - a.total);
     let previewHtml = "";
     sorted.slice(0, prizeLimit).forEach((p, i) => {
         previewHtml += `<div style="font-size:0.9rem; margin-bottom:5px;">第${i+1}名: <b>${p.name}</b> (${p.total})</div>`;
     });
     document.getElementById('liveGroupAPreview').innerHTML = previewHtml || "等待成績錄入...";
+}
+
+function getStability(scores) {
+    const v = scores.filter(s => s > 0);
+    return v.length > 0 ? (Math.max(...v) - Math.min(...v)) : 999;
 }
 
 function manualSettle() {
@@ -466,22 +466,45 @@ function manualSettle() {
 
     if (rankBArr.length !== 3) return alert("請勾選 3 個乙組採計項次！");
 
-    let pool = [...players].filter(p => p.total > 0).sort((a, b) => b.total - a.total);
+    players.forEach(p => p.award = "");
+    let pool = [...players].filter(p => p.total > 0).sort((a, b) => b.total !== a.total ? b.total - a.total : getStability(a.scores) - getStability(b.scores));
     let awardedIds = new Set();
     
+    // 1. 甲組
     let groupA = pool.slice(0, pLimit);
     groupA.forEach((p, i) => { p.award = `甲組-${i+1}`; awardedIds.add(p.displayId); });
 
+    // 2. 乙組
     let bSum = 0;
     rankBArr.forEach(r => { if(groupA[r-1]) bSum += groupA[r-1].total; });
     let bThresh = (bSum / 3) * ratioB;
     let groupB = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= bThresh).slice(0, pLimit);
     groupB.forEach((p, i) => { p.award = `乙組-${i+1}`; awardedIds.add(p.displayId); });
 
+    // 3. 丙組
+    let groupC = [];
     let cThresh = groupB.length > 0 ? groupB[0].total * ratioC : 0;
-    let groupC = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= cThresh).slice(0, pLimit);
-    groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
+    if(cThresh > 0) {
+        groupC = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= cThresh).slice(0, pLimit);
+        groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
+    }
 
+    // 4. 身份類組排名 (模糊比對 + 互斥排除)
+    const settleCategory = (keyword, label) => {
+        let catPool = pool.filter(p => !awardedIds.has(p.displayId) && p.tag.includes(keyword));
+        let winners = catPool.slice(0, pLimit);
+        winners.forEach((p, i) => {
+            p.award = `${label}-${i+1}`;
+            awardedIds.add(p.displayId);
+        });
+        return winners;
+    };
+
+    let groupLadies = settleCategory("女子", "女子組");
+    let groupElders = settleCategory("長青", "長青組");
+    let groupYouths = settleCategory("青少年", "青少年組");
+
+    // 5. 會外會
     let sideBetPool = players.filter(p => p.isSideBet).map(p => {
         let sum = sbConfig.reduce((acc, gi) => acc + (p.scores[gi] || 0), 0);
         return { name: p.name, sum };
@@ -489,15 +512,21 @@ function manualSettle() {
 
     document.getElementById('drawInfo').innerHTML = `乙門檻: ${bThresh.toFixed(1)} | 丙門檻: ${cThresh.toFixed(1)}`;
     
-    let resHtml = `<div class="rank-box"><h3>🏆 全場結算英雄榜</h3>`;
+    // 渲染最終結果
+    let resHtml = `<div class="rank-box"><h3>🏆 賽務全場英雄榜</h3>`;
     const drawGroup = (title, list) => {
         resHtml += `<div style="margin-bottom:15px;"><b>${title}</b><table class="rank-table">`;
-        list.forEach((p, i) => resHtml += `<tr><td>第${i+1}名</td><td>${p.name}</td><td>${p.total || p.sum}</td></tr>`);
+        if (list.length === 0) resHtml += `<tr><td style="color:#999;">(無獲獎名單)</td></tr>`;
+        list.forEach((p, i) => resHtml += `<tr><td width="100">第${i+1}名</td><td width="150">${p.name}</td><td>總分: ${p.total || p.sum}</td></tr>`);
         resHtml += `</table></div>`;
     };
-    drawGroup("甲組名單", groupA); 
-    drawGroup("乙組名單", groupB); 
-    drawGroup("丙組名單", groupC);
+    
+    drawGroup("甲組得獎名單", groupA); 
+    drawGroup("乙組得獎名單", groupB); 
+    drawGroup("丙組得獎名單", groupC);
+    drawGroup("女子組得獎名單 (排除甲乙丙)", groupLadies);
+    drawGroup("長青組得獎名單 (排除甲乙丙)", groupElders);
+    drawGroup("青少年組得獎名單 (排除甲乙丙)", groupYouths);
 
     resHtml += `<div style="background:#e6f7ff; padding:10px; border-radius:8px; margin-top:10px;"><b>🎰 會外會最終結果 (採計 G${sbConfig.map(n=>n+1).join(',')})</b><table class="rank-table">`;
     if (sideBetPool.length === 0) {
@@ -505,7 +534,7 @@ function manualSettle() {
     } else {
         let maxSideSum = sideBetPool[0].sum;
         let winners = sideBetPool.filter(p => p.sum === maxSideSum && maxSideSum > 0);
-        winners.forEach(p => resHtml += `<tr><td>會外會冠軍</td><td><b>${p.name}</b></td><td>最終加總: ${p.sum}</td></tr>`);
+        winners.forEach(p => resHtml += `<tr><td width="100">會外會冠軍</td><td width="150"><b>${p.name}</b></td><td>最終加總: ${p.sum}</td></tr>`);
     }
     resHtml += `</table></div></div>`;
     
@@ -522,11 +551,11 @@ function saveAll() {
         potTargetScore: document.getElementById('potTargetScore').value,
         bonusRules, players
     };
-    localStorage.setItem('eb_bowling_final_v6', JSON.stringify(data));
+    localStorage.setItem('eb_bowling_final_v7', JSON.stringify(data));
 }
 
 function loadSavedData() {
-    const saved = localStorage.getItem('eb_bowling_final_v6');
+    const saved = localStorage.getItem('eb_bowling_final_v7');
     if (saved) {
         const d = JSON.parse(saved);
         document.getElementById('playersPerPair').value = d.pPerPair;
@@ -538,8 +567,22 @@ function loadSavedData() {
     }
 }
 
-function clearData() { if(confirm("重置所有？")) { localStorage.removeItem('eb_bowling_final_v6'); location.reload(); } }
-function exportToCSV() { /* CSV 匯出邏輯可視需求實作 */ }
+function clearData() { if(confirm("重置所有？")) { localStorage.removeItem('eb_bowling_final_v7'); location.reload(); } }
+function exportToCSV() {
+    let csv = "\ufeff編號,姓名,標,外,組別,加分,";
+    players[0].scores.forEach((_, i) => csv += `G${i+1},`);
+    csv += "總分,獲獎\n";
+    players.forEach(p => {
+        csv += `${p.displayId},${p.name},${p.isPot?'Y':''},${p.isSideBet?'Y':''},${p.tag},${p.bonus},`;
+        p.scores.forEach(s => csv += `${s},`);
+        csv += `${p.total},${p.award || ''}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `保齡球結算報表_${new Date().toLocaleDateString()}.csv`;
+    link.click();
+}
 </script>
 </body>
 </html>
