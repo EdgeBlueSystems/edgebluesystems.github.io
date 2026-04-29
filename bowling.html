@@ -103,7 +103,7 @@
     .pot-game-row { margin-bottom: 8px; font-size: 0.9rem; }
     .pot-game-title { font-weight: bold; color: var(--eb-pink); margin-right: 8px; }
     .pot-winner-tag { display: inline-block; background: #fff0f6; border: 1px solid #ffadd2; padding: 2px 8px; border-radius: 4px; margin-right: 5px; font-size: 12px; }
-    .fallback-note { font-size: 10px; color: #999; font-style: italic; }
+    .sidebet-winner-tag { display: inline-block; background: #e6f7ff; border: 1px solid #91d5ff; padding: 2px 8px; border-radius: 4px; margin-right: 5px; font-size: 12px; color: #0050b3; }
 
     .draw-section { background: #fff9db; padding: 20px; border-radius: 12px; border: 2px dashed #fab005; margin: 20px 0; }
     .draw-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: start; }
@@ -143,7 +143,7 @@
     </div>
     
     <div style="margin-top:20px;">
-        <label style="font-size:13px; font-weight:bold; color:var(--eb-blue);">🎰 會外會採計局數勾選 (取該單局最高者)：</label>
+        <label style="font-size:13px; font-weight:bold; color:var(--eb-blue);">🎰 會外會採計局數勾選 (取該單局參加者最高分者)：</label>
         <div id="sideBetSelector" class="selector-grid"></div>
     </div>
 
@@ -183,7 +183,7 @@
         </div>
         <!-- 2. 即時會外會 -->
         <div class="live-box">
-            <h3>🎰 即時會外會預覽 (勾選局之單局最高)</h3>
+            <h3>🎰 即時會外會預覽 (單局最高分)</h3>
             <div id="liveSideBetPreview">等待錄入成績...</div>
         </div>
         <!-- 3. 甲組預覽 -->
@@ -433,29 +433,26 @@ function updateLiveResults() {
     }
     document.getElementById('livePotResults').innerHTML = potHtml || "尚未有參賽成績";
 
-    // 2. 會外會即時統計 (單局最高分)
+    // 2. 會外會即時統計 (單局最高分 - 無關門檻)
     let sbPreviewHtml = "";
     if (sbConfig.length === 0) {
         sbPreviewHtml = `<div style="font-size:0.8rem; color:#999;">尚未勾選採計局數</div>`;
     } else {
         let sideBetPool = players.filter(p => p.isSideBet);
-        let maxSingle = 0;
-        let winners = [];
-        sideBetPool.forEach(p => {
-            sbConfig.forEach(gi => {
-                if(p.scores[gi] > maxSingle) {
-                    maxSingle = p.scores[gi];
-                    winners = [{name: p.name, score: maxSingle, game: gi+1}];
-                } else if (p.scores[gi] === maxSingle && maxSingle > 0) {
-                    winners.push({name: p.name, score: maxSingle, game: gi+1});
-                }
-            });
+        let gameWinnersHtml = "";
+        sbConfig.forEach(gi => {
+            let validScores = sideBetPool.map(p => p.scores[gi]).filter(s => s > 0);
+            if (validScores.length > 0) {
+                let maxScoreInGame = Math.max(...validScores);
+                let gameWinners = sideBetPool.filter(p => p.scores[gi] === maxScoreInGame);
+                gameWinnersHtml += `<div class="pot-game-row"><span class="pot-game-title" style="color:var(--eb-accent)">G${gi+1}:</span>`;
+                gameWinners.forEach(w => {
+                    gameWinnersHtml += `<span class="sidebet-winner-tag">${w.name}(${maxScoreInGame})</span>`;
+                });
+                gameWinnersHtml += `</div>`;
+            }
         });
-        if (winners.length > 0) {
-            winners.forEach(w => { sbPreviewHtml += `<div><b>${w.name}</b> (G${w.game}: <span style="color:var(--eb-pink); font-weight:bold;">${w.score}</span> 分)</div>`; });
-        } else {
-            sbPreviewHtml = `<div style="font-size:0.8rem; color:#999;">等待錄入成績...</div>`;
-        }
+        sbPreviewHtml = gameWinnersHtml || `<div style="font-size:0.8rem; color:#999;">等待錄入成績...</div>`;
     }
     document.getElementById('liveSideBetPreview').innerHTML = sbPreviewHtml;
 
@@ -477,7 +474,7 @@ function manualSettle() {
     const rankBArr = Array.from(document.querySelectorAll('input[name="rankCheck"]:checked')).map(cb => parseInt(cb.value));
     const sbConfig = Array.from(document.querySelectorAll('input[name="sbCheck"]:checked')).map(cb => parseInt(cb.value) - 1);
 
-    if (rankBArr.length !== 3) return alert("請勾選 3 個乙組採計名次！");
+    if (rankBArr.length !== 3) return alert("請勾選 3 個乙組採計項次！");
 
     players.forEach(p => p.award = "");
     let pool = [...players].filter(p => p.total > 0).sort((a, b) => b.total !== a.total ? b.total - a.total : getStability(a.scores) - getStability(b.scores));
@@ -502,7 +499,7 @@ function manualSettle() {
         groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
     }
 
-    // --- 三冠與後冠 (不進入 awardedIds, 獨立領獎) ---
+    // --- 三冠與後冠 ---
     const tripleWinners = [...pool].sort((a, b) => {
         let sumA = a.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
         let sumB = b.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
@@ -514,7 +511,7 @@ function manualSettle() {
         return sumB - sumA;
     });
 
-    // 4. 身份類組排名 (模糊比對 + 互斥排除)
+    // 4. 身份類組排名
     const settleCategory = (keyword, label) => {
         let catPool = pool.filter(p => !awardedIds.has(p.displayId) && p.tag.includes(keyword));
         let winners = catPool.slice(0, pLimit);
@@ -545,6 +542,23 @@ function manualSettle() {
     drawGroup("女子組排名 (排除甲乙丙)", groupLadies);
     drawGroup("長青組排名 (排除甲乙丙)", groupElders);
     drawGroup("青少年組排名 (排除甲乙丙)", groupYouths);
+
+    // 會外會最終結果 (單局最高)
+    if (sbConfig.length > 0) {
+        resHtml += `<div style="background:#e6f7ff; padding:10px; border-radius:8px; border:1px solid #91d5ff; margin-bottom:15px;"><b>🎰 會外會單局得主</b>`;
+        let sideBetPool = players.filter(p => p.isSideBet);
+        sbConfig.forEach(gi => {
+            let validScores = sideBetPool.map(p => p.scores[gi]).filter(s => s > 0);
+            if (validScores.length > 0) {
+                let maxS = Math.max(...validScores);
+                let winners = sideBetPool.filter(p => p.scores[gi] === maxS);
+                resHtml += `<div style="padding:5px 0; border-bottom:1px dashed #91d5ff;">G${gi+1} 冠軍: `;
+                winners.forEach(w => { resHtml += `<b style="margin-right:10px;">${w.name} (${maxS})</b>`; });
+                resHtml += `</div>`;
+            }
+        });
+        resHtml += `</div>`;
+    }
 
     // 三冠與後冠
     resHtml += `<div style="background:#fff7e6; padding:10px; border-radius:8px; border:1px solid #ffe7ba; margin-bottom:15px;">
