@@ -120,8 +120,34 @@
   </div>
 </div>
 
-<footer>
-  © 2026 銳青科技整合有限公司 | 高爾夫賽務開發小組
+<div style="max-width:1400px; margin: 30px auto; padding: 0 15px;">
+  <div style="background:#fff; border-radius:12px; padding:30px 35px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border-top:4px solid var(--eb-accent); line-height:1.85; color:#475569; font-size:0.93rem;">
+
+    <h3 style="color:var(--eb-blue); font-size:1.1rem; border-left:5px solid var(--eb-accent); padding-left:14px; margin-top:0;">⛳ 抓球 (Skins) 賽制完整說明</h3>
+
+    <p>「抓球」（Skins）是高爾夫球友私下對決中最刺激的賽制之一，規則直接：<strong>每一洞的贏家拿走該洞的點數（皮）</strong>。若該洞平手，點數滾入下一洞，形成「滾球」效應，讓最後幾洞的張力倍增。本系統支援四人組內的完整六組對決（1v2、1v3、1v4、2v3、2v4、3v4），每組獨立計算，互不影響。</p>
+
+    <h4 style="color:var(--eb-blue); margin-bottom:6px;">● 讓桿矩陣的運作原理</h4>
+    <p>業餘球友之間差點差距往往很大，若不讓桿，高差點球友幾乎沒有勝算，比賽失去樂趣。本系統採用「交叉讓桿矩陣」設計：由強者（低差點）讓弱者（高差點）若干桿，填入左側設定表即可。系統會自動對照當日球場的難度索引（HDCP），在 HDCP 數值最小（最難）的洞數優先折讓，完全符合高爾夫國際慣例。</p>
+    <p>舉例來說，若 A 讓 B 兩桿，系統會在球場 HDCP 第 1 難和第 2 難的洞各給 B 扣一桿，其他洞不受影響。這樣的設計讓讓桿發生在真正考驗技術的洞別，比起傳統的全場均攤更加公平合理。</p>
+
+    <h4 style="color:var(--eb-blue); margin-bottom:6px;">● HDCP 即時編輯功能</h4>
+    <p>台灣各球場的難度索引（HDCP）有時會因草況、氣候或球道整修而臨時調整，與系統預設值出現落差。本系統的 HDCP 欄位全部開放即時編輯（橘色數字欄位），賽務組只需對照當日計分卡，直接在頁面上修改，系統即時重新計算所有讓桿與對決結果，無需重新整理頁面。</p>
+
+    <h4 style="color:var(--eb-blue); margin-bottom:6px;">● Birdie（小鳥）統計</h4>
+    <p>系統同步統計每位球員全場的 Birdie 數（低於標準桿一桿）。Birdie 統計常用於平手時的加賽依據，或作為特別獎（如 Birdie 獎）的發放標準。數據自動累計，無需另行計算。</p>
+
+    <div style="background:#fffbeb; border-left:4px solid var(--eb-gold); padding:12px 16px; border-radius:0 8px 8px 0; margin-top:18px; font-size:0.88rem; color:#78350f;">
+      <strong>使用提示：</strong>讓桿欄位填入的是「總讓桿數」，例如填 3 代表在 HDCP 1、2、3 的洞各折讓一桿。每點價值可自由設定，結算表的淨勝點數乘以點值即為金額。資料僅存於您的裝置，關閉頁面後下次仍可讀取。
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center; padding:40px 20px; color:#94a3b8; font-size:0.82rem;">
+  © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+  彰化地區專業資訊委外與賽務自動化服務商 |
+  <a href="./privacy.html" style="color:#94a3b8; text-decoration:none;">隱私權政策</a> |
+  <a href="./terms.html" style="color:#94a3b8; text-decoration:none;">服務條款</a>
 </footer>
 
 <script>
