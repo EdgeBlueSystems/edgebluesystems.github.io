@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>抓球（Skins）賽制全解析：讓桿怎麼算才公平？| 銳青科技整合</title>
+  <meta name="description" content="完整說明高爾夫抓球（Skins）賽制規則、讓桿矩陣計算方式、HDCP 難度索引與滾球機制，適合台灣業餘球友參考。">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
+  <style>
+    :root { --eb-blue: #1a3a5f; --eb-accent: #2d6a4f; --eb-gold: #ff9f1c; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: #f8fafc; color: #334155; line-height: 1.85; }
+    nav { width: 100%; background: #333; padding: 12px 20px; box-sizing: border-box; }
+    nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; display: inline-block; }
+    nav a:hover { color: #fff; }
+    nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid var(--eb-accent); padding-bottom: 3px; }
+    .hero { background: linear-gradient(135deg, #1a3a5f, #16213e); color: white; padding: 50px 20px 40px; text-align: center; }
+    .hero .category { font-size: 0.8rem; background: var(--eb-accent); padding: 3px 12px; border-radius: 20px; display: inline-block; margin-bottom: 12px; }
+    .hero h1 { margin: 0 auto 12px; font-size: 1.8rem; line-height: 1.4; max-width: 800px; }
+    .hero .meta { font-size: 0.85rem; opacity: 0.8; margin-top: 12px; }
+    .layout { max-width: 860px; margin: 40px auto; padding: 0 20px; }
+    .article-body { background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    h2 { color: var(--eb-blue); font-size: 1.2rem; border-left: 4px solid var(--eb-accent); padding-left: 12px; margin-top: 35px; }
+    h3 { color: var(--eb-blue); font-size: 1rem; margin-top: 25px; }
+    p { color: #475569; font-size: 0.95rem; margin: 0 0 14px; }
+    .highlight-box { background: #f0fdf4; border-left: 4px solid var(--eb-accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+    .highlight-box strong { color: var(--eb-blue); display: block; margin-bottom: 6px; }
+    .example-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+    @media (max-width: 600px) { .example-grid { grid-template-columns: 1fr; } }
+    .example-card { background: #f8fafc; border-radius: 8px; padding: 15px; border: 1px solid #e2e8f0; font-size: 0.88rem; color: #475569; }
+    .example-card strong { color: var(--eb-blue); display: block; margin-bottom: 6px; }
+    .hdcp-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.88rem; }
+    .hdcp-table th { background: var(--eb-blue); color: white; padding: 10px; text-align: center; }
+    .hdcp-table td { padding: 9px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #475569; }
+    .hdcp-table tr:nth-child(even) td { background: #f8fafc; }
+    .tip-box { background: #fffbeb; border-left: 4px solid var(--eb-gold); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 0.9rem; color: #78350f; }
+    .tool-cta { background: var(--eb-blue); color: white; padding: 25px 30px; border-radius: 12px; text-align: center; margin: 30px 0; }
+    .tool-cta h3 { margin: 0 0 10px; color: white; }
+    .tool-cta p { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0 0 16px; }
+    .tool-cta a { background: var(--eb-accent); color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; }
+    .related { background: white; border-radius: 12px; padding: 25px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    .related h3 { color: var(--eb-blue); margin-top: 0; font-size: 1rem; }
+    .related a { display: block; color: var(--eb-accent); text-decoration: none; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+    .related a:last-child { border-bottom: none; }
+    footer { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 0.82rem; border-top: 1px solid #e2e8f0; }
+    footer a { color: #94a3b8; text-decoration: none; }
+    @media (max-width: 600px) { .article-body { padding: 22px 18px; } .hero h1 { font-size: 1.4rem; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="./index.html">🏠 首頁</a>
+  <a href="./golf_calc.html">⛳ 高爾夫</a>
+  <a href="./bowling.html">🎳 保齡球</a>
+  <a href="./about.html">👤 關於我們</a>
+  <span>📚 知識專欄</span>
+</nav>
+
+<div class="hero">
+  <div class="category">⛳ 高爾夫知識</div>
+  <h1>抓球（Skins）賽制全解析<br>讓桿怎麼算才公平？</h1>
+  <div class="meta">銳青科技整合 EdgeBlue Systems｜2026 年 5 月｜閱讀約需 5 分鐘</div>
+</div>
+
+<div class="layout">
+  <div class="article-body">
+
+    <p>「抓球」（Skins Game）是台灣高爾夫球友私下對決中最刺激的賽制之一，每一洞的贏家拿走該洞的點數，若平手則點數滾入下一洞，造成越來越大的「大局」，讓比賽張力持續累積到最後一洞。</p>
+    <p>然而，當組內球友的實力差距懸殊時，若不做讓桿處理，強者幾乎每洞獲勝，弱者毫無勝算，比賽的樂趣也大打折扣。本文將完整說明抓球賽制的讓桿計算邏輯，讓每一場球敘都能公平又有趣。</p>
+
+    <h2>抓球賽制基本規則</h2>
+    <p>抓球（Skins）的基本玩法非常直觀：18 洞每洞各設一個「皮（Skin）」，每洞桿數最少者獨得該洞的皮。若有兩人以上並列最低桿，該洞皮不結算，累計到下一洞，形成「滾球」效應。</p>
+
+    <div class="highlight-box">
+      <strong>滾球範例</strong>
+      第 1 洞平手（無人獨得）→ 第 2 洞的彩金變成 2 皮。若第 2 洞又平手 → 第 3 洞累積至 3 皮。直到某洞有人單獨贏，才一次結清所有累積的皮。這就是為什麼抓球的後半段往往比前半段更緊張刺激。
+    </div>
+
+    <h2>讓桿的必要性與 HDCP 難度索引</h2>
+    <p>高爾夫差點（Handicap）代表球員與標準桿的距離，差點越高代表實力越弱。在四人組的抓球對決中，若 A 的差點是 8、B 的差點是 20，直接對打對 B 極不公平。讓桿機制就是為了彌補這個差距。</p>
+    <p>讓桿並非平均分配到每一洞，而是根據球場的「難度索引（HDCP）」來決定在哪些洞折讓。HDCP 1 代表全場最難的洞，HDCP 18 代表最容易的洞。讓幾桿，就在 HDCP 最小的那幾洞各折讓一桿。</p>
+
+    <table class="hdcp-table">
+      <thead><tr><th>讓桿數</th><th>折讓發生的洞別</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>讓 1 桿</td><td>HDCP 1 的洞</td><td>全場最難的洞折讓一桿</td></tr>
+        <tr><td>讓 2 桿</td><td>HDCP 1、2 的洞</td><td>最難的兩洞各折讓一桿</td></tr>
+        <tr><td>讓 4 桿</td><td>HDCP 1、2、3、4 的洞</td><td>最難的四洞各折讓一桿</td></tr>
+        <tr><td>讓 9 桿</td><td>HDCP 1～9 的洞</td><td>前九難度的每洞各折讓一桿</td></tr>
+      </tbody>
+    </table>
+
+    <h2>四人組的交叉讓桿矩陣</h2>
+    <p>在四人組對決中，六組對決關係（1v2、1v3、1v4、2v3、2v4、3v4）的讓桿數各不相同，需要用「交叉讓桿矩陣」來管理。矩陣的橫列代表讓桿方，縱欄代表被讓方。</p>
+
+    <div class="example-grid">
+      <div class="example-card">
+        <strong>範例：四人差點</strong>
+        球員 A：差點 8<br>
+        球員 B：差點 14<br>
+        球員 C：差點 20<br>
+        球員 D：差點 26
+      </div>
+      <div class="example-card">
+        <strong>對應讓桿矩陣（A讓B差距）</strong>
+        A 讓 B：6 桿<br>
+        A 讓 C：12 桿<br>
+        A 讓 D：18 桿<br>
+        B 讓 C：6 桿<br>
+        B 讓 D：12 桿<br>
+        C 讓 D：6 桿
+      </div>
+    </div>
+
+    <p>讓桿數通常取差點差距的 3/4 或直接以差距計算，具體比例由主辦方在賽前統一規定。重要的是，所有讓桿設定必須在開球前完成並公告，賽中不得更改。</p>
+
+    <h2>讓桿後的有效桿數計算</h2>
+    <p>以 A 讓 B 六桿為例，球場 HDCP 1～6 的六洞，B 的有效桿數各減一桿。假設第 3 洞是 HDCP 2（第二難），A 打了 4 桿、B 打了 5 桿，B 的有效桿數為 5−1=4 桿，兩人平手，該洞滾球。</p>
+
+    <div class="tip-box">
+      💡 <strong>實務提示：</strong>HDCP 難度索引會隨球場定期調整，建議賽前對照當日計分卡確認。若有異動，應即時更新系統設定，避免讓桿發生在錯誤的洞別而引發爭議。
+    </div>
+
+    <h2>Birdie 統計與加賽規則</h2>
+    <p>許多社團會在抓球之外另設「小鳥獎（Birdie Award）」，獎勵當日打出低於標準桿一桿（Birdie）或更好成績的球友。Birdie 統計也常用於總點數相同時的加賽判定依據。建議賽務組在結算時同步統計各球員的 Birdie 數，避免賽後補算爭議。</p>
+
+    <div class="tool-cta">
+      <h3>🏆 立即使用專業抓球計算系統</h3>
+      <p>銳青科技整合的抓球版系統支援四人交叉讓桿矩陣、即時 HDCP 編輯、自動六組對決結算與 Birdie 統計，完全免費使用。</p>
+      <a href="./golf_skins.html">→ 前往抓球計算工具</a>
+    </div>
+
+  </div>
+
+  <div class="related">
+    <h3>📚 相關文章</h3>
+    <a href="./article_peoria.html">新新貝利法完整教學：台灣高爾夫差點怎麼算？</a>
+    <a href="./article_hdcp.html">高爾夫球場難度索引（HDCP）是什麼？中彰投球場資料整理</a>
+    <a href="./article_bowling.html">台灣保齡球聯賽甲乙丙組賽制完整說明</a>
+    <a href="./articles.html">← 回到知識專欄列表</a>
+  </div>
+</div>
+
+<footer>
+  © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+  彰化地區專業資訊委外與賽務自動化服務商 |
+  <a href="./privacy.html">隱私權政策</a> |
+  <a href="./terms.html">服務條款</a>
+</footer>
+</body>
+</html>

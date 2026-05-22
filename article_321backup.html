@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中小企業必看：3-2-1 備份原則實作指南 | 銳青科技整合</title>
+  <meta name="description" content="以 3-2-1 備份原則保護企業核心數據，避免勒索病毒、硬體故障與人為失誤造成不可挽回的損失。本文提供中彰投中小企業可立即執行的備份架構建議。">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
+  <style>
+    :root { --eb-blue: #1a3a5f; --eb-accent: #2d6a4f; --eb-gold: #ff9f1c; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: #f8fafc; color: #334155; line-height: 1.85; }
+    nav { width: 100%; background: #333; padding: 12px 20px; box-sizing: border-box; }
+    nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; display: inline-block; }
+    nav a:hover { color: #fff; }
+    nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid var(--eb-accent); padding-bottom: 3px; }
+    .hero { background: linear-gradient(135deg, #1a3a5f, #0f2027); color: white; padding: 50px 20px 40px; text-align: center; }
+    .hero .category { font-size: 0.8rem; background: #e74c3c; padding: 3px 12px; border-radius: 20px; display: inline-block; margin-bottom: 12px; }
+    .hero h1 { margin: 0 auto 12px; font-size: 1.8rem; line-height: 1.4; max-width: 800px; }
+    .hero .meta { font-size: 0.85rem; opacity: 0.8; margin-top: 12px; }
+    .layout { max-width: 860px; margin: 40px auto; padding: 0 20px; }
+    .article-body { background: white; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    h2 { color: var(--eb-blue); font-size: 1.2rem; border-left: 4px solid var(--eb-accent); padding-left: 12px; margin-top: 35px; }
+    h3 { color: var(--eb-blue); font-size: 1rem; margin-top: 25px; }
+    p { color: #475569; font-size: 0.95rem; margin: 0 0 14px; }
+    .rule-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+    @media (max-width: 600px) { .rule-grid { grid-template-columns: 1fr; } }
+    .rule-card { border-radius: 10px; padding: 20px; text-align: center; }
+    .rule-card.r3 { background: #fef2f2; border: 2px solid #ef4444; }
+    .rule-card.r2 { background: #fffbeb; border: 2px solid #f59e0b; }
+    .rule-card.r1 { background: #f0fdf4; border: 2px solid #22c55e; }
+    .rule-card .num { font-size: 3rem; font-weight: bold; line-height: 1; margin-bottom: 8px; }
+    .rule-card.r3 .num { color: #ef4444; }
+    .rule-card.r2 .num { color: #f59e0b; }
+    .rule-card.r1 .num { color: #22c55e; }
+    .rule-card .label { font-size: 0.9rem; font-weight: bold; color: var(--eb-blue); margin-bottom: 6px; }
+    .rule-card .desc { font-size: 0.82rem; color: #64748b; line-height: 1.6; }
+    .highlight-box { background: #f0fdf4; border-left: 4px solid var(--eb-accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+    .highlight-box strong { color: var(--eb-blue); display: block; margin-bottom: 6px; }
+    .warn-box { background: #fef2f2; border-left: 4px solid #ef4444; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 0.9rem; color: #7f1d1d; }
+    .tip-box { background: #fffbeb; border-left: 4px solid var(--eb-gold); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 20px 0; font-size: 0.9rem; color: #78350f; }
+    .checklist { list-style: none; padding: 0; margin: 15px 0; }
+    .checklist li { padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 0.92rem; display: flex; gap: 10px; align-items: flex-start; }
+    .checklist li::before { content: "☐"; color: var(--eb-accent); font-size: 1.1rem; flex-shrink: 0; }
+    .cta-box { background: var(--eb-blue); color: white; padding: 25px 30px; border-radius: 12px; text-align: center; margin: 30px 0; }
+    .cta-box h3 { margin: 0 0 10px; color: white; }
+    .cta-box p { color: rgba(255,255,255,0.85); font-size: 0.9rem; margin: 0 0 16px; }
+    .cta-box a { background: var(--eb-accent); color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; }
+    .related { background: white; border-radius: 12px; padding: 25px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    .related h3 { color: var(--eb-blue); margin-top: 0; font-size: 1rem; }
+    .related a { display: block; color: var(--eb-accent); text-decoration: none; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+    .related a:last-child { border-bottom: none; }
+    footer { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 0.82rem; border-top: 1px solid #e2e8f0; }
+    footer a { color: #94a3b8; text-decoration: none; }
+    @media (max-width: 600px) { .article-body { padding: 22px 18px; } .hero h1 { font-size: 1.4rem; } }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="./index.html">🏠 首頁</a>
+  <a href="./golf_calc.html">⛳ 高爾夫</a>
+  <a href="./bowling.html">🎳 保齡球</a>
+  <a href="./about.html">👤 關於我們</a>
+  <span>📚 知識專欄</span>
+</nav>
+
+<div class="hero">
+  <div class="category">🛡️ 企業資安</div>
+  <h1>中小企業必看<br>3-2-1 備份原則實作指南</h1>
+  <div class="meta">銳青科技整合 EdgeBlue Systems｜2026 年 5 月｜閱讀約需 7 分鐘</div>
+</div>
+
+<div class="layout">
+  <div class="article-body">
+
+    <p>2024 年至 2026 年間，台灣中小企業遭受勒索病毒攻擊的案例持續攀升。許多企業在加密事件發生後才驚覺：備份檔案要嘛沒有、要嘛跟主機放在同一台機器上、要嘛太久沒有驗證根本無法還原。一次勒索攻擊，往往讓企業多年累積的客戶資料、財務紀錄、設計圖檔瞬間消失。</p>
+    <p>3-2-1 備份原則是目前資安業界最被廣泛認可的基礎備份架構，只要確實執行，就能大幅降低資料永久遺失的風險。</p>
+
+    <h2>什麼是 3-2-1 備份原則？</h2>
+
+    <div class="rule-grid">
+      <div class="rule-card r3">
+        <div class="num">3</div>
+        <div class="label">3 份資料副本</div>
+        <div class="desc">包含原始資料本身，至少保留三份獨立的副本，確保單一副本損毀時仍有備援</div>
+      </div>
+      <div class="rule-card r2">
+        <div class="num">2</div>
+        <div class="label">2 種不同媒介</div>
+        <div class="desc">分散在兩種不同的儲存媒介（例如：硬碟 + NAS，或硬碟 + 雲端），避免同類型設備同時故障</div>
+      </div>
+      <div class="rule-card r1">
+        <div class="num">1</div>
+        <div class="label">1 份異地備援</div>
+        <div class="desc">至少一份副本存放在實體分離的地點（異地或雲端），防止火災、淹水等天災造成全部毀損</div>
+      </div>
+    </div>
+
+    <h2>為什麼「有備份」還是不夠？</h2>
+    <p>許多中小企業以為只要有外接硬碟就安全了，但現實中有幾個常見的致命盲點：</p>
+
+    <div class="warn-box">
+      ⚠️ <strong>高風險備份行為：</strong><br>
+      • 備份硬碟長期接在主機上：勒索病毒會自動加密所有連接的磁碟，包括備份硬碟。<br>
+      • 備份檔案從未驗證可還原性：備份程序顯示成功，但實際還原時卻發現檔案損毀。<br>
+      • 所有備份都在同一棟建築：火災或淹水可能造成全數毀損。<br>
+      • 備份頻率過低：每月才備份一次，一旦發生事故將損失整月資料。
+    </div>
+
+    <h2>中小企業的 3-2-1 實作建議</h2>
+
+    <h3>第一份：本地主機原始資料</h3>
+    <p>企業日常運作的伺服器或 NAS 上的原始資料，這是第一份。建議使用 RAID 陣列提高單一硬碟故障的容錯能力，但 RAID 不等於備份，它只防止硬碟故障，無法防止勒索病毒或人為誤刪。</p>
+
+    <h3>第二份：本地獨立 NAS 或外接媒介</h3>
+    <p>在同一辦公室內，另外準備一台獨立的 NAS 或定期更換的外接硬碟作為第二份備份。關鍵是：備份完成後必須實體斷線（外接硬碟拔除、NAS 設為唯讀），避免勒索病毒橫向擴散。</p>
+
+    <h3>第三份：異地或雲端備份</h3>
+    <p>這是最多企業忽略的一環。建議方案包括：雲端備份服務（如 Backblaze B2、AWS S3）、異地 NAS（例如老闆家中的 NAS）、或委託 IT 服務商進行異地代管備份。</p>
+
+    <div class="highlight-box">
+      <strong>雲端備份費用參考</strong>
+      以 1TB 資料量為例，Backblaze B2 約每月 NT$180 元，AWS S3 Standard 約每月 NT$750 元。對多數中小企業而言，這個成本遠低於一次資安事件的損失。
+    </div>
+
+    <h2>備份排程建議</h2>
+    <p>備份的頻率應根據資料的更新速度與損失容忍度來決定：</p>
+    <ul style="color:#475569; font-size:0.95rem; line-height:2;">
+      <li><strong>每日備份：</strong>適合財務資料、客戶訂單、設計檔等每天都在更新的核心資料</li>
+      <li><strong>每週備份：</strong>適合變動較少的參考文件、教育訓練資料</li>
+      <li><strong>每月備份：</strong>長期封存用，適合年度結算報表等靜態資料</li>
+    </ul>
+
+    <h2>備份還原驗證：最容易被忽略的一步</h2>
+    <p>備份最重要的不是「做了備份」，而是「備份可以還原」。建議每季至少進行一次還原測試，選取部分關鍵檔案實際執行還原流程，確認資料完整性與還原所需時間。</p>
+
+    <div class="tip-box">
+      💡 <strong>銳青科技整合建議：</strong>在每次備份完成後，自動產生還原測試報告，並設定告警機制，當備份任務失敗或超過預定時間未執行時，立即通知 IT 負責人。
+    </div>
+
+    <h2>立即可執行的備份健檢清單</h2>
+    <ul class="checklist">
+      <li>確認備份硬碟平時不與主機連線</li>
+      <li>確認至少有一份備份存放在辦公室以外的地點</li>
+      <li>確認備份排程正在執行且有成功記錄</li>
+      <li>最近三個月內有實際執行過還原測試</li>
+      <li>備份資料有加密保護，避免備份媒介遺失造成資料外洩</li>
+      <li>備份保留期間符合產業法規要求（部分行業需保留 5～7 年）</li>
+    </ul>
+
+    <div class="cta-box">
+      <h3>🛡️ 需要 IT 資安顧問協助？</h3>
+      <p>銳青科技整合提供中彰投地區中小企業的備份架構規劃、NGFW 部署與 IT 委外服務，歡迎聯繫我們進行免費諮詢。</p>
+      <a href="./about.html">→ 聯絡銳青科技整合</a>
+    </div>
+
+  </div>
+
+  <div class="related">
+    <h3>📚 相關文章</h3>
+    <a href="./article_ngfw.html">下一代防火牆（NGFW）入門：為什麼傳統防火牆已經不夠用？</a>
+    <a href="./article_peoria.html">新新貝利法完整教學：台灣高爾夫差點怎麼算？</a>
+    <a href="./article_bowling.html">台灣保齡球聯賽甲乙丙組賽制完整說明</a>
+    <a href="./articles.html">← 回到知識專欄列表</a>
+  </div>
+</div>
+
+<footer>
+  © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+  彰化地區專業資訊委外與賽務自動化服務商 |
+  <a href="./privacy.html">隱私權政策</a> |
+  <a href="./terms.html">服務條款</a>
+</footer>
+</body>
+</html>
