@@ -507,73 +507,131 @@ function manualSettle() {
     if (rankBArr.length !== 3) return alert("請勾選 3 個乙組採計項次！");
 
     players.forEach(p => p.award = "");
-    let pool = [...players].filter(p => p.total > 0).sort((a, b) => b.total !== a.total ? b.total - a.total : getStability(a.scores) - getStability(b.scores));
+
+    // 依總分排序，同分以穩定度（最高最低差距小）優先
+    let pool = [...players].filter(p => p.total > 0).sort((a, b) =>
+        b.total !== a.total ? b.total - a.total : getStability(a.scores) - getStability(b.scores)
+    );
+
+    // 全局已得獎 Set，所有獎項互斥
     let awardedIds = new Set();
-    
-    // 1. 甲組
+
+    // ── 1. 甲組（總分前 N 名）──────────────────────────────
     let groupA = pool.slice(0, pLimit);
     groupA.forEach((p, i) => { p.award = `甲組-${i+1}`; awardedIds.add(p.displayId); });
 
-    // 2. 乙組
+    // ── 2. 三冠（前三局總分最高，排除已得獎）──────────────
+    let triplePool = [...pool]
+        .filter(p => !awardedIds.has(p.displayId))
+        .sort((a, b) => {
+            const sumA = a.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
+            const sumB = b.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
+            return sumB - sumA;
+        });
+    let tripleWinner = triplePool[0] || null;
+    let tripleScore = tripleWinner ? tripleWinner.scores.slice(0, 3).reduce((a, b) => a + b, 0) : 0;
+    if (tripleWinner) {
+        tripleWinner.award = "三冠";
+        awardedIds.add(tripleWinner.displayId);
+    }
+
+    // ── 3. 單冠（後段局數總分最高，排除已得獎）────────────
+    // 後段定義：局數 > 3 的部分（G4 以後），若只有3局則取最後1局
+    let backPool = [...pool]
+        .filter(p => !awardedIds.has(p.displayId))
+        .sort((a, b) => {
+            const sumA = a.scores.slice(3).reduce((acc, v) => acc + v, 0);
+            const sumB = b.scores.slice(3).reduce((acc, v) => acc + v, 0);
+            return sumB - sumA;
+        });
+    let backWinner = backPool[0] || null;
+    let backScore = backWinner ? backWinner.scores.slice(3).reduce((a, b) => a + b, 0) : 0;
+    if (backWinner) {
+        backWinner.award = "單冠";
+        awardedIds.add(backWinner.displayId);
+    }
+
+    // ── 4. 乙組（排除已得獎，分數 ≤ 乙組門檻）─────────────
     let bSum = 0;
-    rankBArr.forEach(r => { if(groupA[r-1]) bSum += groupA[r-1].total; });
+    rankBArr.forEach(r => { if (groupA[r-1]) bSum += groupA[r-1].total; });
     let bThresh = (bSum / 3) * ratioB;
     let groupB = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= bThresh).slice(0, pLimit);
     groupB.forEach((p, i) => { p.award = `乙組-${i+1}`; awardedIds.add(p.displayId); });
 
-    // 3. 丙組
+    // ── 5. 丙組（排除已得獎，分數 ≤ 丙組門檻）─────────────
     let groupC = [];
     let cThresh = groupB.length > 0 ? groupB[0].total * ratioC : 0;
-    if(cThresh > 0) {
+    if (cThresh > 0) {
         groupC = pool.filter(p => !awardedIds.has(p.displayId) && p.total <= cThresh).slice(0, pLimit);
         groupC.forEach((p, i) => { p.award = `丙組-${i+1}`; awardedIds.add(p.displayId); });
     }
 
-    // --- 三冠與後冠 ---
-    const tripleWinners = [...pool].sort((a, b) => {
-        let sumA = a.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
-        let sumB = b.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
-        return sumB - sumA;
-    });
-    const backWinners = [...pool].sort((a, b) => {
-        let sumA = a.scores.slice(3).reduce((acc, v) => acc + v, 0);
-        let sumB = b.scores.slice(3).reduce((acc, v) => acc + v, 0);
-        return sumB - sumA;
-    });
+    // ── 6. 加分組（排除已得獎，tag 非「一般」且非女子）────
+    const bonusKeywords = bonusRules
+        .filter(r => r.name !== "一般" && !r.name.includes("女子"))
+        .map(r => r.name);
+    let groupBonus = pool.filter(p =>
+        !awardedIds.has(p.displayId) &&
+        bonusKeywords.some(k => p.tag.includes(k))
+    ).slice(0, pLimit);
+    groupBonus.forEach((p, i) => { p.award = `加分組-${i+1}`; awardedIds.add(p.displayId); });
 
-    // 4. 身份類組排名
-    const settleCategory = (keyword, label) => {
-        let catPool = pool.filter(p => !awardedIds.has(p.displayId) && p.tag.includes(keyword));
-        let winners = catPool.slice(0, pLimit);
-        winners.forEach((p, i) => {
-            p.award = `${label}-${i+1}`;
-            awardedIds.add(p.displayId);
-        });
-        return winners;
-    };
-    let groupLadies = settleCategory("女子", "女子組");
-    let groupElders = settleCategory("長青", "長青組");
-    let groupYouths = settleCategory("青少年", "青少年組");
+    // ── 7. 女子組（排除已得獎）──────────────────────────────
+    let groupLadies = pool.filter(p =>
+        !awardedIds.has(p.displayId) && p.tag.includes("女子")
+    ).slice(0, pLimit);
+    groupLadies.forEach((p, i) => { p.award = `女子組-${i+1}`; awardedIds.add(p.displayId); });
 
-    document.getElementById('drawInfo').innerHTML = `乙門檻: ${bThresh.toFixed(1)} | 丙門檻: ${cThresh.toFixed(1)}`;
-    
-    // 渲染最終英雄榜
+    // ── 門檻資訊顯示 ────────────────────────────────────────
+    document.getElementById('drawInfo').innerHTML =
+        `乙門檻: ${bThresh.toFixed(1)} | 丙門檻: ${cThresh.toFixed(1)}`;
+
+    // ── 渲染英雄榜 ───────────────────────────────────────────
     let resHtml = `<div class="rank-box"><h3>🏆 賽務英雄榜 (正式公告)</h3>`;
-    const drawGroup = (title, list) => {
+
+    // 一般分組渲染
+    const drawGroup = (title, list, scoreKey) => {
         resHtml += `<div style="margin-bottom:15px;"><b>${title}</b><table class="rank-table">`;
-        if (list.length === 0) resHtml += `<tr><td style="color:#999;">(無獲獎者)</td></tr>`;
-        list.forEach((p, i) => resHtml += `<tr><td width="100">第${i+1}名</td><td width="150">${p.name}</td><td>總分: ${p.total}</td></tr>`);
+        if (list.length === 0) {
+            resHtml += `<tr><td style="color:#999;">(無獲獎者)</td></tr>`;
+        } else {
+            list.forEach((p, i) => {
+                resHtml += `<tr>
+                    <td width="80">第${i+1}名</td>
+                    <td width="150">${p.name}</td>
+                    <td>總分: ${p.total}</td>
+                </tr>`;
+            });
+        }
         resHtml += `</table></div>`;
     };
-    
-    drawGroup("甲組得獎名單", groupA); 
-    drawGroup("乙組得獎名單", groupB); 
-    drawGroup("丙組得獎名單", groupC);
-    drawGroup("女子組排名 (排除甲乙丙)", groupLadies);
-    drawGroup("長青組排名 (排除甲乙丙)", groupElders);
-    drawGroup("青少年組排名 (排除甲乙丙)", groupYouths);
 
-    // 會外會最終結果 (單局最高)
+    drawGroup("🥇 甲組得獎名單", groupA);
+
+    // 三冠顯示
+    resHtml += `<div style="margin-bottom:15px;"><b>🏅 三冠（前三局總分最高，不可重複領獎）</b><table class="rank-table">`;
+    if (tripleWinner) {
+        resHtml += `<tr><td width="80">冠軍</td><td width="150">${tripleWinner.name}</td><td>前三局合計: ${tripleScore}</td></tr>`;
+    } else {
+        resHtml += `<tr><td style="color:#999;">(無獲獎者)</td></tr>`;
+    }
+    resHtml += `</table></div>`;
+
+    // 單冠顯示
+    resHtml += `<div style="margin-bottom:15px;"><b>🏅 單冠（後段局數總分最高，不可重複領獎）</b><table class="rank-table">`;
+    if (backWinner) {
+        resHtml += `<tr><td width="80">冠軍</td><td width="150">${backWinner.name}</td><td>後段局合計: ${backScore}</td></tr>`;
+    } else {
+        resHtml += `<tr><td style="color:#999;">(無獲獎者)</td></tr>`;
+    }
+    resHtml += `</table></div>`;
+
+    drawGroup("🥈 乙組得獎名單", groupB);
+    drawGroup("🥉 丙組得獎名單", groupC);
+    drawGroup("⭐ 加分組得獎名單", groupBonus);
+    drawGroup("👩 女子組得獎名單", groupLadies);
+
+    // ── 會外會最終結果 ───────────────────────────────────────
     if (sbConfig.length > 0) {
         resHtml += `<div style="background:#e6f7ff; padding:10px; border-radius:8px; border:1px solid #91d5ff; margin-bottom:15px;"><b>🎰 會外會單局得主</b>`;
         let sideBetPool = players.filter(p => p.isSideBet);
@@ -590,15 +648,7 @@ function manualSettle() {
         resHtml += `</div>`;
     }
 
-    // 三冠與後冠
-    resHtml += `<div style="background:#fff7e6; padding:10px; border-radius:8px; border:1px solid #ffe7ba; margin-bottom:15px;">
-        <b>🏅 技術特別獎 (可重複得獎)</b>
-        <div style="display:flex; justify-content:space-between; margin-top:5px;">
-            <span>三冠王 (前三局最高): <b>${tripleWinners[0] ? tripleWinners[0].name : '-'}</b> (${tripleWinners[0] ? tripleWinners[0].scores.slice(0,3).reduce((a,b)=>a+b,0) : 0})</span>
-            <span>後冠 (後二/三局最高): <b>${backWinners[0] ? backWinners[0].name : '-'}</b> (${backWinners[0] ? backWinners[0].scores.slice(3).reduce((a,b)=>a+b,0) : 0})</span>
-        </div>
-    </div>`;
-
+    resHtml += `</div>`;
     document.getElementById('rankDisplay').innerHTML = resHtml;
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
