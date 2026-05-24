@@ -520,36 +520,39 @@ function manualSettle() {
     let groupA = pool.slice(0, pLimit);
     groupA.forEach((p, i) => { p.award = `甲組-${i+1}`; awardedIds.add(p.displayId); });
 
-    // ── 2. 三冠（前三局總分最高，排除已得獎）──────────────
+    // ── 2. 三冠（前三局總分最高，排除已得獎，同分並列）──────────────
     let triplePool = [...pool]
         .filter(p => !awardedIds.has(p.displayId))
-        .sort((a, b) => {
-            const sumA = a.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
-            const sumB = b.scores.slice(0, 3).reduce((acc, v) => acc + v, 0);
-            return sumB - sumA;
-        });
-    let tripleWinner = triplePool[0] || null;
-    let tripleScore = tripleWinner ? tripleWinner.scores.slice(0, 3).reduce((a, b) => a + b, 0) : 0;
-    if (tripleWinner) {
-        tripleWinner.award = "三冠";
-        awardedIds.add(tripleWinner.displayId);
-    }
+        .map(p => ({
+            ...p,
+            tripleSum: p.scores.slice(0, 3).reduce((acc, v) => acc + v, 0)
+        }))
+        .sort((a, b) => b.tripleSum - a.tripleSum);
+    let tripleScore = triplePool.length > 0 ? triplePool[0].tripleSum : 0;
+    let tripleWinners = triplePool.filter(p => p.tripleSum === tripleScore);
+    tripleWinners.forEach(p => {
+        p.award = "三冠";
+        awardedIds.add(p.displayId);
+        const orig = players.find(pl => pl.displayId === p.displayId);
+        if (orig) orig.award = "三冠";
+    });
 
-    // ── 3. 單冠（後段局數總分最高，排除已得獎）────────────
-    // 後段定義：局數 > 3 的部分（G4 以後），若只有3局則取最後1局
+    // ── 3. 單冠（單局最高分，排除已得獎，同分並列）──────────────────
     let backPool = [...pool]
         .filter(p => !awardedIds.has(p.displayId))
-        .sort((a, b) => {
-            const sumA = a.scores.slice(3).reduce((acc, v) => acc + v, 0);
-            const sumB = b.scores.slice(3).reduce((acc, v) => acc + v, 0);
-            return sumB - sumA;
-        });
-    let backWinner = backPool[0] || null;
-    let backScore = backWinner ? backWinner.scores.slice(3).reduce((a, b) => a + b, 0) : 0;
-    if (backWinner) {
-        backWinner.award = "單冠";
-        awardedIds.add(backWinner.displayId);
-    }
+        .map(p => ({
+            ...p,
+            bestGame: Math.max(...p.scores.filter(s => s > 0))
+        }))
+        .sort((a, b) => b.bestGame - a.bestGame);
+    let backScore = backPool.length > 0 ? backPool[0].bestGame : 0;
+    let backWinners = backPool.filter(p => p.bestGame === backScore);
+    backWinners.forEach(p => {
+        p.award = "單冠";
+        awardedIds.add(p.displayId);
+        const orig = players.find(pl => pl.displayId === p.displayId);
+        if (orig) orig.award = "單冠";
+    });
 
     // ── 4. 乙組（排除已得獎，分數 ≤ 乙組門檻）─────────────
     let bSum = 0;
@@ -610,17 +613,21 @@ function manualSettle() {
 
     // 三冠顯示
     resHtml += `<div style="margin-bottom:15px;"><b>🏅 三冠（前三局總分最高，不可重複領獎）</b><table class="rank-table">`;
-    if (tripleWinner) {
-        resHtml += `<tr><td width="80">冠軍</td><td width="150">${tripleWinner.name}</td><td>前三局合計: ${tripleScore}</td></tr>`;
+    if (tripleWinners.length > 0) {
+        tripleWinners.forEach(p => {
+            resHtml += `<tr><td width="80">冠軍</td><td width="150">${p.name}</td><td>前三局合計: ${tripleScore} 分</td></tr>`;
+        });
     } else {
         resHtml += `<tr><td style="color:#999;">(無獲獎者)</td></tr>`;
     }
     resHtml += `</table></div>`;
 
     // 單冠顯示
-    resHtml += `<div style="margin-bottom:15px;"><b>🏅 單冠（後段局數總分最高，不可重複領獎）</b><table class="rank-table">`;
-    if (backWinner) {
-        resHtml += `<tr><td width="80">冠軍</td><td width="150">${backWinner.name}</td><td>後段局合計: ${backScore}</td></tr>`;
+    resHtml += `<div style="margin-bottom:15px;"><b>🏅 單冠（單局最高分，不可重複領獎）</b><table class="rank-table">`;
+    if (backWinners.length > 0) {
+        backWinners.forEach(p => {
+            resHtml += `<tr><td width="80">冠軍</td><td width="150">${p.name}</td><td>單局最高: ${backScore} 分</td></tr>`;
+        });
     } else {
         resHtml += `<tr><td style="color:#999;">(無獲獎者)</td></tr>`;
     }
