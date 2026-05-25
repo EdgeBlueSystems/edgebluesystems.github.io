@@ -166,11 +166,16 @@
         </select>
         <div id="courseNotice" style="display:none; margin-top:10px; padding:8px 12px; background:#fffbeb; border-left:3px solid #f59e0b; border-radius:4px; font-size:12px; color:#78350f;">
           ⚠️ 此球場 HDCP 為參考值，請賽前對照計分卡，使用上方橘色欄位即時修正。
-          <div style="margin-top:8px;">
-            <button onclick="reportHdcp()" style="background:#f59e0b; color:white; border:none; padding:5px 12px; border-radius:5px; font-size:11px; font-weight:bold; cursor:pointer;">
-              📢 回報修正後的 HDCP 資料
+        </div>
+        <div style="margin-top:10px; padding:10px 14px; background:#f0fdf4; border-radius:8px; border:1px solid #bbf7d0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <div style="font-size:12px; color:#475569;">
+            📋 若您有當日計分卡，歡迎回報正確的 HDCP 資料協助更新球場數據
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button onclick="reportHdcp()" style="background:#2d6a4f; color:white; border:none; padding:7px 14px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; white-space:nowrap;">
+              📢 回報 HDCP 修正
             </button>
-            <span id="reportStatus" style="font-size:11px; margin-left:8px; color:#64748b;"></span>
+            <span id="reportStatus" style="font-size:11px; color:#64748b;"></span>
           </div>
         </div>
 
@@ -730,7 +735,7 @@ function calc() {
 }
 
 // ── HDCP 回報功能 ────────────────────────────────────
-const REPORT_TOKEN = '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';
+const REPORT_TOKEN = 'YOUR_ISSUE_TOKEN_HERE';
 const REPORT_OWNER = 'EdgeBlueSystems';
 const REPORT_REPO  = 'edgebluesystems.github.io';
 
