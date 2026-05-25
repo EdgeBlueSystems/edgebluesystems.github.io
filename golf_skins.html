@@ -734,59 +734,42 @@ function calc() {
   }
 }
 
-// ── HDCP 回報功能 ────────────────────────────────────
-const REPORT_TOKEN = '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';
-const REPORT_OWNER = 'EdgeBlueSystems';
-const REPORT_REPO  = 'edgebluesystems.github.io';
+// ── HDCP 回報功能（透過 Cloudflare Worker）───────────
+// Worker URL：部署後填入，例如 https://hdcp-reporter.edgeblue-worker.workers.dev
+const WORKER_URL = 'https://hdcp-reporter.evil-vincent8812-2.workers.dev';
 
 async function reportHdcp() {
-  const courseKey = document.getElementById('courseSelect').value;
+  const courseKey  = document.getElementById('courseSelect').value;
   const courseName = document.querySelector('#courseSelect option:checked').textContent.trim();
-  const statusEl = document.getElementById('reportStatus');
+  const statusEl   = document.getElementById('reportStatus');
 
-  if(!currentCourseData.pars) { statusEl.textContent = '❌ 尚未載入球場資料'; return; }
-
-  // 收集目前的 HDCP 和 Par（從 HDCP 編輯欄位讀取最新值）
-  const hdcps = [], pars = [];
-  for(let i=0; i<18; i++) {
-    const hEl = document.querySelector(`.hdcp-edit-input[onchange*="${i},"]`) ||
-                document.querySelector(`.hdcp-edit-input[onchange="updateLiveHdcp(${i}, this.value)"]`);
-    hdcps.push(currentCourseData.hdcps[i]);
-    pars.push(currentCourseData.pars[i]);
+  if(!currentCourseData.pars) {
+    statusEl.textContent = '❌ 尚未載入球場資料';
+    return;
   }
 
-  const now = new Date().toLocaleString('zh-TW', {timeZone:'Asia/Taipei'});
-  const body = `**球場：** ${courseName}（\`${courseKey}\`）
-**回報時間：** ${now}
-**HDCP：** \`${JSON.stringify(hdcps)}\`
-**Par：** \`${JSON.stringify(pars)}\`
+  // 讀取目前的 HDCP 和 Par
+  const hdcps = [...currentCourseData.hdcps];
+  const pars  = [...currentCourseData.pars];
 
-> 此回報由 EdgeBlue 抓球版系統自動產生`;
-
+  statusEl.style.color = '#64748b';
   statusEl.textContent = '⏳ 回報中...';
 
   try {
-    const res = await fetch(`https://api.github.com/repos/${REPORT_OWNER}/${REPORT_REPO}/issues`, {
+    const res = await fetch(WORKER_URL, {
       method: 'POST',
-      headers: {
-        Authorization: `token ${REPORT_TOKEN}`,
-        Accept: 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        title: `[HDCP回報] ${courseKey} - ${courseName}`,
-        body: body,
-        labels: ['hdcp-report']
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ courseKey, courseName, hdcps, pars })
     });
 
-    if(res.ok) {
+    const data = await res.json();
+
+    if(res.ok && data.success) {
       statusEl.style.color = '#16a34a';
       statusEl.textContent = '✅ 回報成功！感謝您的貢獻。';
       setTimeout(() => { statusEl.textContent = ''; statusEl.style.color = '#64748b'; }, 5000);
     } else {
-      const err = await res.json();
-      throw new Error(err.message || `HTTP ${res.status}`);
+      throw new Error(data.error || `HTTP ${res.status}`);
     }
   } catch(e) {
     statusEl.style.color = '#ef4444';
