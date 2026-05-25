@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>銳青科技｜高爾夫賽務系統 (專業抓球版)</title>
+  <style>
+    :root { 
+      --eb-blue: #1a3a5f;    
+      --eb-accent: #2d6a4f;  
+      --eb-gold: #ff9f1c;    
+      --bg: #f4f7f9; 
+      --card: #ffffff; 
+    }
+    
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: var(--bg); color: #334155; padding-bottom: 50px; }
+    
+    .navbar { background: var(--eb-blue); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .navbar .brand { font-weight: bold; letter-spacing: 1px; font-size: 1.1rem; }
+
+    .container { max-width: 1400px; margin: 20px auto; padding: 0 15px; }
+    .panel { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid var(--eb-blue); }
+    h2 { font-size: 1rem; margin: 0 0 15px 0; color: var(--eb-blue); display: flex; align-items: center; gap: 8px; }
+    h2::before { content: ""; display: inline-block; width: 4px; height: 16px; background: var(--eb-accent); border-radius: 2px; }
+
+    .setup-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+    @media (max-width: 900px) { .setup-grid { grid-template-columns: 1fr; } }
+
+    .course-info { background: #f1f5f9; padding: 15px; border-radius: 10px; }
+    .course-info select, .course-info input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+
+    .matrix-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; overflow-x: auto; }
+    .matrix-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 450px; }
+    .matrix-table th { background: #f8fafc; padding: 8px; border: 1px solid #eee; }
+    .matrix-table td { padding: 5px; border: 1px solid #eee; text-align: center; }
+    .matrix-input { width: 50px; padding: 6px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; }
+    .name-input { width: 100px; padding: 6px; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 4px; color: var(--eb-blue); }
+
+    .table-section { background: var(--card); border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-x: auto; }
+    table.score-table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+    table.score-table th { background: #f8fafc; color: var(--eb-blue); padding: 10px 5px; border: 1px solid #e2e8f0; font-size: 13px; }
+    table.score-table td { border: 1px solid #e2e8f0; text-align: center; }
+    
+    .score-input { width: 100%; border: none; padding: 10px 0; text-align: center; font-size: 18px; font-weight: bold; outline: none; background: transparent; }
+    .score-input:focus { background: #fef9c3; }
+
+    .summary-section { background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-top: 20px; border-top: 4px solid var(--eb-gold); }
+    .settle-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .settle-table th { background: #f1f5f9; padding: 15px; border: 1px solid #e2e8f0; }
+    .settle-table td { border: 1px solid #e2e8f0; padding: 15px; text-align: center; }
+    
+    .win  { color: #ef4444; font-weight: bold; font-size: 1.1rem; }
+    .lose { color: #16a34a; font-weight: bold; font-size: 1.1rem; }
+    .draw { color: #94a3b8; font-weight: bold; font-size: 1.1rem; }
+    .birdie-val { color: var(--eb-blue); font-weight: bold; background: #e0f2fe; padding: 4px 10px; border-radius: 20px; }
+
+    footer { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.85rem; }
+  </style>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
+</head>
+<body>
+  <nav style="background:#333; padding:12px 20px; text-align:left; width:100%; box-sizing:border-box;">
+  <a href="./index.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">🏠 首頁</a>
+  <a href="./golf_calc.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">⛳ 高爾夫</a>
+  <a href="./bowling.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">🎳 保齡球</a>
+  <a href="./about.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">👤 關於我們</a>
+  <a href="./articles.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">📚 知識專欄</a>
+  <span style="color:#fff; font-weight:bold; font-size:0.9rem; border-bottom:2px solid #27ae60; padding-bottom:3px;">🏆 專業抓球版</span>
+</nav>
+
+<nav class="navbar">
+  <div class="brand">EDGEBLUE SYSTEMS 銳青科技整合</div>
+</nav>
+
+<div class="container">
+  <div class="panel">
+    <h2>1. 賽事與讓桿設定</h2>
+    <div class="setup-grid">
+      <div class="course-info">
+        <label>選擇比賽球場</label>
+        <select id="courseSelect" onchange="loadCourse();">
+          <optgroup label="────── 可使用球場 ──────" disabled></optgroup>
+          <optgroup label="🌿 中部（中彰投）✅ 已核實">
+            <option value="nanfeng">南峰高爾夫球場</option>
+            <option value="changhua">彰化高爾夫球場</option>
+            <option value="wufeng">霧峰高爾夫球場</option>
+            <option value="fengyuan">豐原高爾夫球場</option>
+            <option value="songboling">松柏嶺高爾夫球場</option>
+            <option value="cck">清泉崗高爾夫球場 (CCK)</option>
+            <option value="taifeng">台豐高爾夫俱樂部</option>
+            <option value="quanguo">全國花園鄉村俱樂部</option>
+            <option value="huangjia">皇家高爾夫球場</option>
+          </optgroup>
+          <optgroup label="🏔️ 北部 ⚠️ 請賽前核實">
+            <option value="linkou_27">林口高爾夫球場（27洞）</option>
+            <option value="miramar">美麗華高爾夫球場</option>
+            <option value="longtan">明台(龍潭)國際高爾夫球場</option>
+            <option value="xinfeng_27">新豐高爾夫俱樂部（27洞）</option>
+            <option value="xuyang">旭陽高爾夫俱樂部</option>
+          </optgroup>
+          <optgroup label="🌊 南部 ⚠️ 請賽前核實">
+            <option value="tainan">台南高爾夫俱樂部</option>
+          </optgroup>
+          <optgroup label="🌺 東部 ⚠️ 請賽前核實">
+            <option value="hualien">花蓮高爾夫球場</option>
+            <option value="jiaoxi">宜蘭礁溪高爾夫球場</option>
+          </optgroup>
+          <optgroup label="────── 建構中（暫不可用）──────" disabled></optgroup>
+          <optgroup label="🌿 中部建構中">
+            <option value="taichung_intl" disabled>台中國際高爾夫俱樂部</option>
+            <option value="taichung_xingnong" disabled>台中興農高爾夫球場</option>
+            <option value="hongxi_taiping" disabled>鴻禧太平高爾夫球場</option>
+            <option value="nantou_zhongxing" disabled>中興高爾夫球場</option>
+            <option value="palm_lake" disabled>東洋棕梠湖高爾夫球場</option>
+          </optgroup>
+          <optgroup label="🏔️ 北部（台北）建構中">
+            <option value="feicui" disabled>翡翠高爾夫球場</option>
+            <option value="guohua" disabled>國華高爾夫俱樂部</option>
+            <option value="beihai" disabled>黃金海岸(北海)高爾夫球場</option>
+            <option value="datun" disabled>大屯高爾夫球場</option>
+            <option value="donghua" disabled>東華高爾夫球場</option>
+            <option value="huihuang" disabled>揮皇高爾夫球場</option>
+            <option value="old_danshui" disabled>台灣(老淡水)高爾夫俱樂部</option>
+            <option value="bali_intl" disabled>八里國際高爾夫球場</option>
+            <option value="xingfu" disabled>幸福高爾夫鄉村俱樂部</option>
+            <option value="binhai" disabled>濱海高爾夫球場</option>
+          </optgroup>
+          <optgroup label="🏔️ 北部（桃園）建構中">
+            <option value="dongfang" disabled>東方高爾夫球場</option>
+            <option value="yonghan" disabled>永漢高爾夫球場</option>
+            <option value="yangshen" disabled>揚昇高爾夫鄉村俱樂部</option>
+            <option value="daxi" disabled>大溪高爾夫球場</option>
+            <option value="taipei_golf" disabled>台北高爾夫俱樂部</option>
+            <option value="tongshuai" disabled>統帥高爾夫球場</option>
+            <option value="formosa1" disabled>福爾摩莎第一高爾夫球場</option>
+            <option value="changgeng" disabled>長庚高爾夫球場</option>
+            <option value="formosa_yangmei" disabled>福爾摩莎楊梅高爾夫球場</option>
+          </optgroup>
+          <optgroup label="🏔️ 北部（新竹苗栗）建構中">
+            <option value="laoye_guanxi" disabled>老爺關西高爾夫球場</option>
+            <option value="liyi" disabled>立益高爾夫球場</option>
+            <option value="shanxidi" disabled>山溪地高爾夫俱樂部</option>
+            <option value="zaixing" disabled>再興高爾夫球場</option>
+            <option value="baoshan" disabled>新竹寶山高爾夫球場</option>
+            <option value="east_star" disabled>東方之星高爾夫球場</option>
+          </optgroup>
+          <optgroup label="🌊 南部（嘉義）建構中">
+            <option value="jiaguang" disabled>嘉光高爾夫球場</option>
+          </optgroup>
+          <optgroup label="🌊 南部（台南）建構中">
+            <option value="nan1" disabled>南一高爾夫球場</option>
+            <option value="jia_nan" disabled>嘉南高爾夫球場</option>
+            <option value="banzhi" disabled>斑芝花高爾夫球場</option>
+            <option value="nanbao" disabled>南寶高爾夫俱樂部</option>
+          </optgroup>
+          <optgroup label="🌊 南部（高雄屏東）建構中">
+            <option value="kaohsiung" disabled>高雄高爾夫俱樂部</option>
+            <option value="guanyinshan" disabled>觀音山高爾夫球場</option>
+            <option value="navy_zuoying" disabled>海軍左營高爾夫球場</option>
+            <option value="david_camp" disabled>大衛營球場</option>
+            <option value="dagangshan" disabled>大崗山高爾夫球場</option>
+            <option value="xinyi" disabled>信誼高爾夫球場</option>
+            <option value="shanhuquan" disabled>山湖觀高爾夫球場</option>
+          </optgroup>
+        </select>
+        <div id="courseNotice" style="display:none; margin-top:10px; padding:8px 12px; background:#fffbeb; border-left:3px solid #f59e0b; border-radius:4px; font-size:12px; color:#78350f;">
+          ⚠️ 此球場 HDCP 為參考值，請賽前對照計分卡，使用上方橘色欄位即時修正。
+          <div style="margin-top:8px;">
+            <button onclick="reportHdcp()" style="background:#f59e0b; color:white; border:none; padding:5px 12px; border-radius:5px; font-size:11px; font-weight:bold; cursor:pointer;">
+              📢 回報修正後的 HDCP 資料
+            </button>
+            <span id="reportStatus" style="font-size:11px; margin-left:8px; color:#64748b;"></span>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; text-align:right;">
+          <button style="background:#666; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer; font-size:12px;" onclick="clearAllData()">⚠️ 重置所有資料</button>
+        </div>
+      </div>
+      
+      <div class="matrix-box">
+        <label style="font-size: 12px; font-weight: bold; color: var(--eb-blue); margin-bottom: 10px; display: block;">讓桿設定 (橫列讓縱欄)</label>
+        <table class="matrix-table">
+          <thead id="matrixHead"></thead>
+          <tbody id="matrixBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 前九洞 -->
+  <div class="table-section" style="margin-bottom:0; border-radius:12px 12px 0 0;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+      <div style="font-weight:bold; color:var(--eb-blue); font-size:0.95rem;">⛳ 前九洞（H1-9）</div>
+      <div id="frontZoneSelector" style="display:none; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:#64748b;">賽區：</span>
+        <select id="frontZoneSelect" onchange="onZoneChange()" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; font-weight:bold; color:var(--eb-blue);">
+        </select>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="score-table">
+        <thead>
+          <tr id="parRowFront"><th>Hole</th></tr>
+          <tr id="hdcpRowFront"><th>HDCP</th></tr>
+        </thead>
+        <tbody id="scoreBodyFront"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 後九洞 -->
+  <div class="table-section" style="border-radius:0 0 12px 12px; border-top:2px dashed #e2e8f0;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+      <div style="font-weight:bold; color:var(--eb-blue); font-size:0.95rem;">⛳ 後九洞（H10-18）</div>
+      <div id="backZoneSelector" style="display:none; align-items:center; gap:8px;">
+        <span style="font-size:12px; color:#64748b;">賽區：</span>
+        <select id="backZoneSelect" onchange="onZoneChange()" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; font-weight:bold; color:var(--eb-blue);">
+        </select>
+      </div>
+      <div id="backZonePending" style="display:none; font-size:12px; color:#94a3b8; font-style:italic;">← 請先選擇後九洞賽區</div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="score-table">
+        <thead>
+          <tr id="parRowBack"><th>Hole</th></tr>
+          <tr id="hdcpRowBack"><th>HDCP</th></tr>
+        </thead>
+        <tbody id="scoreBodyBack"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="summary-section">
+    <h2>2. 個體對決結算表 (真實洞數與抓鳥統計)</h2>
+    <table class="settle-table">
+      <thead id="settleHead"></thead>
+      <tbody id="settleBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div style="max-width:1400px; margin: 30px auto; padding: 0 15px;">
+  <div style="background:#fff; border-radius:12px; padding:30px 35px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border-top:4px solid var(--eb-accent); line-height:1.85; color:#475569; font-size:0.93rem;">
+
+    <h3 style="color:var(--eb-blue); font-size:1.1rem; border-left:5px solid var(--eb-accent); padding-left:14px; margin-top:0;">⛳ 抓球 (Skins) 賽制完整說明</h3>
+
+    <p>「抓球」（Skins）是高爾夫球友私下對決中最刺激的賽制之一，規則直接：<strong>每一洞的贏家拿走該洞的點數（皮）</strong>。若該洞平手，點數滾入下一洞，形成「滾球」效應，讓最後幾洞的張力倍增。本系統支援四人組內的完整六組對決（1v2、1v3、1v4、2v3、2v4、3v4），每組獨立計算，互不影響。</p>
+
+    <h4 style="color:var(--eb-blue); margin-bottom:6px;">● 讓桿矩陣的運作原理</h4>
+    <p>業餘球友之間差點差距往往很大，若不讓桿，高差點球友幾乎沒有勝算，比賽失去樂趣。本系統採用「交叉讓桿矩陣」設計：由強者（低差點）讓弱者（高差點）若干桿，填入左側設定表即可。系統會自動對照當日球場的難度索引（HDCP），在 HDCP 數值最小（最難）的洞數優先折讓，完全符合高爾夫國際慣例。</p>
+    <p>舉例來說，若 A 讓 B 兩桿，系統會在球場 HDCP 第 1 難和第 2 難的洞各給 B 扣一桿，其他洞不受影響。這樣的設計讓讓桿發生在真正考驗技術的洞別，比起傳統的全場均攤更加公平合理。</p>
+
+    <h4 style="color:var(--eb-blue); margin-bottom:6px;">● HDCP 即時編輯功能</h4>
+    <p>台灣各球場的難度索引（HDCP）有時會因草況、氣候或球道整修而臨時調整，與系統預設值出現落差。本系統的 HDCP 欄位全部開放即時編輯（橘色數字欄位），賽務組只需對照當日計分卡，直接在頁面上修改，系統即時重新計算所有讓桿與對決結果，無需重新整理頁面。</p>
+
+    <h4 style="color:var(--eb-blue); margin-bottom:6px;">● Birdie（小鳥）統計</h4>
+    <p>系統同步統計每位球員全場的 Birdie 數（低於標準桿一桿）。Birdie 統計常用於平手時的加賽依據，或作為特別獎（如 Birdie 獎）的發放標準。數據自動累計，無需另行計算。</p>
+
+    <div style="background:#fffbeb; border-left:4px solid var(--eb-gold); padding:12px 16px; border-radius:0 8px 8px 0; margin-top:18px; font-size:0.88rem; color:#78350f;">
+      <strong>使用提示：</strong>讓桿欄位填入的是「總讓桿數」，例如填 3 代表在 HDCP 1、2、3 的洞各折讓一桿。資料僅存於您的裝置，關閉頁面後下次仍可讀取。
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center; padding:40px 20px; color:#94a3b8; font-size:0.82rem;">
+  © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
+  <a href="mailto:service@edgeblue.tw" style="color:#94a3b8;text-decoration:none;">📧 service@edgeblue.tw</a> |
+  <a href="./privacy.html" style="color:#94a3b8; text-decoration:none;">隱私權政策</a> |
+  <a href="./terms.html" style="color:#94a3b8; text-decoration:none;">服務條款</a>
+</footer>
+
+<script>
+// 球場資料從 courses.json 動態載入
+let courseDB = {};
+let courseDBReady = false;
+
+async function loadCourseDB() {
+  try {
+    const res = await fetch('./courses.json?v=' + Date.now());
+    courseDB = await res.json();
+    courseDBReady = true;
+    // 建立 select 選單
+    buildCourseSelect();
+    // 載入存檔
+    loadSavedData();
+    syncNames();
+    loadCourse();
+  } catch(e) {
+    console.error('courses.json 載入失敗', e);
+    alert('⚠️ 球場資料載入失敗，請確認 courses.json 是否存在。');
+  }
+}
+
+// 依 region 分組建立 select optgroup
+function buildCourseSelect() {
+  const sel = document.getElementById('courseSelect');
+  if(!sel) return;
+
+  const regionConfig = [
+    { key: 'central',          label: '🌿 中部（中彰投）✅ 已核實',    verifiedOnly: true  },
+    { key: 'central',          label: '🌿 中部（中彰投）⚠️ 請賽前核實', verifiedOnly: false },
+    { key: 'north',            label: '🏔️ 北部 ⚠️ 請賽前核實',         verifiedOnly: false },
+    { key: 'south',            label: '🌊 南部 ⚠️ 請賽前核實',          verifiedOnly: false },
+    { key: 'east',             label: '🌺 東部 ⚠️ 請賽前核實',          verifiedOnly: false },
+  ];
+
+  // 儲存目前選取值
+  const savedVal = sel.value;
+  // 清掉既有的 optgroup（保留建構中分隔線以下不動）
+  // 重建所有可選球場的 optgroup
+  const dividerIdx = Array.from(sel.options).findIndex(o => o.disabled && o.label && o.label.includes('建構中'));
+
+  // 移除分隔線之前的所有 optgroup
+  while(sel.children.length > 0) {
+    const first = sel.children[0];
+    if(first.label && first.label.includes('建構中')) break;
+    sel.removeChild(first);
+  }
+
+  // 重新插入可選球場的 optgroup
+  let insertBefore = sel.children[0]; // 建構中分隔線
+
+  regionConfig.forEach(rc => {
+    const entries = Object.entries(courseDB).filter(([k, v]) => {
+      if(v.zone) return false; // zone 子區不顯示
+      if(v.underConstruction) return false;
+      if(v.region !== rc.key) return false;
+      if(rc.verifiedOnly && !v.verified) return false;
+      if(!rc.verifiedOnly && v.verified) return false;
+      return true;
+    });
+    if(entries.length === 0) return;
+
+    const og = document.createElement('optgroup');
+    og.label = rc.label;
+    entries.forEach(([k, v]) => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = v.name + (v.is27hole ? '（27洞）' : '');
+      og.appendChild(opt);
+    });
+    sel.insertBefore(og, insertBefore);
+  });
+
+  // 還原選取值
+  if(savedVal && courseDB[savedVal]) sel.value = savedVal;
+}
+
+let currentCourseData = {};
+
+window.onload = function() {
+  renderMatrixInputs();  // 1. 先建立矩陣 DOM
+  loadCourseDB();        // 2. 載入 courses.json，完成後自動執行後續初始化
+};
+
+function syncNames() {
+  renderMatrixHead();
+  renderSettleHead();
+  // 同步更新後九洞的球員名字顯示
+  const names = [1,2,3,4].map(i => {
+    const el = document.getElementById('name'+i);
+    return el ? (el.value.trim() || `球員${i}`) : `球員${i}`;
+  });
+  names.forEach((n, i) => {
+    const f = document.getElementById('dispName'+(i+1));
+    const b = document.getElementById('dispNameBack'+(i+1));
+    if(f) f.innerText = n;
+    if(b) b.innerText = n;
+  });
+  saveConfig();
+  calc();
+}
+
+function renderMatrixHead() {
+  const head = document.getElementById('matrixHead');
+  const names = [1,2,3,4].map(i => document.getElementById('name'+i).value || `P${i}`);
+  head.innerHTML = `<tr><th>球員</th><th>讓 ${names[0]}</th><th>讓 ${names[1]}</th><th>讓 ${names[2]}</th><th>讓 ${names[3]}</th></tr>`;
+}
+
+function renderSettleHead() {
+  const head = document.getElementById('settleHead');
+  const names = [1,2,3,4].map(i => document.getElementById('name'+i).value || `P${i}`);
+  head.innerHTML = `<tr><th>姓名</th><th>對 ${names[0]}</th><th>對 ${names[1]}</th><th>對 ${names[2]}</th><th>對 ${names[3]}</th><th style="background:#fff3e0">今日總鳥數</th></tr>`;
+}
+
+function renderMatrixInputs() {
+  const tbody = document.getElementById('matrixBody');
+  tbody.innerHTML = "";
+  for(let i=1; i<=4; i++) {
+    let row = `<tr><td><input type="text" id="name${i}" class="name-input" oninput="syncNames()" placeholder="球員${i}"></td>`;
+    for(let j=1; j<=4; j++) {
+      if(i === j) row += `<td>-</td>`;
+      else row += `<td><input type="number" id="g${i}${j}" class="matrix-input" value="0" onchange="saveConfig(); calc();"></td>`;
+    }
+    tbody.innerHTML += row + `</tr>`;
+  }
+  // 注意：不在這裡呼叫 syncNames()，改由 window.onload 統一控制順序
+}
+
+// 目前前後九洞的賽區設定
+let frontZoneKey = null;
+let backZoneKey  = null;
+let currentIs27  = false;
+
+function loadCourse() {
+  const courseKey = document.getElementById('courseSelect').value;
+  const raw = courseDB[courseKey] || courseDB['nanfeng'];
+  const noticeEl = document.getElementById('courseNotice');
+
+  if(raw.is27hole) {
+    currentIs27 = true;
+    if(noticeEl) noticeEl.style.display = 'block';
+    // 顯示前後九各自的賽區選單
+    setup27ZoneSelects(raw);
+    // 預設前九=西區，後九=東區
+    frontZoneKey = raw.defaultZones[0];
+    backZoneKey  = raw.defaultZones[1];
+    document.getElementById('frontZoneSelect').value = frontZoneKey;
+    document.getElementById('backZoneSelect').value  = backZoneKey;
+  } else {
+    currentIs27 = false;
+    frontZoneKey = null; backZoneKey = null;
+    if(noticeEl) noticeEl.style.display = raw.verified ? 'none' : 'block';
+    // 隱藏賽區選單
+    document.getElementById('frontZoneSelector').style.display = 'none';
+    document.getElementById('backZoneSelector').style.display  = 'none';
+    document.getElementById('backZonePending').style.display   = 'none';
+    currentCourseData = JSON.parse(JSON.stringify(raw));
+    // 一般18洞：計算用 HDCP 與顯示用相同
+    currentCourseData.calcHdcps = [...currentCourseData.hdcps];
+  }
+  if(currentIs27) buildCourseData();
+  renderTable();
+  saveConfig();
+}
+
+// 設定 27洞球場的前後九選單選項
+function setup27ZoneSelects(courseConfig) {
+  const zones = courseConfig.zones;
+  const frontSel = document.getElementById('frontZoneSelect');
+  const backSel  = document.getElementById('backZoneSelect');
+  frontSel.innerHTML = '';
+  backSel.innerHTML  = '';
+  zones.forEach(zk => {
+    const zd = courseDB[zk];
+    frontSel.innerHTML += `<option value="${zk}">${zd.label}</option>`;
+    backSel.innerHTML  += `<option value="${zk}">${zd.label}</option>`;
+  });
+  // 預設後九選第二個
+  if(zones.length > 1) backSel.value = zones[1];
+  // 顯示選單
+  document.getElementById('frontZoneSelector').style.display = 'flex';
+  document.getElementById('backZoneSelector').style.display  = 'flex';
+  document.getElementById('backZonePending').style.display   = 'none';
+}
+
+// 前後九區選單變更
+function onZoneChange() {
+  frontZoneKey = document.getElementById('frontZoneSelect').value;
+  backZoneKey  = document.getElementById('backZoneSelect').value;
+  buildCourseData();
+  renderTable();
+  calc();
+  saveConfig();
+}
+
+// 根據前後九區組合建立 currentCourseData
+function buildCourseData() {
+  if(!currentIs27) return;
+  const z1 = courseDB[frontZoneKey];
+  const z2 = courseDB[backZoneKey];
+  if(!z1 || !z2) return;
+
+  // 顯示用 HDCP：保持計分卡原始 1-9
+  const displayHdcps = [...z1.hdcps, ...z2.hdcps];
+
+  // 計算用 HDCP：換算成 1-18 供讓桿判斷
+  let calcFront, calcBack;
+  if(frontZoneKey === backZoneKey) {
+    // 同區打兩次：前九1-9，後九10-18
+    calcFront = [...z1.hdcps];
+    calcBack  = z2.hdcps.map(h => h + 9);
+  } else {
+    // 不同區：前九奇數，後九偶數
+    calcFront = z1.hdcps.map(h => h * 2 - 1);
+    calcBack  = z2.hdcps.map(h => h * 2);
+  }
+
+  currentCourseData = {
+    pars:      [...z1.pars, ...z2.pars],
+    hdcps:     displayHdcps,   // 顯示給使用者（對應計分卡）
+    calcHdcps: [...calcFront, ...calcBack], // 內部讓桿計算用
+    verified: false
+  };
+}
+
+function renderTable() {
+  if(!currentCourseData.pars) return;
+
+  // 前九洞
+  const pFront = document.getElementById('parRowFront');
+  const hFront = document.getElementById('hdcpRowFront');
+  const sFront = document.getElementById('scoreBodyFront');
+  pFront.innerHTML = '<th style="min-width:60px;">Hole</th>';
+  hFront.innerHTML = '<th>HDCP</th>';
+  for(let i=0; i<9; i++) {
+    pFront.innerHTML += `<th>${i+1}<br><small>P${currentCourseData.pars[i]}</small></th>`;
+    hFront.innerHTML += `<td><input type="number" class="hdcp-edit-input" value="${currentCourseData.hdcps[i]}" onchange="updateLiveHdcp(${i}, this.value)" style="width:40px; border:none; text-align:center; background:#fff7ed; font-weight:bold; color:#c2410c;"></td>`;
+  }
+  sFront.innerHTML = '';
+  for(let p=1; p<=4; p++) {
+    let row = `<tr><td style="background:var(--eb-blue);color:white;font-weight:bold;font-size:12px;min-width:60px;" id="dispName${p}">P${p}</td>`;
+    for(let i=0; i<9; i++) {
+      row += `<td><input type="number" inputmode="numeric" class="score-input" data-p="${p-1}" data-h="${i}" oninput="autoNext(this,${p-1},${i})" onchange="saveScores();calc();" id="s${p}-${i}"></td>`;
+    }
+    sFront.innerHTML += row + '</tr>';
+  }
+
+  // 後九洞
+  const pBack = document.getElementById('parRowBack');
+  const hBack = document.getElementById('hdcpRowBack');
+  const sBack = document.getElementById('scoreBodyBack');
+  pBack.innerHTML = '<th style="min-width:60px;">Hole</th>';
+  hBack.innerHTML = '<th>HDCP</th>';
+  for(let i=9; i<18; i++) {
+    pBack.innerHTML += `<th>${i+1}<br><small>P${currentCourseData.pars[i]}</small></th>`;
+    hBack.innerHTML += `<td><input type="number" class="hdcp-edit-input" value="${currentCourseData.hdcps[i]}" onchange="updateLiveHdcp(${i}, this.value)" style="width:40px; border:none; text-align:center; background:#fff7ed; font-weight:bold; color:#c2410c;"></td>`;
+  }
+  sBack.innerHTML = '';
+  for(let p=1; p<=4; p++) {
+    let row = `<tr><td style="background:var(--eb-blue);color:white;font-weight:bold;font-size:12px;min-width:60px;" id="dispNameBack${p}">P${p}</td>`;
+    for(let i=9; i<18; i++) {
+      row += `<td><input type="number" inputmode="numeric" class="score-input" data-p="${p-1}" data-h="${i}" oninput="autoNext(this,${p-1},${i})" onchange="saveScores();calc();" id="s${p}-${i}"></td>`;
+    }
+    sBack.innerHTML += row + '</tr>';
+  }
+
+  // 同步後九洞的球員名字顯示
+  const names = [1,2,3,4].map(i => {
+    const el = document.getElementById('name'+i);
+    return el ? (el.value.trim() || `球員${i}`) : `球員${i}`;
+  });
+  names.forEach((n, i) => {
+    const el = document.getElementById('dispNameBack'+(i+1));
+    if(el) el.innerText = n;
+  });
+
+  loadSavedScores();
+}
+
+function updateLiveHdcp(index, newValue) {
+  const val = parseInt(newValue) || 0;
+  currentCourseData.hdcps[index] = val;
+  if(currentIs27) {
+    // 27洞：重新換算 calcHdcps
+    buildCourseData();
+    // 但使用者已手動改了某洞，要把手動值套回去
+    currentCourseData.hdcps[index] = val;
+  } else {
+    // 一般18洞：計算用與顯示用相同
+    currentCourseData.calcHdcps[index] = val;
+  }
+  calc();
+}
+
+function autoNext(input, pIdx, hIdx) {
+  if (input.value.length >= 1) {
+    setTimeout(() => {
+      let nextH = hIdx + 1;
+      let nextP = pIdx;
+      if (nextH > 17) { nextH = 0; nextP = pIdx + 1; }
+      const nextInput = document.querySelector(`input[data-p="${nextP}"][data-h="${nextH}"]`);
+      if (nextInput) {
+        nextInput.focus();
+      } else {
+        input.blur();
+      }
+    }, 250);
+  }
+}
+
+function saveConfig() {
+  const config = {
+    course: document.getElementById('courseSelect').value,
+    frontZone: frontZoneKey,
+    backZone: backZoneKey,
+    names: [1,2,3,4].map(i => document.getElementById('name'+i).value),
+    matrix: {}
+  };
+  for(let i=1; i<=4; i++) {
+    for(let j=1; j<=4; j++) {
+      if(i!==j) config.matrix[`g${i}${j}`] = document.getElementById(`g${i}${j}`).value;
+    }
+  }
+  localStorage.setItem('golf_skins_config_v2', JSON.stringify(config));
+}
+
+function saveScores() {
+  let scores = {};
+  for(let p=1; p<=4; p++) {
+    for(let i=0; i<18; i++) {
+      let val = document.getElementById(`s${p}-${i}`).value;
+      if(val !== "") scores[`s${p}-${i}`] = val;
+    }
+  }
+  localStorage.setItem('golf_skins_scores_v2', JSON.stringify(scores));
+}
+
+function loadSavedData() {
+  const config = JSON.parse(localStorage.getItem('golf_skins_config_v2'));
+  if(config) {
+    document.getElementById('courseSelect').value = config.course || 'nanfeng';
+    if(config.frontZone) frontZoneKey = config.frontZone;
+    if(config.backZone)  backZoneKey  = config.backZone;
+    if(config.names) {
+      config.names.forEach((n, i) => {
+        const input = document.getElementById('name'+(i+1));
+        if(input) input.value = n;
+      });
+    }
+    if(config.matrix) {
+      for(let key in config.matrix) {
+        const input = document.getElementById(key);
+        if(input) input.value = config.matrix[key];
+      }
+    }
+  }
+}
+
+function loadSavedScores() {
+  const scores = JSON.parse(localStorage.getItem('golf_skins_scores_v2'));
+  if(scores) {
+    for(let key in scores) {
+      const input = document.getElementById(key);
+      if(input) input.value = scores[key];
+    }
+    calc();
+  }
+}
+
+function clearAllData() {
+  if(confirm("確定要清空所有資料嗎？此操作無法還原。")) {
+    localStorage.removeItem('golf_skins_config_v2');
+    localStorage.removeItem('golf_skins_scores_v2');
+    location.reload();
+  }
+}
+
+function calc() {
+  // 防呆：currentCourseData 未就緒時不執行
+  if (!currentCourseData.pars || !currentCourseData.hdcps) return;
+  const names = [1,2,3,4].map(i => {
+    const el = document.getElementById('name'+i);
+    const val = el ? el.value.trim() : "";
+    return val || `球員${i}`;
+  });
+
+  names.forEach((n, i) => {
+    const el = document.getElementById('dispName'+(i+1));
+    if(el) el.innerText = n;
+  });
+
+  let giveObj = {};
+  for(let i=1; i<=4; i++) {
+    giveObj[i] = {};
+    for(let j=1; j<=4; j++) {
+      const el = document.getElementById(`g${i}${j}`);
+      giveObj[i][j] = el ? (parseInt(el.value) || 0) : 0;
+    }
+  }
+
+  let vsMatrix = Array.from({length: 4}, () => Array(4).fill(0));
+  let birdCounts = [0, 0, 0, 0];
+
+  for (let i = 0; i < 18; i++) {
+    const par = currentCourseData.pars[i];
+    // 讓桿計算用換算後的 HDCP（1-18），顯示仍用原始 1-9
+    const hdcp = (currentCourseData.calcHdcps || currentCourseData.hdcps)[i];
+    const scores = [1,2,3,4].map(p => {
+      const val = document.getElementById(`s${p}-${i}`).value;
+      return val === "" ? 0 : parseInt(val);
+    });
+
+    scores.forEach((s, idx) => { if(s > 0 && s < par) birdCounts[idx]++; });
+
+    for(let a=0; a<4; a++) {
+      for(let b=a+1; b<4; b++) {
+        let sA = scores[a]; 
+        let sB = scores[b];
+        
+        if (sA > 0 && sB > 0) {
+          let effA = sA; 
+          let effB = sB;
+          if(giveObj[a+1][b+1] > 0 && hdcp <= giveObj[a+1][b+1]) effB -= 1;
+          if(giveObj[b+1][a+1] > 0 && hdcp <= giveObj[b+1][a+1]) effA -= 1;
+
+          if (effA < effB)      { vsMatrix[a][b]++; vsMatrix[b][a]--; }
+          else if (effB < effA) { vsMatrix[b][a]++; vsMatrix[a][b]--; }
+        }
+      }
+    }
+  }
+
+  const settleBody = document.getElementById('settleBody');
+  settleBody.innerHTML = "";
+  for(let i=0; i<4; i++) {
+    const hasAnyScore = Array.from({length:18}, (_,h) => h).some(h => {
+      const val = document.getElementById(`s${i+1}-${h}`).value;
+      return val !== "" && parseInt(val) > 0;
+    });
+    if (!hasAnyScore) continue;
+
+    let rowHtml = `<tr><td style="font-weight:bold; color:var(--eb-blue);">${names[i]}</td>`;
+    for(let j=0; j<4; j++) {
+      if(i === j) {
+        rowHtml += `<td style="color:#ccc;">-</td>`;
+      } else {
+        let val = vsMatrix[i][j];
+        // ✅ 改善：平手時顯示 draw 樣式，明確區分平手與未計算
+        let cls = val > 0 ? 'win' : (val < 0 ? 'lose' : 'draw');
+        let txt = val > 0 ? `+${val}` : (val < 0 ? `${val}` : '±0');
+        rowHtml += `<td class="${cls}">${txt}</td>`;
+      }
+    }
+    rowHtml += `<td><span class="birdie-val">${birdCounts[i]} 鳥</span></td></tr>`;
+    settleBody.innerHTML += rowHtml;
+  }
+}
+
+// ── HDCP 回報功能 ────────────────────────────────────
+const REPORT_TOKEN = 'YOUR_ISSUE_TOKEN_HERE';
+const REPORT_OWNER = 'EdgeBlueSystems';
+const REPORT_REPO  = 'edgebluesystems.github.io';
+
+async function reportHdcp() {
+  const courseKey = document.getElementById('courseSelect').value;
+  const courseName = document.querySelector('#courseSelect option:checked').textContent.trim();
+  const statusEl = document.getElementById('reportStatus');
+
+  if(!currentCourseData.pars) { statusEl.textContent = '❌ 尚未載入球場資料'; return; }
+
+  // 收集目前的 HDCP 和 Par（從 HDCP 編輯欄位讀取最新值）
+  const hdcps = [], pars = [];
+  for(let i=0; i<18; i++) {
+    const hEl = document.querySelector(`.hdcp-edit-input[onchange*="${i},"]`) ||
+                document.querySelector(`.hdcp-edit-input[onchange="updateLiveHdcp(${i}, this.value)"]`);
+    hdcps.push(currentCourseData.hdcps[i]);
+    pars.push(currentCourseData.pars[i]);
+  }
+
+  const now = new Date().toLocaleString('zh-TW', {timeZone:'Asia/Taipei'});
+  const body = `**球場：** ${courseName}（\`${courseKey}\`）
+**回報時間：** ${now}
+**HDCP：** \`${JSON.stringify(hdcps)}\`
+**Par：** \`${JSON.stringify(pars)}\`
+
+> 此回報由 EdgeBlue 抓球版系統自動產生`;
+
+  statusEl.textContent = '⏳ 回報中...';
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPORT_OWNER}/${REPORT_REPO}/issues`, {
+      method: 'POST',
+      headers: {
+        Authorization: `token ${REPORT_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: `[HDCP回報] ${courseKey} - ${courseName}`,
+        body: body,
+        labels: ['hdcp-report']
+      })
+    });
+
+    if(res.ok) {
+      statusEl.style.color = '#16a34a';
+      statusEl.textContent = '✅ 回報成功！感謝您的貢獻。';
+      setTimeout(() => { statusEl.textContent = ''; statusEl.style.color = '#64748b'; }, 5000);
+    } else {
+      const err = await res.json();
+      throw new Error(err.message || `HTTP ${res.status}`);
+    }
+  } catch(e) {
+    statusEl.style.color = '#ef4444';
+    statusEl.textContent = '❌ 回報失敗：' + e.message;
+  }
+}
+</script>
+</body>
+</html>

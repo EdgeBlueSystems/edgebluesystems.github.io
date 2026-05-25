@@ -201,6 +201,17 @@
 
 <div class="toast" id="toast"></div>
 
+<div class="container" style="margin-top:0;">
+  <div class="panel panel-red">
+    <h2>📢 球友回報待確認（GitHub Issues）</h2>
+    <div class="info">系統自動從 GitHub Issues 讀取 <code>[HDCP回報]</code> 標籤的資料，相同球場有 2 筆以上相同資料時可直接採用。</div>
+    <div class="btn-row" style="margin-bottom:12px;">
+      <button class="btn btn-blue" onclick="loadReports()">🔄 載入最新回報</button>
+    </div>
+    <div id="reportList"><div style="color:#94a3b8;font-size:12px;text-align:center;padding:20px;">按「載入最新回報」查看</div></div>
+  </div>
+</div>
+
 <script>
 const OWNER = 'EdgeBlueSystems';
 const REPO  = 'edgebluesystems.github.io';
@@ -510,6 +521,142 @@ async function pushToGitHub() {
     statusEl.textContent='❌ 推送失敗：' + e.message;
     showToast('❌ 推送失敗：' + e.message);
   }
+}
+
+
+// ── 讀取 GitHub Issues 回報 ──────────────────────────
+async function loadReports() {
+  const token = document.getElementById('ghToken').value.trim();
+  const el = document.getElementById('reportList');
+  el.innerHTML = '<div style="color:#94a3b8;font-size:12px;text-align:center;padding:20px;">⏳ 載入中...</div>';
+
+  try {
+    // 讀取所有標題含 [HDCP回報] 的 Issues
+    const res = await fetch(
+      `https://api.github.com/repos/${OWNER}/${REPO}/issues?state=open&labels=hdcp-report&per_page=100`,
+      { headers: {
+          Accept: 'application/vnd.github.v3+json',
+          ...(token ? { Authorization: `token ${token}` } : {})
+      }}
+    );
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const issues = await res.json();
+
+    if(!issues.length) {
+      el.innerHTML = '<div style="color:#94a3b8;font-size:12px;text-align:center;padding:20px;">目前沒有待確認的回報</div>';
+      return;
+    }
+
+    // 依球場分組
+    const grouped = {};
+    issues.forEach(issue => {
+      // 從 title 取 courseKey：[HDCP回報] wufeng - 霧峰...
+      const match = issue.title.match(/\[HDCP回報\]\s*([a-z0-9_]+)/);
+      if(!match) return;
+      const key = match[1];
+      if(!grouped[key]) grouped[key] = [];
+
+      // 從 body 解析 HDCP 和 Par
+      const hdcpMatch = issue.body.match(/\*\*HDCP：\*\*\s*`(\[.*?\])`/);
+      const parMatch  = issue.body.match(/\*\*Par：\*\*\s*`(\[.*?\])`/);
+      const timeMatch = issue.body.match(/\*\*回報時間：\*\*\s*(.+)/);
+      grouped[key].push({
+        issueNum: issue.number,
+        hdcps: hdcpMatch ? JSON.parse(hdcpMatch[1]) : null,
+        pars:  parMatch  ? JSON.parse(parMatch[1])  : null,
+        time:  timeMatch ? timeMatch[1].trim() : '',
+        url:   issue.html_url
+      });
+    });
+
+    // 渲染
+    let html = '';
+    Object.entries(grouped).forEach(([key, reports]) => {
+      const courseName = db[key]?.name || key;
+
+      // 找出相同值的群組
+      const hdcpGroups = {};
+      reports.forEach(r => {
+        if(!r.hdcps) return;
+        const sig = JSON.stringify(r.hdcps);
+        if(!hdcpGroups[sig]) hdcpGroups[sig] = [];
+        hdcpGroups[sig].push(r);
+      });
+
+      const maxCount = Math.max(...Object.values(hdcpGroups).map(g=>g.length));
+      const canAdopt = maxCount >= 2;
+      const adoptSig = Object.entries(hdcpGroups).find(([s,g])=>g.length===maxCount)?.[0];
+      const adoptGroup = adoptSig ? hdcpGroups[adoptSig] : [];
+
+      html += `<div style="background:#f8fafc;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid ${canAdopt?'#86efac':'#e2e8f0'};">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div>
+            <span style="font-size:13px;font-weight:bold;color:#1a3a5f;">${courseName}</span>
+            <span style="font-size:11px;color:#94a3b8;margin-left:8px;">${key}</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span style="font-size:11px;background:${canAdopt?'#dcfce7':'#fef9c3'};color:${canAdopt?'#166534':'#854d0e'};padding:2px 8px;border-radius:20px;">
+              ${reports.length} 筆回報，最多 ${maxCount} 筆相同
+            </span>
+            ${canAdopt ? `<button class="btn btn-green" style="font-size:11px;padding:5px 12px;"
+              onclick="adoptReport('${key}', ${adoptSig}, ${JSON.stringify(adoptGroup.map(r=>r.issueNum))})">
+              ✅ 採用
+            </button>` : ''}
+          </div>
+        </div>
+        ${Object.entries(hdcpGroups).map(([sig, grp]) => `
+          <div style="font-size:11px;color:#475569;margin-bottom:4px;">
+            <span style="font-weight:bold;${grp.length===maxCount?'color:#16a34a;':''}">
+              ${grp.length} 筆相同：
+            </span>
+            HDCP: ${JSON.parse(sig).join(', ')}
+            <span style="color:#94a3b8;margin-left:6px;">
+              （${grp.map(r=>`<a href="${r.url}" target="_blank" style="color:#94a3b8;">#${r.issueNum}</a>`).join('、')}）
+            </span>
+          </div>`).join('')}
+      </div>`;
+    });
+
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = `<div style="color:#ef4444;font-size:12px;padding:10px;">❌ 載入失敗：${e.message}<br>若 Issues 超過限制，請輸入 Token 後再試。</div>`;
+  }
+}
+
+// 採用回報資料
+async function adoptReport(courseKey, hdcpsJson, issueNums) {
+  const token = document.getElementById('ghToken').value.trim();
+  if(!token) { showToast('❌ 請先輸入 GitHub Token'); return; }
+
+  const hdcps = JSON.parse(hdcpsJson);
+  if(!db[courseKey]) { showToast('❌ 找不到此球場'); return; }
+
+  // 更新 db
+  db[courseKey].hdcps    = hdcps;
+  db[courseKey].verified = true;
+  localStorage.setItem('eb_admin_db', JSON.stringify(db));
+
+  showToast(`⏳ 更新 ${db[courseKey].name} 並推送...`);
+
+  // 推送 courses.json
+  document.getElementById('ghToken').value = token;
+  await pushToGitHub();
+
+  // 關閉已採用的 Issues
+  for(const num of issueNums) {
+    await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/issues/${num}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `token ${token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ state: 'closed' })
+    });
+  }
+
+  showToast(`✅ 已採用並關閉 ${issueNums.length} 筆回報！`);
+  setTimeout(() => loadReports(), 1500);
 }
 
 // ── Toast ─────────────────────────────────────────────
