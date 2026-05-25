@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>球場資料維護</title>
+  <style>
+    :root { --eb-blue:#1a3a5f; --eb-accent:#2d6a4f; --eb-gold:#ff9f1c; --bg:#f4f7f9; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"PingFang TC","Microsoft JhengHei",sans-serif; background:var(--bg); color:#334155; padding-bottom:60px; }
+
+    .topbar { background:var(--eb-blue); color:white; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; }
+    .topbar .title { font-weight:bold; font-size:1rem; }
+    .topbar .status { font-size:0.8rem; opacity:0.75; }
+
+    .container { max-width:1100px; margin:20px auto; padding:0 15px; }
+    .grid { display:grid; grid-template-columns:280px 1fr; gap:20px; }
+    @media(max-width:800px){ .grid { grid-template-columns:1fr; } }
+
+    .panel { background:white; border-radius:12px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:16px; border-top:4px solid var(--eb-blue); }
+    .panel-green { border-top-color:var(--eb-accent); }
+    .panel-gold  { border-top-color:var(--eb-gold); }
+    .panel-red   { border-top-color:#ef4444; }
+
+    h2 { font-size:0.95rem; color:var(--eb-blue); margin:0 0 14px; border-left:4px solid var(--eb-accent); padding-left:10px; }
+
+    label { font-size:11px; font-weight:bold; color:var(--eb-blue); display:block; margin-bottom:4px; margin-top:10px; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea {
+      width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; outline:none;
+    }
+    input:focus, select:focus, textarea:focus { border-color:var(--eb-blue); }
+
+    .radio-row { display:flex; gap:14px; margin-top:6px; }
+    .radio-row label { font-size:12px; font-weight:normal; color:#334155; display:flex; align-items:center; gap:5px; cursor:pointer; margin:0; }
+
+    /* 洞數表格 */
+    .hole-grid { display:grid; gap:3px; margin-bottom:5px; align-items:center; }
+    .hole-grid-18 { grid-template-columns:50px repeat(9,1fr) 8px repeat(9,1fr); }
+    .hole-grid-9  { grid-template-columns:50px repeat(9,1fr); }
+    .row-label { font-size:10px; font-weight:bold; color:#64748b; text-align:right; padding-right:4px; }
+    .col-head  { font-size:10px; color:#94a3b8; text-align:center; font-weight:bold; }
+    .spacer    { background:transparent; }
+    .h-input { width:100%; padding:6px 2px; text-align:center; border:1px solid #e2e8f0; border-radius:4px; font-size:13px; font-weight:bold; }
+    .h-input.par  { border-color:#bfdbfe; background:#eff6ff; color:var(--eb-blue); }
+    .h-input.hdcp { border-color:#fed7aa; background:#fff7ed; color:#c2410c; }
+    .h-input:focus { outline:none; box-shadow:0 0 0 2px rgba(26,58,95,0.2); }
+
+    /* 球場列表 */
+    .clist { max-height:360px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; }
+    .citem { display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background:#f8fafc; border-radius:7px; border:1px solid #e2e8f0; cursor:pointer; }
+    .citem:hover { background:#dbeafe; border-color:#93c5fd; }
+    .citem.active { background:#dbeafe; border-color:var(--eb-blue); }
+    .citem .cname { font-size:12px; font-weight:bold; color:var(--eb-blue); }
+    .citem .cmeta { font-size:10px; color:#94a3b8; }
+    .badges { display:flex; gap:4px; }
+    .badge { font-size:10px; padding:1px 6px; border-radius:20px; }
+    .b-green { background:#dcfce7; color:#166534; }
+    .b-amber { background:#fef9c3; color:#854d0e; }
+    .b-blue  { background:#dbeafe; color:#1e40af; }
+
+    /* Tab */
+    .tabs { display:flex; gap:4px; margin-bottom:12px; }
+    .tab  { padding:7px 14px; border-radius:6px; border:1px solid #e2e8f0; background:white; color:#64748b; font-size:12px; cursor:pointer; }
+    .tab.active { background:var(--eb-blue); color:white; border-color:var(--eb-blue); font-weight:bold; }
+
+    /* 按鈕 */
+    .btn { padding:9px 18px; border:none; border-radius:7px; font-size:13px; font-weight:bold; cursor:pointer; transition:all 0.2s; }
+    .btn-blue  { background:var(--eb-blue); color:white; }
+    .btn-green { background:var(--eb-accent); color:white; }
+    .btn-gold  { background:var(--eb-gold); color:white; }
+    .btn-gray  { background:#94a3b8; color:white; }
+    .btn-red   { background:#ef4444; color:white; }
+    .btn:hover { opacity:0.85; transform:translateY(-1px); }
+    .btn-row   { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+
+    /* GitHub 區 */
+    .gh-box { background:#f1f5f9; border-radius:8px; padding:14px; margin-top:10px; }
+    .gh-status { font-size:12px; margin-top:8px; min-height:20px; color:#475569; }
+    .gh-status.ok  { color:#16a34a; font-weight:bold; }
+    .gh-status.err { color:#ef4444; font-weight:bold; }
+
+    /* Toast */
+    .toast { position:fixed; bottom:20px; right:20px; background:#1a3a5f; color:white; padding:11px 18px; border-radius:8px; font-size:13px; font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,0.2); transform:translateY(80px); opacity:0; transition:all 0.3s; z-index:999; }
+    .toast.show { transform:translateY(0); opacity:1; }
+
+    .info { background:#f0fdf4; border-left:3px solid var(--eb-accent); padding:9px 12px; font-size:11px; color:#475569; border-radius:0 6px 6px 0; margin-bottom:12px; line-height:1.7; }
+    .warn { background:#fffbeb; border-left:3px solid var(--eb-gold); padding:9px 12px; font-size:11px; color:#78350f; border-radius:0 6px 6px 0; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="title">⛳ EdgeBlue 球場資料維護</div>
+  <div class="status" id="dbStatus">載入中...</div>
+</div>
+
+<div class="container">
+<div class="grid">
+
+  <!-- 左：球場列表 + GitHub -->
+  <div>
+    <div class="panel">
+      <h2>球場列表</h2>
+      <div class="clist" id="courseList"><div style="color:#94a3b8;font-size:12px;text-align:center;padding:20px;">載入中...</div></div>
+      <div class="btn-row">
+        <button class="btn btn-blue" style="flex:1" onclick="newCourse()">＋ 新增</button>
+        <button class="btn btn-red" onclick="deleteCourse()" title="刪除">🗑️</button>
+      </div>
+    </div>
+
+    <div class="panel panel-gold">
+      <h2>推送到 GitHub</h2>
+      <div class="warn">⚠️ Token 只在本次使用，不會被儲存。</div>
+      <div class="gh-box">
+        <label>GitHub Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
+        <div style="font-size:10px;color:#94a3b8;margin-top:4px;">
+          需要 repo 的 Contents 讀寫權限
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-gold" onclick="pushToGitHub()" style="flex:1">🚀 推送 courses.json</button>
+        </div>
+        <div class="gh-status" id="ghStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右：編輯區 -->
+  <div>
+    <div class="panel panel-green">
+      <h2>球場資料編輯</h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div>
+          <label>球場名稱</label>
+          <input type="text" id="fName" placeholder="南峰高爾夫球場">
+        </div>
+        <div>
+          <label>識別碼（英文）</label>
+          <input type="text" id="fKey" placeholder="nanfeng">
+        </div>
+        <div>
+          <label>地區</label>
+          <select id="fRegion">
+            <option value="central">🌿 中部</option>
+            <option value="north">🏔️ 北部</option>
+            <option value="south">🌊 南部</option>
+            <option value="east">🌺 東部</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:6px;">
+        <div>
+          <label>洞數</label>
+          <div class="radio-row">
+            <label><input type="radio" name="fHoles" value="18" checked onchange="onHolesChange()"> 18洞</label>
+            <label><input type="radio" name="fHoles" value="27" onchange="onHolesChange()"> 27洞</label>
+          </div>
+        </div>
+        <div>
+          <label>核實狀態</label>
+          <div class="radio-row">
+            <label><input type="radio" name="fVerified" value="true"> ✅ 已核實</label>
+            <label><input type="radio" name="fVerified" value="false" checked> ⚠️ 待核實</label>
+          </div>
+        </div>
+        <div>
+          <label>資料來源</label>
+          <input type="text" id="fSource" placeholder="Garmin / golf.tw / 計分卡">
+        </div>
+      </div>
+
+      <!-- 27洞區名 -->
+      <div id="zoneNameRow" style="display:none;margin-top:8px;">
+        <label>三區名稱</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <input type="text" id="zn0" value="西區" oninput="updateTabs()">
+          <input type="text" id="zn1" value="東區" oninput="updateTabs()">
+          <input type="text" id="zn2" value="中區" oninput="updateTabs()">
+        </div>
+      </div>
+
+      <!-- Tab（27洞） -->
+      <div id="zoneTabs" style="display:none;margin-top:12px;">
+        <div class="tabs" id="tabRow"></div>
+      </div>
+
+      <!-- 洞數輸入 -->
+      <div id="holeEditor" style="margin-top:10px;"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="saveCourse()">💾 儲存</button>
+        <button class="btn btn-gray"  onclick="clearForm()">清空</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const OWNER = 'EdgeBlueSystems';
+const REPO  = 'edgebluesystems.github.io';
+const FILE  = 'courses.json';
+
+let db = {};          // 目前的球場資料
+let currentKey = null;
+let currentZone = 0;
+let is27 = false;
+
+// ── 初始化：從 GitHub 載入最新 courses.json ─────────
+window.onload = async function() {
+  await fetchCourseDB();
+};
+
+async function fetchCourseDB() {
+  document.getElementById('dbStatus').textContent = '載入球場資料中...';
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${FILE}?v=${Date.now()}`);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    db = await res.json();
+    document.getElementById('dbStatus').textContent = `已載入 ${Object.keys(db).length} 筆球場資料`;
+    renderList();
+  } catch(e) {
+    document.getElementById('dbStatus').textContent = '⚠️ 無法載入，使用本機暫存';
+    const local = localStorage.getItem('eb_admin_db');
+    if(local) db = JSON.parse(local);
+    renderList();
+  }
+}
+
+// ── 球場列表 ────────────────────────────────────────
+function renderList() {
+  const el = document.getElementById('courseList');
+  const keys = Object.keys(db).filter(k => !db[k].zone && !db[k].underConstruction);
+  if(!keys.length) { el.innerHTML = '<div style="color:#94a3b8;font-size:12px;text-align:center;padding:20px;">尚無資料</div>'; return; }
+  const regionOrder = { central:0, north:1, south:2, east:3 };
+  keys.sort((a,b) => (regionOrder[db[a].region]||9) - (regionOrder[db[b].region]||9));
+  el.innerHTML = keys.map(k => {
+    const c = db[k];
+    const rl = { central:'中部', north:'北部', south:'南部', east:'東部' };
+    return `<div class="citem${currentKey===k?' active':''}" onclick="loadToForm('${k}')">
+      <div>
+        <div class="cname">${c.name||k}</div>
+        <div class="cmeta">${k} ｜ ${rl[c.region]||''}</div>
+      </div>
+      <div class="badges">
+        <span class="badge b-blue">${c.is27hole?'27洞':'18洞'}</span>
+        <span class="badge ${c.verified?'b-green':'b-amber'}">${c.verified?'✅':'⚠️'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── 洞數切換 ────────────────────────────────────────
+function onHolesChange() {
+  is27 = document.querySelector('input[name="fHoles"]:checked').value === '27';
+  document.getElementById('zoneNameRow').style.display = is27 ? 'block' : 'none';
+  document.getElementById('zoneTabs').style.display    = is27 ? 'block' : 'none';
+  currentZone = 0;
+  buildHoleEditor();
+  updateTabs();
+}
+
+function updateTabs() {
+  if(!is27) return;
+  const names = [0,1,2].map(i => document.getElementById('zn'+i)?.value || `區${i+1}`);
+  const tabRow = document.getElementById('tabRow');
+  tabRow.innerHTML = names.map((n,i) =>
+    `<div class="tab${currentZone===i?' active':''}" onclick="switchTab(${i})">${n}</div>`
+  ).join('');
+}
+
+function switchTab(i) {
+  currentZone = i;
+  updateTabs();
+  document.querySelectorAll('.zone-sec').forEach((el,j) => el.style.display = j===i?'block':'none');
+}
+
+// ── 建立洞數輸入區 ───────────────────────────────────
+function buildHoleEditor() {
+  const container = document.getElementById('holeEditor');
+  container.innerHTML = '';
+  if(!is27) {
+    container.appendChild(makeZoneBlock(0, 18));
+  } else {
+    updateTabs();
+    [0,1,2].forEach(zi => {
+      const sec = makeZoneBlock(zi, 9);
+      sec.classList.add('zone-sec');
+      sec.style.display = zi===0 ? 'block' : 'none';
+      container.appendChild(sec);
+    });
+  }
+}
+
+function makeZoneBlock(zi, count) {
+  const div = document.createElement('div');
+  div.dataset.zone = zi;
+
+  const heads = Array.from({length:count},(_,i)=>`<div class="col-head">H${i+1}</div>`).join('');
+  const spacer = count===18 ? `<div class="spacer"></div>` : '';
+
+  // 18洞分前後九顯示
+  let parCells='', hdcpCells='', headCells='';
+  for(let i=0;i<count;i++){
+    const sep = (count===18 && i===9) ? '<div class="spacer"></div>' : '';
+    headCells += (count===18&&i===9?'<div class="spacer"></div>':'') + `<div class="col-head">H${i+1}</div>`;
+    parCells  += sep + `<input class="h-input par"  type="number" min="3" max="6" id="p_z${zi}_h${i}" value="4"
+      onfocus="this.select()" onkeydown="hkey(event,'p',${zi},${i},${count})">`;
+    hdcpCells += sep + `<input class="h-input hdcp" type="number" min="1" max="${count}" id="h_z${zi}_h${i}" value="${i+1}"
+      onfocus="this.select()" onkeydown="hkey(event,'h',${zi},${i},${count})">`;
+  }
+
+  const gc = count===18 ? 'hole-grid hole-grid-18' : 'hole-grid hole-grid-9';
+  div.innerHTML = `
+    <div class="${gc}"><div class="row-label"></div>${headCells}</div>
+    <div class="${gc}"><div class="row-label">Par</div>${parCells}</div>
+    <div class="${gc}"><div class="row-label">HDCP</div>${hdcpCells}</div>`;
+  return div;
+}
+
+function hkey(e, type, zi, hi, count) {
+  const move = (t,z,h) => { const el=document.getElementById(`${t}_z${z}_h${h}`); if(el){el.focus();el.select();} };
+  if(e.key==='ArrowRight'||e.key==='Tab'){e.preventDefault();move(type,zi,hi+1);}
+  else if(e.key==='ArrowLeft'){e.preventDefault();move(type,zi,hi-1);}
+  else if(e.key==='ArrowDown'){e.preventDefault();move(type==='p'?'h':'p',zi,hi);}
+  else if(e.key==='ArrowUp'){e.preventDefault();move(type==='h'?'p':'p',zi,hi);}
+}
+
+// ── 讀取/寫入格子資料 ────────────────────────────────
+function getZoneData(zi, count) {
+  const pars=[], hdcps=[];
+  for(let i=0;i<count;i++){
+    pars.push(parseInt(document.getElementById(`p_z${zi}_h${i}`)?.value)||4);
+    hdcps.push(parseInt(document.getElementById(`h_z${zi}_h${i}`)?.value)||(i+1));
+  }
+  return {pars,hdcps};
+}
+
+function setZoneData(zi, count, pars, hdcps) {
+  for(let i=0;i<count;i++){
+    const pe=document.getElementById(`p_z${zi}_h${i}`);
+    const he=document.getElementById(`h_z${zi}_h${i}`);
+    if(pe&&pars[i]!==undefined) pe.value=pars[i];
+    if(he&&hdcps[i]!==undefined) he.value=hdcps[i];
+  }
+}
+
+// ── 載入球場到表單 ───────────────────────────────────
+function loadToForm(key) {
+  const c = db[key];
+  if(!c) return;
+  currentKey = key;
+  document.getElementById('fKey').value    = key;
+  document.getElementById('fName').value   = c.name||'';
+  document.getElementById('fRegion').value = c.region||'central';
+  document.getElementById('fSource').value = c.source||'';
+  document.querySelector(`input[name="fVerified"][value="${c.verified?'true':'false'}"]`).checked = true;
+
+  if(c.is27hole) {
+    document.querySelector('input[name="fHoles"][value="27"]').checked = true;
+    is27 = true;
+    document.getElementById('zoneNameRow').style.display = 'block';
+    document.getElementById('zoneTabs').style.display    = 'block';
+    buildHoleEditor();
+    c.zones.forEach((zk,zi) => {
+      const zd = db[zk];
+      if(document.getElementById('zn'+zi)) document.getElementById('zn'+zi).value = zd?.label||`區${zi+1}`;
+      if(zd) setTimeout(()=>setZoneData(zi,9,zd.pars,zd.hdcps),80);
+    });
+    currentZone=0; updateTabs();
+  } else {
+    document.querySelector('input[name="fHoles"][value="18"]').checked = true;
+    is27 = false;
+    document.getElementById('zoneNameRow').style.display = 'none';
+    document.getElementById('zoneTabs').style.display    = 'none';
+    buildHoleEditor();
+    setTimeout(()=>setZoneData(0,18,c.pars,c.hdcps),80);
+  }
+  renderList();
+}
+
+// ── 儲存球場 ─────────────────────────────────────────
+function saveCourse() {
+  const key      = document.getElementById('fKey').value.trim();
+  const name     = document.getElementById('fName').value.trim();
+  const region   = document.getElementById('fRegion').value;
+  const source   = document.getElementById('fSource').value.trim();
+  const verified = document.querySelector('input[name="fVerified"]:checked').value==='true';
+
+  if(!key||!name){ showToast('❌ 請填寫球場名稱和識別碼'); return; }
+  if(!/^[a-z0-9_]+$/.test(key)){ showToast('❌ 識別碼只能用英文小寫、數字和底線'); return; }
+
+  if(!is27) {
+    const d = getZoneData(0,18);
+    db[key] = { name, region, source, verified, hdcps:d.hdcps, pars:d.pars };
+  } else {
+    const znames = [0,1,2].map(i=>document.getElementById('zn'+i)?.value||`區${i+1}`);
+    const zkeys  = [0,1,2].map(i=>`${key}_z${i+1}`);
+    const zones  = [0,1,2].map(i=>{ const d=getZoneData(i,9); return {label:znames[i],pars:d.pars,hdcps:d.hdcps}; });
+    // 主 key
+    db[key] = { name, region, source, verified, is27hole:true,
+      zones: zkeys,
+      defaultZones: [zkeys[0],zkeys[1]],
+      pars:  [...zones[0].pars, ...zones[1].pars],
+      hdcps: [...zones[0].hdcps,...zones[1].hdcps] };
+    // 子 zone
+    zones.forEach((z,i)=>{ db[zkeys[i]] = { zone:true, label:z.label, pars:z.pars, hdcps:z.hdcps }; });
+  }
+
+  currentKey = key;
+  localStorage.setItem('eb_admin_db', JSON.stringify(db));
+  renderList();
+  showToast(`✅ 已儲存：${name}（尚未推送到 GitHub）`);
+}
+
+// ── 新增 / 刪除 / 清空 ──────────────────────────────
+function newCourse() {
+  currentKey=null; clearForm();
+  document.querySelectorAll('.citem').forEach(el=>el.classList.remove('active'));
+}
+
+function deleteCourse() {
+  if(!currentKey){ showToast('請先選擇球場'); return; }
+  const name = db[currentKey]?.name||currentKey;
+  if(!confirm(`確定刪除「${name}」？`)) return;
+  // 若27洞，也刪除子 zone key
+  if(db[currentKey]?.zones) db[currentKey].zones.forEach(zk=>delete db[zk]);
+  delete db[currentKey];
+  currentKey=null;
+  localStorage.setItem('eb_admin_db',JSON.stringify(db));
+  renderList(); clearForm();
+  showToast('🗑️ 已刪除（尚未推送到 GitHub）');
+}
+
+function clearForm() {
+  document.getElementById('fKey').value='';
+  document.getElementById('fName').value='';
+  document.getElementById('fSource').value='';
+  document.querySelector('input[name="fHoles"][value="18"]').checked=true;
+  document.querySelector('input[name="fVerified"][value="false"]').checked=true;
+  document.getElementById('zoneNameRow').style.display='none';
+  document.getElementById('zoneTabs').style.display='none';
+  is27=false; currentZone=0;
+  buildHoleEditor();
+}
+
+// ── 推送到 GitHub ────────────────────────────────────
+async function pushToGitHub() {
+  const token = document.getElementById('ghToken').value.trim();
+  if(!token){ showToast('❌ 請輸入 GitHub Token'); return; }
+
+  const statusEl = document.getElementById('ghStatus');
+  statusEl.className='gh-status';
+  statusEl.textContent='⏳ 推送中...';
+
+  try {
+    const apiBase = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}`;
+
+    // 1. 取得目前檔案的 SHA（更新時必須提供）
+    const getRes = await fetch(apiBase, {
+      headers: { Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
+    });
+    let sha = null;
+    if(getRes.ok) {
+      const meta = await getRes.json();
+      sha = meta.sha;
+    } else if(getRes.status !== 404) {
+      throw new Error(`取得檔案失敗：HTTP ${getRes.status}`);
+    }
+
+    // 2. 把 db 轉成 JSON，Base64 編碼
+    const jsonStr = JSON.stringify(db, null, 2);
+    const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
+
+    // 3. PUT 更新
+    const body = {
+      message: `課程資料更新 ${new Date().toLocaleString('zh-TW')}`,
+      content: encoded,
+      ...(sha ? { sha } : {})
+    };
+
+    const putRes = await fetch(apiBase, {
+      method: 'PUT',
+      headers: {
+        Authorization: `token ${token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if(!putRes.ok) {
+      const err = await putRes.json();
+      throw new Error(err.message||`HTTP ${putRes.status}`);
+    }
+
+    statusEl.className='gh-status ok';
+    statusEl.textContent='✅ 推送成功！GitHub Pages 約 1 分鐘後生效。';
+    // 清空 Token 欄位（安全）
+    document.getElementById('ghToken').value='';
+    showToast('🚀 courses.json 已更新到 GitHub！');
+
+  } catch(e) {
+    statusEl.className='gh-status err';
+    statusEl.textContent='❌ 推送失敗：' + e.message;
+    showToast('❌ 推送失敗：' + e.message);
+  }
+}
+
+// ── Toast ─────────────────────────────────────────────
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// 初始化編輯器
+buildHoleEditor();
+</script>
+</body>
+</html>

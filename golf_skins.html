@@ -266,83 +266,87 @@
 </footer>
 
 <script>
-// ✅ = 已核實  ⚠️ = 待核實（請賽前對照計分卡用 HDCP 即時編輯功能修正）
-const courseDB = {
-  // ── 中部（已核實）────────────────────────────────────────
-  nanfeng:    { verified: true,  hdcps: [3,9,15,13,5,1,17,11,7,  4,18,10,6,14,2,8,12,16],  pars: [5,4,4,3,4,4,3,5,4, 5,3,4,4,3,4,5,4,4] },
-  changhua:   { verified: true,  hdcps: [1,17,3,11,7,13,9,5,15,  4,16,2,18,6,8,14,10,12],  pars: [5,3,4,4,4,5,4,4,3, 5,3,4,4,4,4,3,5,5] },
-  wufeng:     { verified: true,  hdcps: [3,9,7,15,17,5,1,13,11,  6,8,10,16,18,14,4,12,2],  pars: [4,3,5,3,4,4,4,4,5, 4,4,5,3,4,5,4,3,4] },
-  fengyuan:   { verified: true,  hdcps: [5,3,7,15,1,9,17,11,13,  4,18,2,16,8,14,12,10,6],  pars: [4,5,5,3,4,4,3,4,3, 5,3,4,3,4,3,5,4,5] },
-  songboling: { verified: true,  hdcps: [3,13,9,17,1,15,5,11,7,  10,4,12,18,16,2,6,14,8],  pars: [5,4,4,3,5,3,4,4,4, 4,5,4,3,4,4,4,3,5] },
-  cck:        { verified: true,  hdcps: [11,3,5,17,7,13,1,9,15,  6,16,14,4,12,10,2,18,8],  pars: [4,4,4,3,4,4,5,4,4, 4,3,4,5,4,4,5,3,4] },
-  // ── 北部（待核實）────────────────────────────────────────
-  linkou:     { verified: false, hdcps: [1,9,5,13,3,17,11,15,7,  2,10,6,14,4,18,8,16,12],  pars: [4,5,4,3,4,3,4,4,5, 4,4,5,3,4,4,4,3,5] },
-  taipeigolf: { verified: false, hdcps: [3,11,7,15,1,13,9,17,5,  4,12,8,16,2,14,10,18,6],  pars: [4,4,5,3,4,4,4,3,5, 4,5,4,3,4,4,5,3,4] },
-  longtan:    { verified: false, hdcps: [5,1,9,17,3,13,7,15,11,  6,2,10,18,4,14,8,16,12],  pars: [5,4,4,3,4,5,4,3,4, 5,4,4,3,4,4,5,3,4] },
-  dayuan:     { verified: false, hdcps: [1,11,5,15,3,13,9,17,7,  2,12,6,16,4,14,10,18,8],  pars: [4,4,5,3,5,4,4,3,4, 4,5,4,3,5,4,4,3,4] },
-  hsinchu:    { verified: false, hdcps: [3,7,1,15,11,5,17,13,9,  4,8,2,16,12,6,18,14,10],  pars: [4,4,5,3,4,4,3,5,4, 4,4,5,3,4,4,3,5,4] },
-  // ── 南部（待核實）────────────────────────────────────────
-  tainan:     { verified: false, hdcps: [1,9,5,17,3,13,7,15,11,  2,10,6,18,4,14,8,16,12],  pars: [4,5,4,3,4,4,5,3,4, 5,4,4,3,4,5,4,3,4] },
-  yida:       { verified: false, hdcps: [3,11,7,15,1,13,5,17,9,  4,12,8,16,2,14,6,18,10],  pars: [4,4,5,3,5,4,4,3,4, 4,5,4,3,5,4,4,3,4] },
-  pingtung:   { verified: false, hdcps: [5,1,9,17,3,11,7,15,13,  6,2,10,18,4,12,8,16,14],  pars: [4,5,4,3,4,4,5,3,5, 4,5,4,3,4,4,5,3,4] },
-  // ── 東部（待核實）────────────────────────────────────────
-  yilan:      { verified: false, hdcps: [1,9,5,15,3,13,7,17,11,  2,10,6,16,4,14,8,18,12],  pars: [4,4,5,3,4,4,4,3,5, 4,4,5,3,4,4,4,3,5] },
-  taitung:    { verified: false, hdcps: [3,7,1,15,11,5,17,13,9,  4,8,2,16,12,6,18,14,10],  pars: [4,5,4,3,5,4,4,3,4, 5,4,4,3,5,4,4,3,4] },
-  // ── 北部（資料來源：環球高爾夫 golf.tw）────────────────
-  // 新豐 27洞主設定（zones 陣列指向各區 key）
-  xinfeng_27: { is27hole: true, zones: ['xinfeng_west','xinfeng_east','xinfeng_mid'], verified: false,
-                defaultZones: ['xinfeng_west','xinfeng_east'],
-                hdcps: [4,3,8,2,9,7,5,1,6, 5,8,4,7,3,1,2,9,6], pars: [4,4,3,4,5,3,4,4,5, 4,3,4,4,5,4,4,3,5] },
-  // 林口：27洞，南+西區組合 18洞（待您用手錶核實）
-  linkou:   { verified: false, hdcps: [1,9,5,13,3,17,11,15,7,  2,10,6,14,4,18,8,16,12],  pars: [4,5,4,3,4,3,4,4,5, 4,4,5,3,4,4,4,3,5] },
-  // 美麗華：A場資料來自 golf.tw（36洞，A場18洞）
-  miramar:  { verified: false, hdcps: [11,17,3,9,1,15,5,13,7,  18,14,12,10,6,4,8,16,2],  pars: [4,3,5,4,4,3,4,4,5, 4,5,3,4,4,5,3,4,4] },
-  // 龍潭：待核實
-  longtan:  { verified: false, hdcps: [5,1,9,17,3,13,7,15,11,  6,2,10,18,4,14,8,16,12],  pars: [5,4,4,3,4,5,4,3,4, 5,4,4,3,4,4,5,3,4] },
-  // 新豐：27洞（西/東/中區），資料來自 golf.tw
-  xinfeng:  { verified: false, hdcps: [4,3,8,2,9,7,5,1,6,  5,8,4,7,3,1,2,9,6],  pars: [4,4,3,4,5,3,4,4,5, 4,3,4,4,5,4,4,3,5] },
-  // 新豐各區獨立存放（供方案A組合使用）
-  xinfeng_west: { zone: true, hdcps: [4,3,8,2,9,7,5,1,6], pars: [4,4,3,4,5,3,4,4,5], label: '西區' },
-  xinfeng_east: { zone: true, hdcps: [5,8,4,7,3,1,2,9,6], pars: [4,3,4,4,5,4,4,3,5], label: '東區' },
-  xinfeng_mid:  { zone: true, hdcps: [3,7,1,9,5,2,8,4,6],  pars: [4,4,3,5,4,4,3,5,4], label: '中區 ⚠️待核實' },
-  // 旭陽：資料來自 golf.tw（18洞）
-  xuyang:   { verified: false, hdcps: [5,9,3,15,7,13,1,17,11,  8,18,12,2,10,6,16,14,4],  pars: [4,4,4,3,4,5,4,3,5, 5,3,4,4,5,4,3,4,4] },
-  // ── 南部（待核實）────────────────────────────────────────
-  tainan:   { verified: false, hdcps: [1,9,5,17,3,13,7,15,11,  2,10,6,18,4,14,8,16,12],  pars: [4,5,4,3,4,4,5,3,4, 5,4,4,3,4,5,4,3,4] },
-  // ── 東部（資料來源：環球高爾夫 golf.tw）────────────────
-  // 花蓮：待核實
-  hualien:  { verified: false, hdcps: [1,9,5,15,3,13,7,17,11,  2,10,6,16,4,14,8,18,12],  pars: [4,4,5,3,4,4,4,3,5, 4,4,5,3,4,4,4,3,5] },
-  // 礁溪：前九洞資料來自 golf.tw，後九洞待核實
-  jiaoxi:   { verified: false, hdcps: [10,2,15,1,13,11,7,16,5,  3,9,12,4,8,14,6,18,17],  pars: [4,4,3,4,4,5,5,3,4, 4,5,3,4,4,3,5,4,4] },
-  // ── 林口：27洞，東/南/西三區（golf.tw）────────────────────
-  linkou_27: { is27hole: true,
-    zones: ['linkou_east','linkou_south','linkou_west'],
-    defaultZones: ['linkou_east','linkou_south'],
-    hdcps: [8,3,7,1,5,6,2,4,9, 8,2,6,5,7,4,3,9,1],
-    pars:  [3,4,5,4,4,3,4,4,5, 5,4,4,5,3,4,4,3,4],
-    verified: false },
-  linkou_east:  { zone:true, label:'東區', hdcps:[8,3,7,1,5,6,2,4,9], pars:[3,4,5,4,4,3,4,4,5] },
-  linkou_south: { zone:true, label:'南區', hdcps:[8,2,6,5,7,4,3,9,1], pars:[5,4,4,5,3,4,4,3,4] },
-  linkou_west:  { zone:true, label:'西區 ⚠️待核實', hdcps:[5,1,7,3,9,4,2,6,8], pars:[4,4,5,3,4,5,4,3,4] },
-  // ── 中部（Garmin 核實）────────────────────────────────
-  taifeng:  { verified: true,  hdcps: [13,17,3,11,1,5,7,15,9,  8,14,18,10,12,16,6,4,2],  pars: [4,3,5,4,5,4,4,3,4, 4,4,3,4,4,3,4,5,5] },
-  quanguo:  { verified: true,  hdcps: [17,11,9,5,13,1,3,15,7,  18,16,12,10,14,2,4,6,8],  pars: [4,4,5,4,3,4,5,3,4, 4,3,4,5,3,4,5,4,4] },
-  huangjia: { verified: true,  hdcps: [3,7,11,9,5,15,1,17,13,  2,8,14,4,16,6,10,18,12],  pars: [4,5,3,4,4,4,5,3,4, 5,4,4,4,3,4,3,4,5] },
-  // ── 中部建構中（佔位用，select 已設 disabled，不會被使用者選到）────
-  taichung_intl: { verified: false, underConstruction: true, hdcps: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], pars: [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4] },
-  dadushanl:     { verified: false, underConstruction: true, hdcps: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], pars: [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4] },
-  palm_lake:     { verified: false, underConstruction: true, hdcps: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], pars: [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4] },
-  nantou:        { verified: false, underConstruction: true, hdcps: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], pars: [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4] },
-  puli:          { verified: false, underConstruction: true, hdcps: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], pars: [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4] },
-};
+// 球場資料從 courses.json 動態載入
+let courseDB = {};
+let courseDBReady = false;
+
+async function loadCourseDB() {
+  try {
+    const res = await fetch('./courses.json?v=' + Date.now());
+    courseDB = await res.json();
+    courseDBReady = true;
+    // 建立 select 選單
+    buildCourseSelect();
+    // 載入存檔
+    loadSavedData();
+    syncNames();
+    loadCourse();
+  } catch(e) {
+    console.error('courses.json 載入失敗', e);
+    alert('⚠️ 球場資料載入失敗，請確認 courses.json 是否存在。');
+  }
+}
+
+// 依 region 分組建立 select optgroup
+function buildCourseSelect() {
+  const sel = document.getElementById('courseSelect');
+  if(!sel) return;
+
+  const regionConfig = [
+    { key: 'central',          label: '🌿 中部（中彰投）✅ 已核實',    verifiedOnly: true  },
+    { key: 'central',          label: '🌿 中部（中彰投）⚠️ 請賽前核實', verifiedOnly: false },
+    { key: 'north',            label: '🏔️ 北部 ⚠️ 請賽前核實',         verifiedOnly: false },
+    { key: 'south',            label: '🌊 南部 ⚠️ 請賽前核實',          verifiedOnly: false },
+    { key: 'east',             label: '🌺 東部 ⚠️ 請賽前核實',          verifiedOnly: false },
+  ];
+
+  // 儲存目前選取值
+  const savedVal = sel.value;
+  // 清掉既有的 optgroup（保留建構中分隔線以下不動）
+  // 重建所有可選球場的 optgroup
+  const dividerIdx = Array.from(sel.options).findIndex(o => o.disabled && o.label && o.label.includes('建構中'));
+
+  // 移除分隔線之前的所有 optgroup
+  while(sel.children.length > 0) {
+    const first = sel.children[0];
+    if(first.label && first.label.includes('建構中')) break;
+    sel.removeChild(first);
+  }
+
+  // 重新插入可選球場的 optgroup
+  let insertBefore = sel.children[0]; // 建構中分隔線
+
+  regionConfig.forEach(rc => {
+    const entries = Object.entries(courseDB).filter(([k, v]) => {
+      if(v.zone) return false; // zone 子區不顯示
+      if(v.underConstruction) return false;
+      if(v.region !== rc.key) return false;
+      if(rc.verifiedOnly && !v.verified) return false;
+      if(!rc.verifiedOnly && v.verified) return false;
+      return true;
+    });
+    if(entries.length === 0) return;
+
+    const og = document.createElement('optgroup');
+    og.label = rc.label;
+    entries.forEach(([k, v]) => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = v.name + (v.is27hole ? '（27洞）' : '');
+      og.appendChild(opt);
+    });
+    sel.insertBefore(og, insertBefore);
+  });
+
+  // 還原選取值
+  if(savedVal && courseDB[savedVal]) sel.value = savedVal;
+}
 
 let currentCourseData = {};
 
 window.onload = function() {
   renderMatrixInputs();  // 1. 先建立矩陣 DOM
-  loadSavedData();       // 2. 還原所有設定（含名字、矩陣讓桿值）
-  syncNames();           // 3. 更新名字顯示（此時 DOM 已存在）
-  loadCourse();          // 4. 載入球場 + 成績
+  loadCourseDB();        // 2. 載入 courses.json，完成後自動執行後續初始化
 };
 
 function syncNames() {
