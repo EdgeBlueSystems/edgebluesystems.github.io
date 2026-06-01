@@ -80,7 +80,10 @@
       <div class="course-info">
         <label>選擇比賽球場</label>
         <select id="courseSelect" onchange="loadCourse();">
-          <optgroup label="────── 可使用球場 ──────" disabled></optgroup>
+          <optgroup label="✏️ 自訂">
+            <option value="__custom__">＋ 輸入自訂球場資料</option>
+          </optgroup>
+          <optgroup label="────── 官方球場 ──────" disabled></optgroup>
           <optgroup label="🌿 中部（中彰投）✅ 已核實">
             <option value="nanfeng">南峰高爾夫球場</option>
             <option value="changhua">彰化高爾夫球場</option>
@@ -164,9 +167,31 @@
             <option value="shanhuquan" disabled>山湖觀高爾夫球場</option>
           </optgroup>
         </select>
-        <div id="courseNotice" style="display:none; margin-top:10px; padding:8px 12px; background:#fffbeb; border-left:3px solid #f59e0b; border-radius:4px; font-size:12px; color:#78350f;">
-          ⚠️ 此球場 HDCP 為參考值，請賽前對照計分卡，使用上方橘色欄位即時修正。
+        <div id="courseNotice" style="display:none; margin-top:8px; padding:8px 12px; background:#f0fdf4; border-left:3px solid #2d6a4f; border-radius:4px; font-size:12px; color:#475569;">
+          📅 <span id="courseUpdatedDate">最後更新：未記錄</span>｜HDCP 如有異動請賽前對照計分卡修正
         </div>
+        <!-- 自訂球場輸入區 -->
+        <div id="customCoursePanel" style="display:none; margin-top:10px; padding:14px; background:#fafafa; border:1px solid #cbd5e1; border-radius:8px;">
+          <div style="font-size:12px; font-weight:bold; color:#1a3a5f; margin-bottom:10px;">✏️ 自訂球場資料</div>
+          <div style="margin-bottom:8px;">
+            <label style="font-size:11px; font-weight:bold; color:#1a3a5f; display:block; margin-bottom:4px;">球場名稱</label>
+            <input type="text" id="customCourseName" placeholder="例：XX 高爾夫球場" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px;">
+          </div>
+          <div style="font-size:11px; color:#64748b; margin-bottom:6px; font-weight:bold;">前九洞（H1-9）</div>
+          <div id="customFrontGrid"></div>
+          <div style="font-size:11px; color:#64748b; margin:8px 0 6px; font-weight:bold;">後九洞（H10-18）</div>
+          <div id="customBackGrid"></div>
+          <div style="display:flex; gap:8px; margin-top:10px;">
+            <button onclick="applyCustomCourse()" style="flex:1; background:#1a3a5f; color:white; border:none; padding:9px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer;">
+              ✅ 套用此球場資料
+            </button>
+            <button onclick="reportCustomCourse()" style="flex:1; background:#2d6a4f; color:white; border:none; padding:9px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer;">
+              📢 回報新增此球場
+            </button>
+          </div>
+          <div id="customReportStatus" style="font-size:11px; color:#64748b; margin-top:6px; text-align:center;"></div>
+        </div>
+
         <div style="margin-top:10px; padding:10px 14px; background:#f0fdf4; border-radius:8px; border:1px solid #bbf7d0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
           <div style="font-size:12px; color:#475569;">
             📋 若您有當日計分卡，歡迎回報正確的 HDCP 資料協助更新球場數據
@@ -304,11 +329,10 @@ function buildCourseSelect() {
   if(!sel) return;
 
   const regionConfig = [
-    { key: 'central',          label: '🌿 中部（中彰投）✅ 已核實',    verifiedOnly: true  },
-    { key: 'central',          label: '🌿 中部（中彰投）⚠️ 請賽前核實', verifiedOnly: false },
-    { key: 'north',            label: '🏔️ 北部 ⚠️ 請賽前核實',         verifiedOnly: false },
-    { key: 'south',            label: '🌊 南部 ⚠️ 請賽前核實',          verifiedOnly: false },
-    { key: 'east',             label: '🌺 東部 ⚠️ 請賽前核實',          verifiedOnly: false },
+    { key: 'central', label: '🌿 中部（中彰投）' },
+    { key: 'north',   label: '🏔️ 北部'          },
+    { key: 'south',   label: '🌊 南部'           },
+    { key: 'east',    label: '🌺 東部'           },
   ];
 
   // 儲存目前選取值
@@ -332,8 +356,6 @@ function buildCourseSelect() {
       if(v.zone) return false; // zone 子區不顯示
       if(v.underConstruction) return false;
       if(v.region !== rc.key) return false;
-      if(rc.verifiedOnly && !v.verified) return false;
-      if(!rc.verifiedOnly && v.verified) return false;
       return true;
     });
     if(entries.length === 0) return;
@@ -343,7 +365,8 @@ function buildCourseSelect() {
     entries.forEach(([k, v]) => {
       const opt = document.createElement('option');
       opt.value = k;
-      opt.textContent = v.name + (v.is27hole ? '（27洞）' : '');
+      const updatedStr = v.updated ? ` ｜ ${v.updated}` : '';
+      opt.textContent = v.name + (v.is27hole ? '（27洞）' : '') + updatedStr;
       og.appendChild(opt);
     });
     sel.insertBefore(og, insertBefore);
@@ -411,12 +434,26 @@ let currentIs27  = false;
 
 function loadCourse() {
   const courseKey = document.getElementById('courseSelect').value;
+
+  // 自訂球場
+  const customPanel = document.getElementById('customCoursePanel');
+  if(courseKey === '__custom__') {
+    if(customPanel) customPanel.style.display = 'block';
+    buildCustomGrids();
+    return;
+  }
+  if(customPanel) customPanel.style.display = 'none';
+
   const raw = courseDB[courseKey] || courseDB['nanfeng'];
   const noticeEl = document.getElementById('courseNotice');
 
   if(raw.is27hole) {
     currentIs27 = true;
-    if(noticeEl) noticeEl.style.display = 'block';
+    if(noticeEl) {
+      noticeEl.style.display = 'block';
+      const updEl = document.getElementById('courseUpdatedDate');
+      if(updEl) updEl.textContent = raw.updated ? `最後更新：${raw.updated}` : '最後更新：未記錄';
+    }
     // 顯示前後九各自的賽區選單
     setup27ZoneSelects(raw);
     // 預設前九=西區，後九=東區
@@ -427,7 +464,11 @@ function loadCourse() {
   } else {
     currentIs27 = false;
     frontZoneKey = null; backZoneKey = null;
-    if(noticeEl) noticeEl.style.display = raw.verified ? 'none' : 'block';
+    if(noticeEl) {
+      noticeEl.style.display = 'block';
+      const updEl = document.getElementById('courseUpdatedDate');
+      if(updEl) updEl.textContent = raw.updated ? `最後更新：${raw.updated}` : '最後更新：未記錄';
+    }
     // 隱藏賽區選單
     document.getElementById('frontZoneSelector').style.display = 'none';
     document.getElementById('backZoneSelector').style.display  = 'none';
@@ -731,6 +772,109 @@ function calc() {
     }
     rowHtml += `<td><span class="birdie-val">${birdCounts[i]} 鳥</span></td></tr>`;
     settleBody.innerHTML += rowHtml;
+  }
+}
+
+
+// ── 自訂球場功能 ─────────────────────────────────────
+
+function buildCustomGrids() {
+  buildCustomGrid('customFrontGrid', 0, 9);
+  buildCustomGrid('customBackGrid',  9, 18);
+}
+
+function buildCustomGrid(containerId, startH, endH) {
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  const count = endH - startH;
+  let headRow='', parRow='', hdcpRow='';
+  for(let i=0; i<count; i++){
+    const h = startH + i;
+    headRow  += `<div style="font-size:10px;color:#94a3b8;text-align:center;font-weight:bold;">H${h+1}</div>`;
+    parRow   += `<input type="number" id="cp_${h}" value="4" min="3" max="6"
+      onfocus="this.select()"
+      style="width:100%;padding:7px 2px;text-align:center;border:1px solid #bfdbfe;border-radius:4px;font-size:13px;font-weight:bold;background:#eff6ff;color:#1a3a5f;">`;
+    hdcpRow  += `<input type="number" id="ch_${h}" value="${i+1}" min="1" max="9"
+      onfocus="this.select()"
+      style="width:100%;padding:7px 2px;text-align:center;border:1px solid #fed7aa;border-radius:4px;font-size:13px;font-weight:bold;background:#fff7ed;color:#c2410c;">`;
+  }
+  const gridStyle = `display:grid;grid-template-columns:repeat(${count},1fr);gap:3px;margin-bottom:4px;`;
+  container.innerHTML = `
+    <div style="${gridStyle}">${headRow}</div>
+    <div style="${gridStyle}"><div style="font-size:10px;color:#64748b;font-weight:bold;grid-column:1/-1;margin-bottom:2px;">Par</div></div>
+    <div style="${gridStyle}">${parRow}</div>
+    <div style="${gridStyle}"><div style="font-size:10px;color:#64748b;font-weight:bold;grid-column:1/-1;margin:4px 0 2px;">HDCP（各區1-9）</div></div>
+    <div style="${gridStyle}">${hdcpRow}</div>`;
+}
+
+function applyCustomCourse() {
+  const name = document.getElementById('customCourseName').value.trim() || '自訂球場';
+  const pars=[], hdcps=[], calcHdcps=[];
+  for(let i=0;i<18;i++){
+    pars.push(parseInt(document.getElementById(`cp_${i}`)?.value)||4);
+    const rawHdcp = parseInt(document.getElementById(`ch_${i}`)?.value)||(i<9?i+1:i-8);
+    hdcps.push(rawHdcp);
+    // 前九奇數，後九偶數
+    calcHdcps.push(i < 9 ? rawHdcp*2-1 : rawHdcp*2);
+  }
+  currentCourseData = { pars, hdcps, calcHdcps, verified:false, name };
+  currentIs27 = false;
+  document.getElementById('customCoursePanel').style.display = 'none';
+  // 更新日期顯示
+  const updEl = document.getElementById('courseUpdatedDate');
+  if(updEl) updEl.textContent = `自訂球場：${name}`;
+  const noticeEl = document.getElementById('courseNotice');
+  if(noticeEl) noticeEl.style.display = 'block';
+  renderTable();
+  showToast(`✅ 已套用自訂球場：${name}`);
+}
+
+function showToast(msg) {
+  const existing = document.getElementById('skins-toast');
+  if(existing) existing.remove();
+  const t = document.createElement('div');
+  t.id = 'skins-toast';
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1a3a5f;color:white;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:bold;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.2);';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+async function reportCustomCourse() {
+  const name = document.getElementById('customCourseName').value.trim();
+  if(!name) { alert('請先填入球場名稱'); return; }
+  const statusEl = document.getElementById('customReportStatus');
+
+  const pars=[], hdcps=[];
+  for(let i=0;i<18;i++){
+    pars.push(parseInt(document.getElementById(`cp_${i}`)?.value)||4);
+    hdcps.push(parseInt(document.getElementById(`ch_${i}`)?.value)||(i<9?i+1:i-8));
+  }
+
+  statusEl.style.color = '#64748b';
+  statusEl.textContent = '⏳ 回報中...';
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        courseKey:  'new_' + name.replace(/\s+/g,'_'),
+        courseName: name + '（新增申請）',
+        hdcps, pars,
+        isNewCourse: true
+      })
+    });
+    const data = await res.json();
+    if(res.ok && data.success) {
+      statusEl.style.color = '#16a34a';
+      statusEl.textContent = '✅ 已回報！管理員審核後會加入官方球場清單。';
+    } else {
+      throw new Error(data.error || `HTTP ${res.status}`);
+    }
+  } catch(e) {
+    statusEl.style.color = '#ef4444';
+    statusEl.textContent = '❌ 回報失敗：' + e.message;
   }
 }
 

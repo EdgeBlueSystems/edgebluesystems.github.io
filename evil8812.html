@@ -160,11 +160,9 @@
           </div>
         </div>
         <div>
-          <label>核實狀態</label>
-          <div class="radio-row">
-            <label><input type="radio" name="fVerified" value="true"> ✅ 已核實</label>
-            <label><input type="radio" name="fVerified" value="false" checked> ⚠️ 待核實</label>
-          </div>
+          <label>最後更新日期</label>
+          <input type="text" id="fUpdated" placeholder="例：2026-05-29">
+          <div style="font-size:10px;color:#94a3b8;margin-top:3px;">留空則自動填入今日日期</div>
         </div>
         <div>
           <label>資料來源</label>
@@ -257,11 +255,11 @@ function renderList() {
     return `<div class="citem${currentKey===k?' active':''}" onclick="loadToForm('${k}')">
       <div>
         <div class="cname">${c.name||k}</div>
-        <div class="cmeta">${k} ｜ ${rl[c.region]||''}</div>
+        <div class="cmeta">${k} ｜ ${rl[c.region]||''} ｜ 更新：${c.updated||'未記錄'}</div>
       </div>
       <div class="badges">
         <span class="badge b-blue">${c.is27hole?'27洞':'18洞'}</span>
-        <span class="badge ${c.verified?'b-green':'b-amber'}">${c.verified?'✅':'⚠️'}</span>
+        <span class="badge b-blue">${c.updated||'未記錄'}</span>
       </div>
     </div>`;
   }).join('');
@@ -393,7 +391,7 @@ function loadToForm(key) {
   document.getElementById('fName').value   = c.name||'';
   document.getElementById('fRegion').value = c.region||'central';
   document.getElementById('fSource').value = c.source||'';
-  document.querySelector(`input[name="fVerified"][value="${c.verified?'true':'false'}"]`).checked = true;
+  document.getElementById('fUpdated').value = c.updated || '';
 
   if(c.is27hole) {
     document.querySelector('input[name="fHoles"][value="27"]').checked = true;
@@ -424,20 +422,21 @@ function saveCourse() {
   const name     = document.getElementById('fName').value.trim();
   const region   = document.getElementById('fRegion').value;
   const source   = document.getElementById('fSource').value.trim();
-  const verified = document.querySelector('input[name="fVerified"]:checked').value==='true';
+  const fUpdated = document.getElementById('fUpdated').value.trim();
+  const updated  = fUpdated || new Date().toISOString().slice(0,10);
 
   if(!key||!name){ showToast('❌ 請填寫球場名稱和識別碼'); return; }
   if(!/^[a-z0-9_]+$/.test(key)){ showToast('❌ 識別碼只能用英文小寫、數字和底線'); return; }
 
   if(!is27) {
     const d = getZoneData(0,18);
-    db[key] = { name, region, source, verified, hdcps:d.hdcps, pars:d.pars };
+    db[key] = { name, region, source, updated, hdcps:d.hdcps, pars:d.pars };
   } else {
     const znames = [0,1,2].map(i=>document.getElementById('zn'+i)?.value||`區${i+1}`);
     const zkeys  = [0,1,2].map(i=>`${key}_z${i+1}`);
     const zones  = [0,1,2].map(i=>{ const d=getZoneData(i,9); return {label:znames[i],pars:d.pars,hdcps:d.hdcps}; });
     // 主 key
-    db[key] = { name, region, source, verified, is27hole:true,
+    db[key] = { name, region, source, updated, is27hole:true,
       zones: zkeys,
       defaultZones: [zkeys[0],zkeys[1]],
       pars:  [...zones[0].pars, ...zones[1].pars],
@@ -670,7 +669,7 @@ async function adoptReport(courseKey, hdcpsJson, issueNums) {
 
   // 更新 db
   db[courseKey].hdcps    = hdcps;
-  db[courseKey].verified = true;
+  db[courseKey].updated = new Date().toISOString().slice(0,10);
   localStorage.setItem('eb_admin_db', JSON.stringify(db));
 
   showToast(`⏳ 更新 ${db[courseKey].name} 並推送...`);
