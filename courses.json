@@ -1,5 +1,6 @@
 {
   "nanfeng": {
+    "verified": true,
     "region": "central",
     "name": "南峰高爾夫球場",
     "hdcps": [
@@ -41,10 +42,10 @@
       5,
       4,
       4
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "changhua": {
+    "verified": true,
     "region": "central",
     "name": "彰化高爾夫球場",
     "hdcps": [
@@ -86,10 +87,10 @@
       3,
       5,
       5
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "wufeng": {
+    "verified": true,
     "region": "central",
     "name": "霧峰高爾夫球場",
     "hdcps": [
@@ -131,10 +132,10 @@
       4,
       3,
       4
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "fengyuan": {
+    "verified": true,
     "region": "central",
     "name": "豐原高爾夫球場",
     "hdcps": [
@@ -176,10 +177,10 @@
       5,
       4,
       5
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "songboling": {
+    "verified": true,
     "region": "central",
     "name": "松柏嶺高爾夫球場",
     "hdcps": [
@@ -221,10 +222,10 @@
       4,
       3,
       5
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "cck": {
+    "verified": true,
     "region": "central",
     "name": "清泉崗高爾夫球場 (CCK)",
     "hdcps": [
@@ -266,10 +267,10 @@
       5,
       3,
       4
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "taifeng": {
+    "verified": true,
     "region": "central",
     "name": "台豐高爾夫俱樂部",
     "source": "Garmin Fenix 7",
@@ -312,10 +313,10 @@
       4,
       5,
       5
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "quanguo": {
+    "verified": true,
     "region": "central",
     "name": "全國花園鄉村俱樂部",
     "source": "Garmin Fenix 7",
@@ -358,10 +359,10 @@
       5,
       4,
       4
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "huangjia": {
+    "verified": true,
     "region": "central",
     "name": "皇家高爾夫球場",
     "source": "Garmin Fenix 7",
@@ -404,10 +405,10 @@
       3,
       4,
       5
-    ],
-    "updated": "2026-05-29"
+    ]
   },
   "linkou_27": {
+    "verified": false,
     "region": "north",
     "name": "林口高爾夫球場",
     "is27hole": true,
@@ -540,6 +541,7 @@
     ]
   },
   "miramar": {
+    "verified": false,
     "region": "north",
     "name": "美麗華高爾夫球場",
     "hdcps": [
@@ -584,6 +586,7 @@
     ]
   },
   "longtan": {
+    "verified": false,
     "region": "north",
     "name": "明台(龍潭)國際高爾夫球場",
     "hdcps": [
@@ -628,6 +631,7 @@
     ]
   },
   "xinfeng_27": {
+    "verified": false,
     "region": "north",
     "name": "新豐高爾夫俱樂部",
     "is27hole": true,
@@ -760,26 +764,27 @@
     ]
   },
   "xuyang": {
+    "verified": true,
     "region": "north",
     "name": "旭陽高爾夫俱樂部",
     "hdcps": [
-      5,
       9,
-      3,
       15,
-      7,
-      13,
       1,
+      13,
+      5,
       17,
+      3,
       11,
-      8,
-      18,
-      12,
-      2,
+      7,
       10,
+      18,
+      8,
+      2,
+      12,
       6,
-      16,
       14,
+      16,
       4
     ],
     "pars": [
@@ -804,6 +809,7 @@
     ]
   },
   "tainan": {
+    "verified": false,
     "region": "south",
     "name": "台南高爾夫俱樂部",
     "hdcps": [
@@ -848,6 +854,7 @@
     ]
   },
   "hualien": {
+    "verified": false,
     "region": "east",
     "name": "花蓮高爾夫球場",
     "hdcps": [
@@ -892,6 +899,7 @@
     ]
   },
   "jiaoxi": {
+    "verified": false,
     "region": "east",
     "name": "宜蘭礁溪高爾夫球場",
     "hdcps": [
@@ -929,6 +937,52 @@
       3,
       4,
       4,
+      3,
+      5,
+      4,
+      4
+    ]
+  },
+  "yili": {
+    "name": "立益高爾夫球場",
+    "region": "north",
+    "source": "",
+    "verified": true,
+    "hdcps": [
+      11,
+      17,
+      1,
+      13,
+      5,
+      15,
+      7,
+      3,
+      9,
+      18,
+      8,
+      2,
+      12,
+      10,
+      6,
+      14,
+      4,
+      16
+    ],
+    "pars": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      3,
+      5,
+      3,
+      4,
+      4,
+      5,
+      4,
+      3,
+      5,
       3,
       5,
       4,
