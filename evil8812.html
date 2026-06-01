@@ -607,36 +607,41 @@ async function loadReports() {
       });
 
       const maxCount = Math.max(...Object.values(hdcpGroups).map(g=>g.length));
-      const canAdopt = maxCount >= 2;
-      const adoptSig = Object.entries(hdcpGroups).find(([s,g])=>g.length===maxCount)?.[0];
-      const adoptGroup = adoptSig ? hdcpGroups[adoptSig] : [];
+      const autoAdopt = maxCount >= 2;
 
-      html += `<div style="background:#f8fafc;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid ${canAdopt?'#86efac':'#e2e8f0'};">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      const reportRows = Object.entries(hdcpGroups).map(([sig, grp]) => {
+        const isMulti  = grp.length >= 2;
+        const btnClass = isMulti ? 'btn-green' : 'btn-gold';
+        const btnLabel = isMulti ? `✅ 採用（${grp.length}筆相同）` : '🔍 手動審核採用（1筆）';
+        const hdcpStr  = JSON.parse(sig).join(', ');
+        const links    = grp.map(r => `<a href="${r.url}" target="_blank" style="color:#94a3b8;">#${r.issueNum}</a>`).join('、');
+        const dk = encodeURIComponent(courseKey);
+        const ds = encodeURIComponent(sig);
+        const dn = encodeURIComponent(JSON.stringify(grp.map(r=>r.issueNum)));
+        return `<div style="background:white;border-radius:6px;border:1px solid #e2e8f0;padding:10px;margin-bottom:6px;">
+          <div style="font-size:11px;color:#475569;margin-bottom:8px;">
+            <span style="font-weight:bold;${isMulti?'color:#16a34a;':''}">${grp.length} 筆：</span>
+            HDCP: ${hdcpStr}
+            <span style="color:#94a3b8;margin-left:6px;">（${links}）</span>
+          </div>
+          <button class="btn ${btnClass}" style="font-size:12px;padding:8px;width:100%;"
+            data-key="${dk}" data-sig="${ds}" data-nums="${dn}" onclick="adoptFromBtn(this)">
+            ${btnLabel}
+          </button>
+        </div>`;
+      }).join('');
+
+      html += `<div style="background:#f8fafc;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid ${autoAdopt?'#86efac':'#e2e8f0'};">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
           <div>
             <span style="font-size:13px;font-weight:bold;color:#1a3a5f;">${courseName}</span>
             <span style="font-size:11px;color:#94a3b8;margin-left:8px;">${key}</span>
           </div>
-          <div style="display:flex;gap:6px;align-items:center;">
-            <span style="font-size:11px;background:${canAdopt?'#dcfce7':'#fef9c3'};color:${canAdopt?'#166534':'#854d0e'};padding:2px 8px;border-radius:20px;">
-              ${reports.length} 筆回報，最多 ${maxCount} 筆相同
-            </span>
-            ${canAdopt ? `<button class="btn btn-green" style="font-size:11px;padding:5px 12px;"
-              onclick="adoptReport('${key}', ${adoptSig}, ${JSON.stringify(adoptGroup.map(r=>r.issueNum))})">
-              ✅ 採用
-            </button>` : ''}
-          </div>
+          <span style="font-size:11px;background:${autoAdopt?'#dcfce7':'#fef9c3'};color:${autoAdopt?'#166534':'#854d0e'};padding:2px 8px;border-radius:20px;">
+            ${reports.length} 筆回報，最多 ${maxCount} 筆相同
+          </span>
         </div>
-        ${Object.entries(hdcpGroups).map(([sig, grp]) => `
-          <div style="font-size:11px;color:#475569;margin-bottom:4px;">
-            <span style="font-weight:bold;${grp.length===maxCount?'color:#16a34a;':''}">
-              ${grp.length} 筆相同：
-            </span>
-            HDCP: ${JSON.parse(sig).join(', ')}
-            <span style="color:#94a3b8;margin-left:6px;">
-              （${grp.map(r=>`<a href="${r.url}" target="_blank" style="color:#94a3b8;">#${r.issueNum}</a>`).join('、')}）
-            </span>
-          </div>`).join('')}
+        ${reportRows}
       </div>`;
     });
 
@@ -644,6 +649,15 @@ async function loadReports() {
   } catch(e) {
     el.innerHTML = `<div style="color:#ef4444;font-size:12px;padding:10px;">❌ 載入失敗：${e.message}<br>若 Issues 超過限制，請輸入 Token 後再試。</div>`;
   }
+}
+
+
+// 從按鈕的 data 屬性取得參數，避免字串跳脫問題
+function adoptFromBtn(btn) {
+  const courseKey = decodeURIComponent(btn.dataset.key);
+  const sig       = decodeURIComponent(btn.dataset.sig);
+  const issueNums = JSON.parse(decodeURIComponent(btn.dataset.nums));
+  adoptReport(courseKey, sig, issueNums);
 }
 
 // 採用回報資料
