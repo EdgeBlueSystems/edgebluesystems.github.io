@@ -34,13 +34,14 @@
     .radio-row label { font-size:12px; font-weight:normal; color:#334155; display:flex; align-items:center; gap:5px; cursor:pointer; margin:0; }
 
     /* 洞數表格 */
-    .hole-grid { display:grid; gap:3px; margin-bottom:5px; align-items:center; }
-    .hole-grid-18 { grid-template-columns:50px repeat(9,1fr) 8px repeat(9,1fr); }
-    .hole-grid-9  { grid-template-columns:50px repeat(9,1fr); }
-    .row-label { font-size:10px; font-weight:bold; color:#64748b; text-align:right; padding-right:4px; }
-    .col-head  { font-size:10px; color:#94a3b8; text-align:center; font-weight:bold; }
-    .spacer    { background:transparent; }
-    .h-input { width:100%; padding:6px 2px; text-align:center; border:1px solid #e2e8f0; border-radius:4px; font-size:13px; font-weight:bold; }
+    /* 洞數表格 - 前後九分兩行，手機友善 */
+    .nine-block { margin-bottom:10px; }
+    .nine-label { font-size:11px; font-weight:bold; color:#94a3b8; margin-bottom:4px; }
+    .hole-grid { display:grid; grid-template-columns:42px repeat(9,1fr); gap:3px; margin-bottom:4px; align-items:center; }
+    .row-label { font-size:11px; font-weight:bold; color:#64748b; text-align:right; padding-right:4px; }
+    .col-head  { font-size:11px; color:#94a3b8; text-align:center; font-weight:bold; }
+    .h-input { width:100%; padding:8px 2px; text-align:center; border:1px solid #e2e8f0; border-radius:4px; font-size:14px; font-weight:bold; -moz-appearance:textfield; }
+    .h-input::-webkit-outer-spin-button, .h-input::-webkit-inner-spin-button { -webkit-appearance:none; }
     .h-input.par  { border-color:#bfdbfe; background:#eff6ff; color:var(--eb-blue); }
     .h-input.hdcp { border-color:#fed7aa; background:#fff7ed; color:#c2410c; }
     .h-input:focus { outline:none; box-shadow:0 0 0 2px rgba(26,58,95,0.2); }
@@ -312,25 +313,47 @@ function makeZoneBlock(zi, count) {
   const div = document.createElement('div');
   div.dataset.zone = zi;
 
-  const heads = Array.from({length:count},(_,i)=>`<div class="col-head">H${i+1}</div>`).join('');
-  const spacer = count===18 ? `<div class="spacer"></div>` : '';
-
-  // 18洞分前後九顯示
-  let parCells='', hdcpCells='', headCells='';
-  for(let i=0;i<count;i++){
-    const sep = (count===18 && i===9) ? '<div class="spacer"></div>' : '';
-    headCells += (count===18&&i===9?'<div class="spacer"></div>':'') + `<div class="col-head">H${i+1}</div>`;
-    parCells  += sep + `<input class="h-input par"  type="number" min="3" max="6" id="p_z${zi}_h${i}" value="4"
-      onfocus="this.select()" onkeydown="hkey(event,'p',${zi},${i},${count})">`;
-    hdcpCells += sep + `<input class="h-input hdcp" type="number" min="1" max="${count}" id="h_z${zi}_h${i}" value="${i+1}"
-      onfocus="this.select()" onkeydown="hkey(event,'h',${zi},${i},${count})">`;
+  if(count === 18) {
+    // 前九後九分兩行顯示
+    let html = '';
+    for(let half=0; half<2; half++) {
+      const start = half*9, end = start+9;
+      const prefix = half===0 ? '前九（H1-9）' : '後九（H10-18）';
+      let headRow='', parRow='', hdcpRow='';
+      for(let i=start;i<end;i++){
+        headRow  += `<div class="col-head">H${i+1}</div>`;
+        parRow   += `<input class="h-input par"  type="number" min="3" max="6"
+          id="p_z${zi}_h${i}" value="4" onfocus="this.select()"
+          onkeydown="hkey(event,'p',${zi},${i},${count})">`;
+        hdcpRow  += `<input class="h-input hdcp" type="number" min="1" max="${count}"
+          id="h_z${zi}_h${i}" value="${i+1}" onfocus="this.select()"
+          onkeydown="hkey(event,'h',${zi},${i},${count})">`;
+      }
+      html += `<div class="nine-block">
+        <div class="nine-label">${prefix}</div>
+        <div class="hole-grid"><div class="row-label"></div>${headRow}</div>
+        <div class="hole-grid"><div class="row-label">Par</div>${parRow}</div>
+        <div class="hole-grid"><div class="row-label">HDCP</div>${hdcpRow}</div>
+      </div>`;
+    }
+    div.innerHTML = html;
+  } else {
+    // 9洞（27洞各區）
+    let headRow='', parRow='', hdcpRow='';
+    for(let i=0;i<count;i++){
+      headRow  += `<div class="col-head">H${i+1}</div>`;
+      parRow   += `<input class="h-input par"  type="number" min="3" max="6"
+        id="p_z${zi}_h${i}" value="4" onfocus="this.select()"
+        onkeydown="hkey(event,'p',${zi},${i},${count})">`;
+      hdcpRow  += `<input class="h-input hdcp" type="number" min="1" max="${count}"
+        id="h_z${zi}_h${i}" value="${i+1}" onfocus="this.select()"
+        onkeydown="hkey(event,'h',${zi},${i},${count})">`;
+    }
+    div.innerHTML = `
+      <div class="hole-grid"><div class="row-label"></div>${headRow}</div>
+      <div class="hole-grid"><div class="row-label">Par</div>${parRow}</div>
+      <div class="hole-grid"><div class="row-label">HDCP</div>${hdcpRow}</div>`;
   }
-
-  const gc = count===18 ? 'hole-grid hole-grid-18' : 'hole-grid hole-grid-9';
-  div.innerHTML = `
-    <div class="${gc}"><div class="row-label"></div>${headCells}</div>
-    <div class="${gc}"><div class="row-label">Par</div>${parCells}</div>
-    <div class="${gc}"><div class="row-label">HDCP</div>${hdcpCells}</div>`;
   return div;
 }
 
