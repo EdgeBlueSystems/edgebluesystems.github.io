@@ -615,7 +615,7 @@ async function loadReports() {
         const btnLabel = isMulti ? `✅ 採用（${grp.length}筆相同）` : '🔍 手動審核採用（1筆）';
         const hdcpStr  = JSON.parse(sig).join(', ');
         const links    = grp.map(r => `<a href="${r.url}" target="_blank" style="color:#94a3b8;">#${r.issueNum}</a>`).join('、');
-        const dk = encodeURIComponent(courseKey);
+        const dk = encodeURIComponent(key);
         const ds = encodeURIComponent(sig);
         const dn = encodeURIComponent(JSON.stringify(grp.map(r=>r.issueNum)));
         return `<div style="background:white;border-radius:6px;border:1px solid #e2e8f0;padding:10px;margin-bottom:6px;">
