@@ -337,19 +337,18 @@ function buildCourseSelect() {
 
   // 儲存目前選取值
   const savedVal = sel.value;
-  // 清掉既有的 optgroup（保留建構中分隔線以下不動）
-  // 重建所有可選球場的 optgroup
-  const dividerIdx = Array.from(sel.options).findIndex(o => o.disabled && o.label && o.label.includes('建構中'));
 
-  // 移除分隔線之前的所有 optgroup
-  while(sel.children.length > 0) {
-    const first = sel.children[0];
-    if(first.label && first.label.includes('建構中')) break;
-    sel.removeChild(first);
-  }
+  // 移除「官方球場」optgroup（保留「自訂」和「建構中」以下的）
+  Array.from(sel.children).forEach(child => {
+    const lbl = child.label || '';
+    if(lbl.includes('官方球場') || lbl.includes('中部') || lbl.includes('北部') || lbl.includes('南部') || lbl.includes('東部')) {
+      if(!lbl.includes('建構中')) sel.removeChild(child);
+    }
+  });
 
-  // 重新插入可選球場的 optgroup
-  let insertBefore = sel.children[0]; // 建構中分隔線
+  // 找到「官方球場」分隔線作為插入點，找不到就找建構中分隔線
+  let insertBefore = Array.from(sel.children).find(c => c.label && (c.label.includes('官方球場') || c.label.includes('建構中')));
+  if(!insertBefore) insertBefore = null;
 
   regionConfig.forEach(rc => {
     const entries = Object.entries(courseDB).filter(([k, v]) => {
