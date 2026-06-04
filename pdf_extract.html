@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF 擷取頁面 | 免費線上工具 | 銳青科技整合</title>
+  <meta name="description" content="免費線上 PDF 擷取頁面工具，從 PDF 中提取指定頁面存成新檔，檔案在本機處理不上傳伺服器。">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <style>
+    :root { --eb-blue:#1a3a5f; --eb-accent:#2d6a4f; --eb-gold:#ff9f1c; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"PingFang TC","Microsoft JhengHei",sans-serif; background:#f4f7f9; color:#334155; }
+    nav { background:#333; padding:12px 20px; }
+    nav a { color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px; }
+    nav a:hover { color:#fff; }
+    nav span { color:#fff; font-weight:bold; font-size:0.9rem; border-bottom:2px solid var(--eb-accent); padding-bottom:3px; }
+    .hero { background:linear-gradient(135deg,var(--eb-blue),#0f2744); color:white; padding:36px 20px; text-align:center; }
+    .hero h1 { font-size:1.6rem; margin-bottom:6px; }
+    .hero p { font-size:0.88rem; opacity:0.8; }
+    .container { max-width:760px; margin:30px auto; padding:0 15px; }
+    .card { background:white; border-radius:14px; padding:28px; box-shadow:0 4px 15px rgba(0,0,0,0.06); margin-bottom:20px; }
+    .card h2 { font-size:1rem; color:var(--eb-blue); margin-bottom:16px; border-left:4px solid var(--eb-accent); padding-left:10px; }
+    .drop-zone { border:2px dashed #cbd5e1; border-radius:10px; padding:36px 20px; text-align:center; cursor:pointer; transition:all 0.2s; background:#fafafa; }
+    .drop-zone:hover, .drop-zone.dragover { border-color:var(--eb-accent); background:#f0fdf4; }
+    .drop-zone .icon { font-size:2.5rem; margin-bottom:10px; }
+    .drop-zone p { font-size:0.9rem; color:#64748b; }
+    input[type="file"] { display:none; }
+    .file-info { display:none; margin-top:14px; padding:12px 16px; background:#f0fdf4; border-radius:8px; font-size:13px; color:#475569; border:1px solid #bbf7d0; }
+    label { font-size:12px; font-weight:bold; color:var(--eb-blue); display:block; margin-bottom:6px; margin-top:14px; }
+    input[type="text"] { width:100%; padding:9px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px; outline:none; }
+    input:focus { border-color:var(--eb-blue); }
+    .hint { font-size:11px; color:#94a3b8; margin-top:4px; }
+
+    /* 頁面預覽 */
+    .page-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .page-chip {
+      padding:5px 12px; border-radius:20px; border:1px solid #e2e8f0;
+      background:white; color:#64748b; font-size:12px; cursor:pointer; transition:all 0.15s;
+    }
+    .page-chip:hover { border-color:var(--eb-blue); color:var(--eb-blue); }
+    .page-chip.selected { background:var(--eb-blue); color:white; border-color:var(--eb-blue); }
+
+    .select-all-row { display:flex; gap:8px; margin-top:10px; }
+    .select-btn { padding:5px 12px; border:1px solid #e2e8f0; border-radius:6px; background:white; color:#64748b; font-size:12px; cursor:pointer; }
+    .select-btn:hover { border-color:var(--eb-blue); }
+
+    .btn-row { display:flex; gap:10px; margin-top:20px; }
+    .btn { padding:11px 22px; border:none; border-radius:8px; font-size:14px; font-weight:bold; cursor:pointer; transition:all 0.2s; }
+    .btn-primary { background:var(--eb-blue); color:white; flex:1; }
+    .btn-primary:hover { background:#254d7a; }
+    .btn-primary:disabled { background:#94a3b8; cursor:not-allowed; }
+    .btn-gray { background:#f1f5f9; color:#64748b; }
+    .progress-wrap { margin-top:16px; display:none; }
+    .progress-bar { height:6px; background:#e2e8f0; border-radius:3px; overflow:hidden; }
+    .progress-fill { height:100%; background:var(--eb-accent); border-radius:3px; transition:width 0.3s; width:0%; }
+    .progress-text { font-size:12px; color:#64748b; margin-top:6px; text-align:center; }
+    .result-box { display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:20px; text-align:center; margin-top:16px; }
+    .result-box h3 { color:var(--eb-accent); margin-bottom:10px; }
+    .btn-download { background:var(--eb-accent); color:white; padding:12px 28px; border:none; border-radius:8px; font-size:14px; font-weight:bold; cursor:pointer; text-decoration:none; display:inline-block; }
+    footer { text-align:center; padding:40px 20px; color:#94a3b8; font-size:0.82rem; border-top:1px solid #e2e8f0; margin-top:20px; }
+    footer a { color:#94a3b8; text-decoration:none; }
+  </style>
+</head>
+<body>
+
+<nav style="background:#333; padding:12px 20px; text-align:left; width:100%; box-sizing:border-box;">
+  <a href="./index.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">🏠 首頁</a>
+  <a href="./golf_calc.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">⛳ 高爾夫</a>
+  <a href="./bowling.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">🎳 保齡球</a>
+  <span style="color:#fff; font-weight:bold; font-size:0.9rem; border-bottom:2px solid #27ae60; padding-bottom:3px;">🔧 PDF 工具箱</span>
+  <a href="./about.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">👤 關於我們</a>
+  <a href="./articles.html" style="color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px;">📚 知識專欄</a>
+</nav>
+
+<div class="hero">
+  <h1>📄 PDF 擷取頁面</h1>
+  <p>從 PDF 中提取指定頁面 · 存成新的 PDF 檔案 · 檔案不上傳伺服器</p>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>上傳 PDF 檔案</h2>
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+      <div class="icon">📂</div>
+      <p><strong>點擊選擇</strong>或拖曳 PDF 到這裡</p>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf">
+    <div class="file-info" id="fileInfo"></div>
+  </div>
+
+  <div class="card" id="extractCard" style="display:none;">
+    <h2>選擇要擷取的頁面</h2>
+
+    <label>輸入頁碼（手動）</label>
+    <input type="text" id="pageInput" placeholder="例：1,3,5-8,10" oninput="syncFromInput()">
+    <div class="hint">支援單頁（1,3）或範圍（5-8），以逗號分隔</div>
+
+    <label>或點選頁面（視覺選擇）</label>
+    <div class="select-all-row">
+      <button class="select-btn" onclick="selectAll()">全選</button>
+      <button class="select-btn" onclick="selectNone()">取消全選</button>
+      <button class="select-btn" onclick="selectOdd()">選奇數頁</button>
+      <button class="select-btn" onclick="selectEven()">選偶數頁</button>
+    </div>
+    <div class="page-grid" id="pageGrid"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-gray" onclick="reset()">重新選擇</button>
+      <button class="btn btn-primary" id="extractBtn" onclick="extractPages()">📄 擷取頁面</button>
+    </div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">處理中...</div>
+    </div>
+
+    <div class="result-box" id="resultBox">
+      <h3>✅ 擷取完成！</h3>
+      <p id="resultInfo" style="font-size:13px;color:#475569;margin-bottom:14px;"></p>
+      <a id="downloadLink" class="btn-download">⬇️ 下載擷取後的 PDF</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 銳青科技整合有限公司 |
+  <a href="./pdf_tools.html">← PDF 工具箱</a> |
+  <a href="./privacy.html">隱私權政策</a> |
+  <a href="./terms.html">服務條款</a>
+</footer>
+
+<script>
+const { PDFDocument } = PDFLib;
+let pdfFile = null;
+let totalPages = 0;
+let selectedPages = new Set();
+
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); loadFile(e.dataTransfer.files[0]); });
+document.getElementById('fileInput').addEventListener('change', e => { loadFile(e.target.files[0]); e.target.value=''; });
+
+async function loadFile(file) {
+  if(!file || file.type!=='application/pdf') return;
+  pdfFile = file;
+  const buf = await file.arrayBuffer();
+  const pdf = await PDFDocument.load(buf);
+  totalPages = pdf.getPageCount();
+  document.getElementById('fileInfo').style.display = 'block';
+  document.getElementById('fileInfo').textContent = `✅ ${file.name}  |  共 ${totalPages} 頁`;
+  document.getElementById('extractCard').style.display = 'block';
+  renderPageGrid();
+}
+
+function renderPageGrid() {
+  const grid = document.getElementById('pageGrid');
+  grid.innerHTML = '';
+  for(let i=1;i<=totalPages;i++) {
+    const chip = document.createElement('div');
+    chip.className = 'page-chip' + (selectedPages.has(i-1) ? ' selected' : '');
+    chip.textContent = `第 ${i} 頁`;
+    chip.onclick = () => togglePage(i-1, chip);
+    grid.appendChild(chip);
+  }
+}
+
+function togglePage(idx, chip) {
+  if(selectedPages.has(idx)) { selectedPages.delete(idx); chip.classList.remove('selected'); }
+  else { selectedPages.add(idx); chip.classList.add('selected'); }
+  syncToInput();
+}
+
+function syncToInput() {
+  const sorted = [...selectedPages].sort((a,b)=>a-b);
+  document.getElementById('pageInput').value = sorted.map(p=>p+1).join(',');
+}
+
+function syncFromInput() {
+  selectedPages.clear();
+  const str = document.getElementById('pageInput').value;
+  str.split(',').forEach(part => {
+    part = part.trim();
+    if(part.includes('-')) {
+      const [a,b] = part.split('-').map(Number);
+      for(let i=a;i<=b;i++) if(i>=1&&i<=totalPages) selectedPages.add(i-1);
+    } else if(part) {
+      const n = Number(part);
+      if(n>=1&&n<=totalPages) selectedPages.add(n-1);
+    }
+  });
+  renderPageGrid();
+}
+
+function selectAll()  { for(let i=0;i<totalPages;i++) selectedPages.add(i); renderPageGrid(); syncToInput(); }
+function selectNone() { selectedPages.clear(); renderPageGrid(); syncToInput(); }
+function selectOdd()  { selectedPages.clear(); for(let i=0;i<totalPages;i+=2) selectedPages.add(i); renderPageGrid(); syncToInput(); }
+function selectEven() { selectedPages.clear(); for(let i=1;i<totalPages;i+=2) selectedPages.add(i); renderPageGrid(); syncToInput(); }
+
+function reset() { pdfFile=null; document.getElementById('extractCard').style.display='none'; document.getElementById('fileInfo').style.display='none'; selectedPages.clear(); }
+
+async function extractPages() {
+  if(!pdfFile || selectedPages.size===0) { alert('請至少選擇一頁'); return; }
+  const btn = document.getElementById('extractBtn');
+  const pw  = document.getElementById('progressWrap');
+  const pf  = document.getElementById('progressFill');
+  const pt  = document.getElementById('progressText');
+  const rb  = document.getElementById('resultBox');
+
+  btn.disabled=true; pw.style.display='block'; rb.style.display='none';
+  pf.style.width='30%'; pt.textContent='載入 PDF...';
+
+  try {
+    const buf = await pdfFile.arrayBuffer();
+    const src = await PDFDocument.load(buf);
+    const newPdf = await PDFDocument.create();
+    const sorted = [...selectedPages].sort((a,b)=>a-b);
+
+    pf.style.width='60%'; pt.textContent='擷取頁面...';
+    const copied = await newPdf.copyPages(src, sorted);
+    copied.forEach(p => newPdf.addPage(p));
+
+    pf.style.width='90%'; pt.textContent='產生 PDF...';
+    const bytes = await newPdf.save();
+    pf.style.width='100%'; pt.textContent='完成！';
+
+    const blob = new Blob([bytes],{type:'application/pdf'});
+    const url  = URL.createObjectURL(blob);
+    const link = document.getElementById('downloadLink');
+    link.href = url;
+    link.download = pdfFile.name.replace('.pdf','') + '_extracted.pdf';
+    document.getElementById('resultInfo').textContent = `已擷取 ${sorted.length} 頁（第 ${sorted.map(p=>p+1).join('、')} 頁）`;
+    rb.style.display='block';
+  } catch(e) {
+    pt.textContent='❌ 失敗：'+e.message; pt.style.color='#ef4444';
+  } finally { btn.disabled=false; }
+}
+</script>
+</body>
+</html>
