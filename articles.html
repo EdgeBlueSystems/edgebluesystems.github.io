@@ -4,42 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>知識專欄 | 銳青科技整合 EdgeBlue Systems</title>
-  <meta name="description" content="銳青科技整合知識專欄，涵蓋高爾夫賽制教學（新新貝利、抓球讓桿）、企業資安（3-2-1備份、NGFW防火牆）與保齡球聯賽規則說明。">
+  <meta name="description" content="銳青科技整合知識專欄，涵蓋高爾夫賽制教學、企業資安實務、IT 委外、保齡球規則與 PDF 工具應用，共 15 篇原創文章。">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2400384553951061" crossorigin="anonymous"></script>
   <style>
-    :root { --eb-blue: #1a3a5f; --eb-accent: #2d6a4f; --eb-gold: #ff9f1c; }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; background: #f8fafc; color: #334155; line-height: 1.8; }
-    nav { width: 100%; background: #333; padding: 12px 20px; box-sizing: border-box; }
-    nav a { color: #bbb; text-decoration: none; font-size: 0.9rem; margin-right: 15px; display: inline-block; }
-    nav a:hover { color: #fff; }
-    nav span { color: #fff; font-weight: bold; font-size: 0.9rem; border-bottom: 2px solid var(--eb-accent); padding-bottom: 3px; }
-    .hero { background: linear-gradient(135deg, var(--eb-blue), #2c3e50); color: white; padding: 50px 20px 40px; text-align: center; }
-    .hero h1 { margin: 0 0 10px; font-size: 2rem; }
-    .hero p { margin: 0; opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
-    .container { max-width: 960px; margin: 40px auto; padding: 0 20px; }
-    .filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
-    .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid #e2e8f0; background: white; color: #64748b; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; text-decoration: none; }
-    .filter-btn:hover, .filter-btn.active { background: var(--eb-blue); color: white; border-color: var(--eb-blue); }
-    .section-title { font-size: 0.8rem; font-weight: bold; color: var(--eb-accent); letter-spacing: 2px; text-transform: uppercase; margin: 30px 0 14px; }
-    .article-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-    @media (max-width: 680px) { .article-grid { grid-template-columns: 1fr; } }
-    .article-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none; color: inherit; display: block; transition: all 0.2s; border-top: 4px solid var(--eb-blue); }
-    .article-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-    .article-card.golf { border-top-color: var(--eb-accent); }
-    .article-card.it { border-top-color: #1a3a5f; }
-    .article-card.bowling { border-top-color: #7b2d8b; }
-    .card-tag { font-size: 0.75rem; font-weight: bold; padding: 2px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
-    .tag-golf { background: #dcfce7; color: #166534; }
-    .tag-it { background: #dbeafe; color: #1e40af; }
-    .tag-bowling { background: #f3e8ff; color: #6b21a8; }
-    .card-title { font-size: 1rem; font-weight: bold; color: var(--eb-blue); margin-bottom: 8px; line-height: 1.4; }
-    .card-desc { font-size: 0.85rem; color: #64748b; line-height: 1.65; margin-bottom: 14px; }
-    .card-meta { font-size: 0.78rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
-    .card-read { font-size: 0.8rem; color: var(--eb-accent); font-weight: bold; }
-    .divider { border: none; border-top: 1px solid #e2e8f0; margin: 10px 0 30px; }
-    footer { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 0.82rem; border-top: 1px solid #e2e8f0; }
-    footer a { color: #94a3b8; text-decoration: none; }
+    :root { --eb-blue:#1a3a5f; --eb-accent:#2d6a4f; --eb-gold:#ff9f1c; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"PingFang TC","Microsoft JhengHei",sans-serif; background:#f4f7f9; color:#334155; line-height:1.8; }
+    nav { background:#333; padding:12px 20px; }
+    nav a { color:#bbb; text-decoration:none; font-size:0.9rem; margin-right:15px; display:inline-block; }
+    nav a:hover { color:#fff; }
+    nav span { color:#fff; font-weight:bold; font-size:0.9rem; border-bottom:2px solid var(--eb-accent); padding-bottom:3px; }
+    .hero { background:linear-gradient(135deg,var(--eb-blue),#2c3e50); color:white; padding:50px 20px 40px; text-align:center; }
+    .hero h1 { font-size:2rem; margin-bottom:10px; }
+    .hero p { opacity:0.85; font-size:1rem; max-width:600px; margin:0 auto; }
+    .container { max-width:960px; margin:40px auto; padding:0 20px; }
+
+    /* 置頂文章 */
+    .pinned { display:block; background:linear-gradient(135deg,#1a3a5f,#0f2744); border-radius:14px; padding:28px; box-shadow:0 4px 15px rgba(0,0,0,0.1); text-decoration:none; margin-bottom:30px; position:relative; overflow:hidden; }
+    .pinned::after { content:''; position:absolute; top:0; right:0; width:200px; height:200px; background:rgba(255,159,28,0.08); border-radius:50%; transform:translate(50%,-50%); }
+    .pinned-tag { font-size:0.72rem; background:#ff9f1c; color:white; padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:10px; font-weight:bold; }
+    .pinned-title { font-size:1.1rem; font-weight:bold; color:white; line-height:1.4; margin-bottom:8px; }
+    .pinned-desc { font-size:0.85rem; color:rgba(255,255,255,0.75); line-height:1.7; }
+    .pinned-meta { font-size:0.78rem; color:rgba(255,255,255,0.5); margin-top:10px; }
+
+    /* 分區標題 */
+    .section-title { font-size:0.8rem; font-weight:bold; color:#94a3b8; letter-spacing:2px; text-transform:uppercase; margin:30px 0 14px; }
+    .divider { border:none; border-top:1px solid #e2e8f0; margin:10px 0 28px; }
+
+    /* 文章卡片 */
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:12px; }
+    @media(max-width:680px){ .grid { grid-template-columns:1fr; } .hero h1 { font-size:1.5rem; } }
+    .card { background:white; border-radius:12px; padding:22px; box-shadow:0 4px 12px rgba(0,0,0,0.05); text-decoration:none; color:inherit; display:block; transition:all 0.2s; }
+    .card:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+    .card.golf    { border-top:4px solid #2d6a4f; }
+    .card.it      { border-top:4px solid #1a3a5f; }
+    .card.bowling { border-top:4px solid #7b2d8b; }
+    .card.tool    { border-top:4px solid #334155; }
+    .card-tag { font-size:0.72rem; padding:2px 8px; border-radius:20px; display:inline-block; margin-bottom:8px; }
+    .tag-golf    { background:#dcfce7; color:#166534; }
+    .tag-it      { background:#dbeafe; color:#1e40af; }
+    .tag-vm      { background:#ede9fe; color:#5b21b6; }
+    .tag-bowling { background:#f3e8ff; color:#6b21a8; }
+    .tag-tool    { background:#f1f5f9; color:#334155; }
+    .card-title { font-size:0.95rem; font-weight:bold; color:#1a3a5f; margin-bottom:8px; line-height:1.4; }
+    .card-desc  { font-size:0.83rem; color:#64748b; line-height:1.65; margin-bottom:12px; }
+    .card-meta  { font-size:0.75rem; color:#94a3b8; display:flex; justify-content:space-between; align-items:center; }
+    .card-read  { font-weight:bold; }
+    .card.golf    .card-read { color:#2d6a4f; }
+    .card.it      .card-read { color:#1a3a5f; }
+    .card.bowling .card-read { color:#7b2d8b; }
+    .card.tool    .card-read { color:#334155; }
+
+    footer { text-align:center; padding:40px 20px; color:#94a3b8; font-size:0.82rem; border-top:1px solid #e2e8f0; }
+    footer a { color:#94a3b8; text-decoration:none; }
   </style>
 </head>
 <body>
@@ -54,138 +71,150 @@
 
 <div class="hero">
   <h1>📚 知識專欄</h1>
-  <p>高爾夫賽制教學、企業資安實務、保齡球規則說明——來自銳青科技整合的在地專業知識</p>
+  <p>高爾夫賽制・企業資安・IT 委外・保齡球・PDF 工具——共 15 篇原創文章</p>
 </div>
 
 <div class="container">
 
-
-  <!-- 置頂文章 -->
-  <a href="./article_it_outsourcing.html" style="display:block; background:linear-gradient(135deg,#1a3a5f,#0f2744); border-radius:14px; padding:28px; box-shadow:0 4px 15px rgba(0,0,0,0.1); text-decoration:none; margin-bottom:28px; position:relative; overflow:hidden;">
-    <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:rgba(255,159,28,0.08);border-radius:50%;transform:translate(50%,-50%);"></div>
-    <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-      <div style="flex:1; min-width:200px;">
-        <div style="font-size:0.72rem; background:#ff9f1c; color:white; padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:10px; font-weight:bold; letter-spacing:1px;">📌 置頂推薦・企業服務</div>
-        <div style="font-size:1.1rem; font-weight:bold; color:white; line-height:1.4; margin-bottom:8px;">你的公司不能沒有 IT，但你不必養一個資訊部門</div>
-        <div style="font-size:0.85rem; color:rgba(255,255,255,0.75); line-height:1.7;">公司電腦壞了、網路斷了、資料被加密——這些事每年都在中彰投地區的中小企業發生。IT 委外代管讓您用更低的成本，換到比自聘更完整的 IT 保障。</div>
-      </div>
-      <div style="display:flex; flex-direction:column; justify-content:center; align-items:flex-end; gap:8px; flex-shrink:0;">
-        <div style="font-size:0.78rem; color:rgba(255,255,255,0.6);">2026 年 4 月｜服務介紹</div>
-        <div style="background:#ff9f1c; color:white; padding:9px 20px; border-radius:8px; font-size:13px; font-weight:bold;">了解更多 →</div>
-      </div>
-    </div>
+  <!-- 置頂 -->
+  <a href="./article_it_outsourcing.html" class="pinned">
+    <div class="pinned-tag">📌 置頂推薦・企業服務</div>
+    <div class="pinned-title">你的公司不能沒有 IT，但你不必養一個資訊部門</div>
+    <div class="pinned-desc">公司電腦壞了、網路斷了、資料被加密——這些事每年都在中彰投地區的中小企業發生。IT 委外代管讓您用更低的成本，換到比自聘更完整的 IT 保障。</div>
+    <div class="pinned-meta">2026 年 4 月｜服務介紹</div>
   </a>
 
-  <div class="filter-row">
-    <a href="#golf" class="filter-btn">⛳ 高爾夫</a>
-    <a href="#it" class="filter-btn">🛡️ 企業資安</a>
-    <a href="#bowling" class="filter-btn">🎳 保齡球</a>
-  </div>
+  <!-- 企業資安 -->
+  <div class="section-title">🛡️ 企業資安・IT 維運</div>
+  <div class="grid">
 
-  <div class="section-title" id="golf">⛳ 高爾夫賽制知識</div>
-  <div class="article-grid">
-
-    <a href="./article_peoria.html" class="article-card golf">
-      <span class="card-tag tag-golf">高爾夫</span>
-      <div class="card-title">新新貝利法完整教學：台灣高爾夫差點怎麼算？</div>
-      <div class="card-desc">完整解析新新貝利法的計算原理、與傳統貝利法的差異，以及折扣係數、扣桿上限的實務應用。</div>
-      <div class="card-meta">
-        <span>2026 年 5 月｜閱讀約 5 分鐘</span>
-        <span class="card-read">閱讀 →</span>
-      </div>
+    <a href="./article_backup_importance.html" class="card it">
+      <span class="card-tag tag-it">🛡️ 企業資安</span>
+      <div class="card-title">資料消失的代價：為什麼備份比您想的更重要</div>
+      <div class="card-desc">「有備份」和「備份做對了」是兩件不同的事。從真實成本出發，說明有效備份的五個關鍵要素。</div>
+      <div class="card-meta"><span>2026 年 3 月</span><span class="card-read">閱讀 →</span></div>
     </a>
 
-    <a href="./article_skins.html" class="article-card golf">
-      <span class="card-tag tag-golf">高爾夫</span>
-      <div class="card-title">抓球（Skins）賽制全解析：讓桿怎麼算才公平？</div>
-      <div class="card-desc">說明抓球賽制規則、四人組交叉讓桿矩陣計算方式、HDCP 折讓邏輯與滾球機制。</div>
-      <div class="card-meta">
-        <span>2026 年 5 月｜閱讀約 5 分鐘</span>
-        <span class="card-read">閱讀 →</span>
-      </div>
+    <a href="./article_ransomware.html" class="card it">
+      <span class="card-tag tag-it">🛡️ 企業資安</span>
+      <div class="card-title">台灣中小企業資安現況：2026 年勒索病毒攻擊趨勢</div>
+      <div class="card-desc">攻擊手法解析、常見入侵路徑與立即可執行的防禦措施，幫助您提前做好準備。</div>
+      <div class="card-meta"><span>2026 年 3 月</span><span class="card-read">閱讀 →</span></div>
     </a>
 
-    <a href="./article_hdcp.html" class="article-card golf">
-      <span class="card-tag tag-golf">高爾夫</span>
-      <div class="card-title">高爾夫球場難度索引（HDCP）完整說明：中彰投球場資料整理</div>
-      <div class="card-desc">深入解說 HDCP 的制定原則，並整理南峰、彰化、霧峰等中彰投地區球場的參考資料。</div>
-      <div class="card-meta">
-        <span>2026 年 5 月｜閱讀約 6 分鐘</span>
-        <span class="card-read">閱讀 →</span>
-      </div>
+    <a href="./article_vmware.html" class="card it">
+      <span class="card-tag tag-vm">🖥️ 虛擬化維運</span>
+      <div class="card-title">VMware vSphere 維運指南：中小企業最常見的五個錯誤</div>
+      <div class="card-desc">從未更新到 Snapshot 堆積，整理五個最容易被忽略的維運問題與具體改善建議。</div>
+      <div class="card-meta"><span>2026 年 4 月</span><span class="card-read">閱讀 →</span></div>
     </a>
 
-  </div>
-
-  <hr class="divider">
-  <div class="section-title" id="it">🛡️ 企業資安實務</div>
-  <div class="article-grid">
-
-    <a href="./article_321backup.html" class="article-card it">
-      <span class="card-tag tag-it">企業資安</span>
+    <a href="./article_321backup.html" class="card it">
+      <span class="card-tag tag-it">🛡️ 企業資安</span>
       <div class="card-title">中小企業必看：3-2-1 備份原則實作指南</div>
-      <div class="card-desc">以 3-2-1 備份原則保護企業核心數據，避免勒索病毒、硬體故障與人為失誤造成無法挽回的損失。</div>
-      <div class="card-meta">
-        <span>2026 年 5 月｜閱讀約 7 分鐘</span>
-        <span class="card-read">閱讀 →</span>
-      </div>
+      <div class="card-desc">以 3-2-1 備份原則保護企業核心數據，避免勒索病毒、硬體故障造成不可挽回的損失。</div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
     </a>
 
-    <a href="./article_ngfw.html" class="article-card it">
-      <span class="card-tag tag-it">企業資安</span>
+    <a href="./article_ngfw.html" class="card it">
+      <span class="card-tag tag-it">🛡️ 企業資安</span>
       <div class="card-title">下一代防火牆（NGFW）入門：為什麼傳統防火牆已經不夠用？</div>
-      <div class="card-desc">了解 NGFW 與傳統防火牆的差異，以及應用識別、IPS、SSL 解密等核心功能的實際應用。</div>
-      <div class="card-meta">
-        <span>2026 年 5 月｜閱讀約 6 分鐘</span>
-        <span class="card-read">閱讀 →</span>
-      </div>
+      <div class="card-desc">了解 NGFW 與傳統防火牆的差異，以及應用識別、IPS、SSL 解密等核心功能說明。</div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
     </a>
 
   </div>
 
   <hr class="divider">
-  <div class="section-title" id="bowling">🎳 保齡球賽制說明</div>
-  <div class="article-grid">
+  <!-- 高爾夫 -->
+  <div class="section-title">⛳ 高爾夫賽制知識</div>
+  <div class="grid">
 
-    <a href="./article_bowling_ball.html" style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 12px rgba(0,0,0,0.05); text-decoration:none; color:inherit; display:block; border-top:4px solid #7b2d8b; transition:all 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-      <span style="font-size:0.75rem; background:#f3e8ff; color:#6b21a8; padding:2px 10px; border-radius:20px; display:inline-block; margin-bottom:10px;">🎳 保齡球</span>
-      <div style="font-size:1rem; font-weight:bold; color:#1a3a5f; margin-bottom:8px; line-height:1.4;">保齡球選球指南：重量、材質、指孔怎麼選？</div>
-      <div style="font-size:0.85rem; color:#64748b; line-height:1.65; margin-bottom:14px;">從 6 磅到 16 磅、聚酯到粒子球，完整說明如何選擇適合自己的第一顆保齡球。</div>
-      <div style="font-size:0.78rem; color:#94a3b8; display:flex; justify-content:space-between;"><span>2026 年 5 月</span><span style="color:#7b2d8b; font-weight:bold;">閱讀 →</span></div>
+    <a href="./article_golf_courses.html" class="card golf">
+      <span class="card-tag tag-golf">⛳ 高爾夫</span>
+      <div class="card-title">台灣高爾夫球場評比：中彰投五大球場特色比較</div>
+      <div class="card-desc">深入比較南峰、彰化、霧峰、豐原、清泉崗的場地特色與難度風格。</div>
+      <div class="card-meta"><span>2026 年 4 月</span><span class="card-read">閱讀 →</span></div>
     </a>
 
-    <a href="./article_bowling" class="article-card bowling">
-      <span class="card-tag tag-bowling">保齡球</span>
+    <a href="./article_golf_etiquette.html" class="card golf">
+      <span class="card-tag tag-golf">⛳ 高爾夫</span>
+      <div class="card-title">高爾夫球場禮儀完整指南：新手必讀</div>
+      <div class="card-desc">從開球前的準備到果嶺上的注意事項，新手最容易忽略的球場禮儀規範。</div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
+    </a>
+
+    <a href="./article_peoria.html" class="card golf">
+      <span class="card-tag tag-golf">⛳ 高爾夫</span>
+      <div class="card-title">新新貝利法完整教學：台灣高爾夫差點怎麼算？</div>
+      <div class="card-desc">完整解析新新貝利法的計算原理、折扣係數與扣桿上限的實務應用。</div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
+    </a>
+
+    <a href="./article_skins.html" class="card golf">
+      <span class="card-tag tag-golf">⛳ 高爾夫</span>
+      <div class="card-title">抓球（Skins）賽制全解析：讓桿怎麼算才公平？</div>
+      <div class="card-desc">四人交叉讓桿矩陣計算方式、HDCP 折讓邏輯與滾球機制完整說明。</div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
+    </a>
+
+    <a href="./article_hdcp.html" class="card golf">
+      <span class="card-tag tag-golf">⛳ 高爾夫</span>
+      <div class="card-title">高爾夫球場難度索引（HDCP）完整說明：中彰投球場資料整理</div>
+      <div class="card-desc">深入解說 HDCP 的制定原則，並整理南峰、彰化、霧峰等中彰投地區球場參考資料。</div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
+    </a>
+
+  </div>
+
+  <hr class="divider">
+  <!-- 保齡球 -->
+  <div class="section-title">🎳 保齡球賽制說明</div>
+  <div class="grid">
+
+    <a href="./article_bowling_ball.html" class="card bowling">
+      <span class="card-tag tag-bowling">🎳 保齡球</span>
+      <div class="card-title">保齡球選球指南：重量、材質、指孔怎麼選？</div>
+      <div class="card-desc">從 6 磅到 16 磅、聚酯到粒子球，完整說明如何選擇適合自己的保齡球。</div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
+    </a>
+
+    <a href="./article_bowling.html" class="card bowling">
+      <span class="card-tag tag-bowling">🎳 保齡球</span>
       <div class="card-title">台灣保齡球聯賽完整說明：甲乙丙組、標會、會外會怎麼玩？</div>
       <div class="card-desc">全面解說台灣保齡球社團聯賽的三組賽制、標會機制、會外會規則與加分組別設定。</div>
-      <div class="card-meta">
-        <span>2026 年 5 月｜閱讀約 7 分鐘</span>
-        <span class="card-read">閱讀 →</span>
-      </div>
+      <div class="card-meta"><span>2026 年 5 月</span><span class="card-read">閱讀 →</span></div>
     </a>
 
   </div>
 
   <hr class="divider">
-  <div class="section-title">🔧 免費工具</div>
-  <div class="article-grid">
-    <a href="./pdf_tools.html" style="background:white; border-radius:12px; padding:24px; box-shadow:0 4px 12px rgba(0,0,0,0.05); text-decoration:none; color:inherit; display:block; border-top:4px solid #334155; transition:all 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-      <span style="font-size:0.75rem; background:#f1f5f9; color:#334155; padding:2px 10px; border-radius:20px; display:inline-block; margin-bottom:10px;">🔧 免費工具</span>
-      <div style="font-size:1rem; font-weight:bold; color:#1a3a5f; margin-bottom:8px; line-height:1.4;">PDF 工具箱：合併、分割、旋轉、擷取、JPG 轉換</div>
-      <div style="font-size:0.85rem; color:#64748b; line-height:1.65; margin-bottom:14px;">六種常用 PDF 工具，純瀏覽器端處理，檔案不上傳伺服器，安全隱私，完全免費。</div>
-      <div style="font-size:0.78rem; color:#94a3b8; display:flex; justify-content:space-between;">
-        <span>2026 年 6 月</span>
-        <span style="color:#334155; font-weight:bold;">前往工具箱 →</span>
-      </div>
-    </a>
-  </div>
+  <!-- PDF 工具 -->
+  <div class="section-title">🔧 工具應用</div>
+  <div class="grid">
 
+    <a href="./article_pdf_privacy.html" class="card tool">
+      <span class="card-tag tag-tool">🔧 工具應用</span>
+      <div class="card-title">為什麼 PDF 工具要選擇在本機處理？資料隱私完整說明</div>
+      <div class="card-desc">上傳 PDF 到網路工具的隱私風險，以及如何判斷一個工具是否真的在本機執行。</div>
+      <div class="card-meta"><span>2026 年 6 月</span><span class="card-read">閱讀 →</span></div>
+    </a>
+
+    <a href="./pdf_tools.html" class="card tool">
+      <span class="card-tag tag-tool">🔧 免費工具</span>
+      <div class="card-title">PDF 工具箱：合併、分割、旋轉、擷取、JPG 轉換</div>
+      <div class="card-desc">六種常用 PDF 工具，純瀏覽器端處理，檔案不上傳伺服器，安全隱私，完全免費。</div>
+      <div class="card-meta"><span>2026 年 6 月</span><span class="card-read">前往工具 →</span></div>
+    </a>
+
+  </div>
 
 </div>
 
 <footer>
   © 2026 銳青科技整合有限公司 EdgeBlue Systems Integration Co., Ltd.<br>
-  <a href="mailto:service@edgeblue.tw" style="color:#94a3b8;text-decoration:none;">📧 service@edgeblue.tw</a> |
+  彰化地區專業資訊委外與賽務自動化服務商 |
+  <a href="mailto:service@edgeblue.tw">service@edgeblue.tw</a> |
   <a href="./privacy.html">隱私權政策</a> |
   <a href="./terms.html">服務條款</a>
 </footer>
