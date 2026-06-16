@@ -141,6 +141,10 @@
     <h2>1. 賽事與規則設定</h2>
     <div class="admin-info">
       <div><label>比賽局數 (G)</label><input type="number" id="gameCount" value="5" onchange="refreshSelectors()"></div>
+      <div style="grid-column:1/-1; margin-bottom:8px;">
+        <label>賽事名稱（匯出時使用）</label>
+        <input type="text" id="eventTitle" placeholder="請手動輸入比賽名稱" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;">
+      </div>
       <div><label>每馬人數</label><input type="number" id="playersPerPair" value="9"></div>
       <div><label>總馬數</label><input type="number" id="pairCount" value="6"></div>
       <div><label>錄取名額</label><input type="number" id="prizeCount" value="5" onchange="refreshSelectors()"></div>
@@ -205,6 +209,7 @@
         <h2>3. 成績輸入與統計 (依馬位推進)</h2>
         <div>
             <button class="btn" style="background:#166534; padding:8px 15px;" onclick="exportToCSV()">📊 匯出 CSV</button>
+            <button class="btn" style="background:#1a3a5f; padding:8px 15px; margin-left:8px;" onclick="exportScoreSheet()">📋 成績表匯出（Excel格式）</button>
             <button class="btn btn-clear" onclick="clearData()" style="padding:8px 15px;">⚠️ 重置</button>
         </div>
     </div>
@@ -705,6 +710,75 @@ function exportToCSV() {
     link.download = `保齡球決賽報表_${new Date().toLocaleDateString()}.csv`;
     link.click();
 }
-</script>
+
+// 成績表匯出：格式比照紙本成績表
+// 欄位：球道,順位,標,公標,學外 | 姓名 | G1,G2,G3 | 三局 | G4,G5,G6 | 三局 | 總分 | 女子,長青 | 名次 | 獎項
+function exportScoreSheet() {
+    if (!players || players.length === 0) { alert('請先輸入球員資料！'); return; }
+    const gCount = players[0]?.scores.length || 6;
+    const half = Math.ceil(gCount / 2);
+    const eventName = (document.getElementById('eventTitle')?.value || '保齡球賽事').trim();
+    const today = new Date().toLocaleDateString('zh-TW');
+    const NL = '\r\n';
+
+    const sorted = [...players].sort((a, b) => b.total - a.total);
+    let rank = 1;
+    sorted.forEach((p, i) => {
+        if (i > 0 && sorted[i].total < sorted[i-1].total) rank = i + 1;
+        p._rank = rank;
+    });
+
+    let rows = [];
+
+    // 第1行：賽事名稱
+    rows.push(eventName + ' ' + today + ' 成績表');
+    rows.push('');
+
+    // 標題列
+    let hdr = '球道,順位,標,公標,學外,姓名';
+    for (let i = 1; i <= half; i++) hdr += ',G' + i;
+    hdr += ',前三局';
+    for (let i = half + 1; i <= gCount; i++) hdr += ',G' + i;
+    if (gCount > half) hdr += ',後三局';
+    hdr += ',總分,女子,長青,名次,獎項';
+    rows.push(hdr);
+
+    // 資料列
+    sorted.forEach(p => {
+        const front = p.scores.slice(0, half);
+        const back  = p.scores.slice(half);
+        const fSum  = front.reduce((a, b) => a + b, 0);
+        const bSum  = back.reduce((a, b) => a + b, 0);
+
+        let cols = [
+            p.displayId,
+            p._rank,
+            p.isPot ? '1' : '',
+            (p.tag === '一般' || p.tag === '') ? '1' : '',
+            p.isSideBet ? '1' : '',
+            p.name
+        ];
+        front.forEach(s => cols.push(s || 0));
+        cols.push(fSum);
+        back.forEach(s => cols.push(s || 0));
+        if (back.length > 0) cols.push(bSum);
+        cols.push(p.total);
+        cols.push(p.tag && p.tag.includes('女子') ? p.bonus : '');
+        cols.push(p.tag && p.tag.includes('長青') ? p.bonus : '');
+        cols.push(p._rank);
+        cols.push(p.award || '');
+        rows.push(cols.join(','));
+    });
+
+    rows.push('');
+    rows.push('備註：總分已含加分；女子/長青欄位顯示加分點數');
+
+    const csv = '\ufeff' + rows.join(NL);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = eventName + '_成績表_' + today + '.csv';
+    link.click();
+}</script>
 </body>
 </html>
