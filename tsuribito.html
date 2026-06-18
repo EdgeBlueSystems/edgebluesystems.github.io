@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#F7F4EE">
 <title>釣人手帖 TSURIBITO</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -17,736 +15,207 @@
   --ink-light: #4A4A45;
   --moss: #4A6741;
   --rust: #8B3A2A;
+  --rust-bright: #C0402A;
+  --blue: #2A5A8B;
+  --blue-bright: #3A80C0;
   --silver: #9B9B8E;
   --silver-light: #C8C8BC;
-  --white: #FFFFFF;
   --serif: 'Noto Serif JP', serif;
   --sans: 'Noto Sans JP', sans-serif;
-  --r: 4px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; overflow: hidden; }
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans);
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-}
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); display: flex; flex-direction: column; height: 100dvh; }
 
-/* ===== HEADER ===== */
-.app-header {
-  background: var(--ink);
-  padding: 0 16px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-.app-logo {
-  display: flex; align-items: baseline; gap: 8px;
-}
-.app-logo-jp {
-  font-family: var(--serif);
-  font-size: 1rem;
-  color: var(--paper);
-  letter-spacing: 0.15em;
-}
-.app-logo-en {
-  font-size: 0.6rem;
-  color: var(--silver);
-  letter-spacing: 0.2em;
-  font-weight: 500;
-}
-.header-rule {
-  width: 1px; height: 20px;
-  background: var(--silver);
-  opacity: 0.3;
-}
-.header-sub {
-  font-size: 0.6rem;
-  color: var(--silver);
-  letter-spacing: 0.1em;
-}
+/* HEADER */
+.app-header { background: var(--ink); padding: 0 16px; height: 50px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.logo-jp { font-family: var(--serif); font-size: 1rem; color: var(--paper); letter-spacing: 0.15em; }
+.logo-en { font-size: 0.58rem; color: var(--silver); letter-spacing: 0.2em; margin-left: 8px; }
+.hdr-sub { font-size: 0.58rem; color: var(--silver); letter-spacing: 0.1em; }
 
-/* ===== NAV ===== */
-.app-nav {
-  display: flex;
-  background: var(--paper-dark);
-  border-bottom: 1px solid var(--silver-light);
-  flex-shrink: 0;
-}
-.nav-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 8px 4px;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-  position: relative;
-}
-.nav-item.active {
-  border-bottom-color: var(--rust);
-}
+/* NAV */
+.app-nav { display: flex; background: var(--paper-dark); border-bottom: 1px solid var(--silver-light); flex-shrink: 0; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 4px; cursor: pointer; border-bottom: 2px solid transparent; }
+.nav-item.active { border-bottom-color: var(--rust); }
 .nav-icon { font-size: 1.1rem; }
-.nav-label {
-  font-size: 0.6rem;
-  color: var(--silver);
-  letter-spacing: 0.08em;
-  font-family: var(--serif);
-}
+.nav-label { font-size: 0.6rem; color: var(--silver); letter-spacing: 0.08em; font-family: var(--serif); }
 .nav-item.active .nav-label { color: var(--rust); }
 
-/* ===== PAGES ===== */
+/* PAGES */
 .page { display: none; flex: 1; flex-direction: column; overflow: hidden; }
 .page.active { display: flex; }
 
 /* ===== CAMERA PAGE ===== */
-.cam-viewport {
-  flex: 1;
-  position: relative;
-  background: #000;
-  overflow: hidden;
-}
-#videoEl {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.cam-no-stream {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 10px; color: var(--silver);
-  font-size: 0.8rem; text-align: center;
-  padding: 20px;
-}
-.cam-no-stream .big-icon { font-size: 3.5rem; }
+.cam-viewport { flex: 1; position: relative; background: #000; overflow: hidden; }
+#videoEl { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cam-no-stream { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--silver); font-size: 0.8rem; text-align: center; padding: 20px; }
+.cam-guides { position: absolute; inset: 0; pointer-events: none; }
+.g-line { position: absolute; background: rgba(247,244,238,0.2); }
+.g-h { left:0; right:0; height:1px; } .g-v { top:0; bottom:0; width:1px; }
+.g-h1 { top:33.33%; } .g-h2 { top:66.66%; }
+.g-v1 { left:33.33%; } .g-v2 { left:66.66%; }
+.cam-tip { position: absolute; top: 10px; left: 10px; right: 10px; background: rgba(26,26,24,0.75); color: var(--paper); font-size: 0.65rem; padding: 8px 12px; letter-spacing: 0.05em; line-height: 1.6; border-left: 2px solid var(--rust); }
 
-/* Guide overlays */
-.cam-guides {
-  position: absolute; inset: 0;
-  pointer-events: none;
-}
-.guide-grid {
-  position: absolute; inset: 0;
-}
-.g-line {
-  position: absolute;
-  background: rgba(247,244,238,0.2);
-}
-.g-h { left: 0; right: 0; height: 1px; }
-.g-v { top: 0; bottom: 0; width: 1px; }
-.g-h1 { top: 33.33%; } .g-h2 { top: 66.66%; }
-.g-v1 { left: 33.33%; } .g-v2 { left: 66.66%; }
-
-.guide-frame {
-  position: absolute;
-  top: 12%; bottom: 20%;
-  left: 6%; right: 6%;
-  border: 1px solid rgba(247,244,238,0.4);
-}
-.gf-corner {
-  position: absolute;
-  width: 14px; height: 14px;
-  border-color: var(--paper);
-  border-style: solid;
-  opacity: 0.8;
-}
-.gf-tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-.gf-tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
-.gf-bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
-.gf-br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
-
-.guide-ref {
-  position: absolute;
-  bottom: 23%;
-  left: 8%; right: 8%;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-}
-.ref-bar {
-  width: 100%; height: 1px;
-  background: rgba(139,58,42,0.7);
-  position: relative;
-}
-.ref-bar::before, .ref-bar::after {
-  content: '';
-  position: absolute; top: -5px;
-  width: 1px; height: 11px;
-  background: var(--rust);
-  opacity: 0.8;
-}
-.ref-bar::before { left: 0; }
-.ref-bar::after { right: 0; }
-.ref-hint {
-  font-size: 0.6rem;
-  color: rgba(139,58,42,0.9);
-  background: rgba(247,244,238,0.85);
-  padding: 2px 8px;
-  letter-spacing: 0.06em;
-  font-family: var(--serif);
-}
-
-.cam-tip {
-  position: absolute;
-  top: 10px; left: 10px; right: 10px;
-  background: rgba(26,26,24,0.75);
-  color: var(--paper);
-  font-size: 0.65rem;
-  padding: 8px 12px;
-  letter-spacing: 0.05em;
-  line-height: 1.6;
-  border-left: 2px solid var(--rust);
-}
-
-/* Camera bottom bar */
-.cam-bar {
-  background: var(--ink);
-  padding: 10px 16px 14px;
-  flex-shrink: 0;
-}
-.cam-bar-top {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px;
-}
-.ref-input-group {
-  display: flex; align-items: center; gap: 6px;
-  flex: 1;
-}
-.ref-input-label {
-  font-size: 0.65rem; color: var(--silver);
-  font-family: var(--serif); letter-spacing: 0.06em;
-  white-space: nowrap;
-}
-.ref-input {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--silver);
-  color: var(--paper);
-  font-size: 1rem;
-  width: 50px;
-  text-align: center;
-  padding: 2px 0;
-  font-family: 'Courier New', monospace;
-}
+.cam-bar { background: var(--ink); padding: 10px 16px 14px; flex-shrink: 0; }
+.cam-bar-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ref-label { font-size: 0.65rem; color: var(--silver); font-family: var(--serif); letter-spacing: 0.06em; white-space: nowrap; }
+.ref-input { background: transparent; border: none; border-bottom: 1px solid var(--silver); color: var(--paper); font-size: 1rem; width: 50px; text-align: center; padding: 2px 0; font-family: 'Courier New', monospace; }
 .ref-input:focus { outline: none; border-bottom-color: var(--rust); }
 .ref-unit { font-size: 0.7rem; color: var(--silver); }
-.guide-toggle-btn {
-  background: transparent;
-  border: 1px solid rgba(155,155,142,0.4);
-  color: var(--silver);
-  padding: 5px 10px;
-  font-size: 0.65rem;
-  cursor: pointer;
-  letter-spacing: 0.06em;
-  font-family: var(--serif);
-  transition: all 0.15s;
-}
+.guide-toggle-btn { background: transparent; border: 1px solid rgba(155,155,142,0.4); color: var(--silver); padding: 5px 10px; font-size: 0.65rem; cursor: pointer; letter-spacing: 0.06em; font-family: var(--serif); }
 .guide-toggle-btn.on { border-color: rgba(247,244,238,0.3); color: var(--paper-dark); }
-
-.cam-bar-filters {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 12px;
-  overflow-x: auto; scrollbar-width: none;
-}
-.filter-chip {
-  background: transparent;
-  border: 1px solid rgba(155,155,142,0.3);
-  color: var(--silver);
-  padding: 4px 12px;
-  font-size: 0.65rem;
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: var(--serif);
-  letter-spacing: 0.06em;
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-.filter-chip.active {
-  background: var(--rust);
-  border-color: var(--rust);
-  color: var(--paper);
-}
-
-.cam-bar-actions {
-  display: flex; align-items: center; justify-content: center; gap: 20px;
-}
-.shutter-btn {
-  width: 62px; height: 62px;
-  border-radius: 50%;
-  background: var(--paper);
-  border: 3px solid var(--silver);
-  cursor: pointer;
-  position: relative;
-  transition: transform 0.1s;
-  flex-shrink: 0;
-}
-.shutter-btn::after {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  border-radius: 50%;
-  background: var(--paper-dark);
-}
+.filter-strip { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-bottom: 12px; }
+.filter-chip { background: transparent; border: 1px solid rgba(155,155,142,0.3); color: var(--silver); padding: 4px 12px; font-size: 0.65rem; cursor: pointer; white-space: nowrap; font-family: var(--serif); letter-spacing: 0.06em; flex-shrink: 0; }
+.filter-chip.active { background: var(--rust); border-color: var(--rust); color: var(--paper); }
+.cam-actions { display: flex; align-items: center; justify-content: center; gap: 24px; }
+.shutter-btn { width: 62px; height: 62px; border-radius: 50%; background: var(--paper); border: 3px solid var(--silver); cursor: pointer; position: relative; flex-shrink: 0; }
+.shutter-btn::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: var(--paper-dark); }
 .shutter-btn:active { transform: scale(0.93); }
-.upload-label {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  color: var(--silver); font-size: 0.6rem;
-  cursor: pointer; letter-spacing: 0.06em;
-  font-family: var(--serif);
-}
-.upload-label .ul-icon { font-size: 1.4rem; }
-#fileInput { display: none; }
+.upload-label { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--silver); font-size: 0.6rem; cursor: pointer; letter-spacing: 0.06em; font-family: var(--serif); }
+.ul-icon { font-size: 1.4rem; }
+#fileInput, #fileInput2 { display: none; }
 
 /* ===== MEASURE PAGE ===== */
-.measure-scroll {
-  flex: 1; overflow-y: auto;
-  padding: 0;
-  background: var(--paper);
-}
-.measure-photo-area {
-  background: #111;
+.measure-scroll { flex: 1; overflow-y: auto; background: var(--paper); }
+
+/* Canvas wrapper — the interactive ruler area */
+.photo-wrap {
   position: relative;
-  min-height: 220px;
+  background: #111;
   display: flex; align-items: center; justify-content: center;
-}
-#measureCanvas {
-  display: none;
-  max-width: 100%;
-  cursor: crosshair;
+  min-height: 200px;
+  user-select: none;
   touch-action: none;
 }
-.measure-empty {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  color: var(--silver); padding: 40px 20px; text-align: center;
-}
+#measureCanvas { display: none; max-width: 100%; touch-action: none; }
+.measure-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--silver); padding: 36px 20px; text-align: center; }
 .measure-empty .me-icon { font-size: 3rem; }
-.measure-empty-title {
-  font-family: var(--serif);
-  font-size: 0.9rem;
-  color: var(--paper-dark);
-  letter-spacing: 0.1em;
-}
+.measure-empty-title { font-family: var(--serif); font-size: 0.9rem; color: var(--paper-dark); letter-spacing: 0.1em; }
 .measure-empty p { font-size: 0.72rem; line-height: 1.7; }
+.pick-photo-btn { background: var(--ink); color: var(--paper); padding: 8px 20px; font-size: 0.72rem; cursor: pointer; font-family: var(--serif); letter-spacing: 0.1em; border: none; }
 
-/* Step instructions */
-.measure-steps {
-  padding: 14px 16px;
+/* Ruler legend */
+.ruler-legend {
+  display: flex; gap: 16px; align-items: center;
+  padding: 8px 14px;
+  background: var(--paper-dark);
   border-bottom: 1px solid var(--silver-light);
-  background: var(--paper);
+  font-size: 0.68rem; font-family: var(--serif);
 }
-.step-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 7px 0;
-}
-.step-row + .step-row {
-  border-top: 1px solid var(--paper-dark);
-}
-.step-dot {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.7rem; font-weight: 700;
-  flex-shrink: 0;
-  font-family: var(--serif);
-  border: 1px solid var(--silver-light);
-  color: var(--silver);
-}
-.step-dot.active { background: var(--moss); border-color: var(--moss); color: #fff; }
-.step-dot.done { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.step-text { flex: 1; font-size: 0.75rem; color: var(--silver); line-height: 1.4; }
-.step-text.active { color: var(--ink); }
-.step-btn {
-  padding: 5px 12px;
-  font-size: 0.65rem;
-  cursor: pointer;
-  font-family: var(--serif);
-  letter-spacing: 0.06em;
-  border: 1px solid;
-  transition: all 0.15s;
-}
-.step-btn.ref { border-color: var(--moss); color: var(--moss); background: transparent; }
-.step-btn.ref.active { background: var(--moss); color: #fff; }
-.step-btn.fish { border-color: var(--rust); color: var(--rust); background: transparent; }
-.step-btn.fish.active { background: var(--rust); color: #fff; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-line { width: 28px; height: 3px; border-radius: 2px; }
+.legend-line.ref-color { background: var(--rust-bright); }
+.legend-line.fish-color { background: var(--blue-bright); }
+.legend-hint { color: var(--silver); font-size: 0.62rem; margin-left: auto; }
 
-.measure-actions {
-  display: flex; gap: 8px;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--silver-light);
-}
-.mact-btn {
-  flex: 1; padding: 9px;
-  font-size: 0.72rem;
-  cursor: pointer;
-  font-family: var(--serif);
-  letter-spacing: 0.08em;
-  border: 1px solid var(--silver-light);
-  background: transparent;
-  color: var(--ink-light);
-  transition: all 0.15s;
-}
-.mact-btn.primary {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
-}
-
-/* Result panel */
-.result-panel {
+/* Result strip */
+.result-strip {
   display: none;
-  padding: 16px;
   background: var(--ink);
-  color: var(--paper);
+  padding: 12px 16px;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
 }
-.result-panel.show { display: block; }
-.result-eyebrow {
-  font-size: 0.6rem;
-  letter-spacing: 0.2em;
-  color: var(--silver);
-  font-family: var(--serif);
-  margin-bottom: 4px;
-}
-.result-main {
-  display: flex; align-items: baseline; gap: 6px;
-  margin-bottom: 12px;
-}
-.result-num {
-  font-size: 3.2rem;
-  font-family: 'Courier New', monospace;
-  font-weight: 700;
-  color: var(--paper);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.result-cm {
-  font-size: 1rem;
-  color: var(--silver);
-  font-family: var(--serif);
-}
-.result-stats {
-  display: flex; gap: 16px;
-  border-top: 1px solid rgba(155,155,142,0.2);
-  padding-top: 10px;
-}
-.rstat {
-  display: flex; flex-direction: column; gap: 2px;
-}
-.rstat-val {
-  font-size: 0.85rem;
-  font-family: 'Courier New', monospace;
-  color: var(--rust);
-}
-.rstat-label {
-  font-size: 0.58rem;
-  color: var(--silver);
-  letter-spacing: 0.06em;
-  font-family: var(--serif);
-}
+.result-strip.show { display: flex; }
+.rs-label { font-size: 0.6rem; color: var(--silver); font-family: var(--serif); letter-spacing: 0.1em; }
+.rs-val { font-size: 2rem; font-family: 'Courier New', monospace; font-weight: 700; color: var(--paper); line-height: 1; }
+.rs-unit { font-size: 0.75rem; color: var(--silver); font-family: var(--serif); }
+.rs-divider { width: 1px; height: 36px; background: rgba(155,155,142,0.2); }
+.rs-mini { display: flex; flex-direction: column; gap: 2px; }
+.rs-mini-val { font-size: 0.78rem; font-family: 'Courier New', monospace; color: var(--rust-bright); }
+.rs-mini-label { font-size: 0.58rem; color: var(--silver); font-family: var(--serif); }
+
+/* Reset btn */
+.measure-toolbar { display: flex; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--silver-light); }
+.tb-btn { flex: 1; padding: 8px; font-size: 0.72rem; cursor: pointer; font-family: var(--serif); letter-spacing: 0.08em; border: 1px solid var(--silver-light); background: transparent; color: var(--ink-light); }
+.tb-btn.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 
 /* Log form */
-.log-form {
-  padding: 14px 16px;
-  display: flex; flex-direction: column; gap: 10px;
-}
-.log-form-title {
-  font-family: var(--serif);
-  font-size: 0.75rem;
-  color: var(--ink-light);
-  letter-spacing: 0.1em;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--paper-dark);
-}
-.field-row {
-  display: flex; flex-direction: column; gap: 4px;
-}
-.field-label {
-  font-size: 0.62rem;
-  color: var(--silver);
-  letter-spacing: 0.08em;
-  font-family: var(--serif);
-}
-.field-input {
-  background: var(--paper-dark);
-  border: none;
-  border-bottom: 1px solid var(--silver-light);
-  color: var(--ink);
-  font-size: 0.85rem;
-  padding: 6px 4px;
-  font-family: var(--sans);
-  width: 100%;
-  transition: border-color 0.15s;
-}
+.log-form { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.log-form-title { font-family: var(--serif); font-size: 0.75rem; color: var(--ink-light); letter-spacing: 0.1em; padding-bottom: 6px; border-bottom: 1px solid var(--paper-dark); }
+.field-row { display: flex; flex-direction: column; gap: 4px; }
+.field-label { font-size: 0.62rem; color: var(--silver); letter-spacing: 0.08em; font-family: var(--serif); }
+.field-input { background: var(--paper-dark); border: none; border-bottom: 1px solid var(--silver-light); color: var(--ink); font-size: 0.85rem; padding: 6px 4px; font-family: var(--sans); width: 100%; }
 .field-input:focus { outline: none; border-bottom-color: var(--ink); }
-.field-row-2col {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-}
-.gps-row {
-  display: flex; align-items: center; gap: 8px;
-}
-.gps-btn {
-  background: var(--moss);
-  border: none;
-  color: #fff;
-  padding: 6px 12px;
-  font-size: 0.65rem;
-  cursor: pointer;
-  font-family: var(--serif);
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-}
-.gps-display {
-  flex: 1;
-  font-size: 0.7rem;
-  color: var(--ink-light);
-  font-family: 'Courier New', monospace;
-}
-.privacy-row {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 0.65rem; color: var(--silver);
-  font-family: var(--serif);
-}
-.privacy-select {
-  background: var(--paper-dark);
-  border: 1px solid var(--silver-light);
-  color: var(--ink);
-  font-size: 0.72rem;
-  padding: 4px 8px;
-  font-family: var(--sans);
-  margin-left: auto;
-}
-.save-record-btn {
-  background: var(--ink);
-  border: none;
-  color: var(--paper);
-  padding: 12px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  font-family: var(--serif);
-  letter-spacing: 0.12em;
-  width: 100%;
-  transition: background 0.15s;
-  margin-top: 4px;
-}
-.save-record-btn:active { background: var(--rust); }
+.field-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.gps-row { display: flex; align-items: center; gap: 8px; }
+.gps-btn { background: var(--moss); border: none; color: #fff; padding: 6px 12px; font-size: 0.65rem; cursor: pointer; font-family: var(--serif); letter-spacing: 0.06em; white-space: nowrap; }
+.gps-display { flex: 1; font-size: 0.68rem; color: var(--ink-light); font-family: 'Courier New', monospace; }
+.privacy-row { display: flex; align-items: center; gap: 8px; font-size: 0.65rem; color: var(--silver); font-family: var(--serif); }
+.privacy-select { background: var(--paper-dark); border: 1px solid var(--silver-light); color: var(--ink); font-size: 0.72rem; padding: 4px 8px; margin-left: auto; }
+.save-btn { background: var(--ink); border: none; color: var(--paper); padding: 12px; font-size: 0.8rem; cursor: pointer; font-family: var(--serif); letter-spacing: 0.12em; width: 100%; margin-top: 4px; }
+.save-btn:active { background: var(--rust); }
 
 /* ===== LOG PAGE ===== */
-.log-scroll {
-  flex: 1; overflow-y: auto;
-  background: var(--paper);
-}
-.log-header-bar {
-  padding: 14px 16px 10px;
-  border-bottom: 1px solid var(--silver-light);
-  display: flex; align-items: baseline; justify-content: space-between;
-}
-.log-title {
-  font-family: var(--serif);
-  font-size: 1rem;
-  letter-spacing: 0.12em;
-  color: var(--ink);
-}
-.log-count {
-  font-size: 0.65rem;
-  color: var(--silver);
-  font-family: var(--serif);
-  letter-spacing: 0.06em;
-}
-
-/* Record card — magazine spread style */
-.record-spread {
-  border-bottom: 1px solid var(--silver-light);
-  padding: 14px 16px;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: background 0.1s;
-}
-.record-spread:active { background: var(--paper-dark); }
-.record-spread-bg {
-  position: absolute;
-  right: -10px; top: 50%;
-  transform: translateY(-50%);
-  font-family: var(--serif);
-  font-size: 5rem;
-  color: var(--paper-dark);
-  font-weight: 700;
-  line-height: 1;
-  pointer-events: none;
-  letter-spacing: -0.04em;
-  user-select: none;
-}
-.record-top {
-  display: flex; align-items: flex-start; gap: 12px;
-  position: relative;
-}
-.record-thumb {
-  width: 56px; height: 56px;
-  background: var(--paper-dark);
-  flex-shrink: 0;
-  overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.8rem;
-}
+.log-scroll { flex: 1; overflow-y: auto; background: var(--paper); }
+.log-header-bar { padding: 14px 16px 10px; border-bottom: 1px solid var(--silver-light); display: flex; align-items: baseline; justify-content: space-between; }
+.log-title { font-family: var(--serif); font-size: 1rem; letter-spacing: 0.12em; }
+.log-count { font-size: 0.65rem; color: var(--silver); font-family: var(--serif); }
+.record-spread { border-bottom: 1px solid var(--silver-light); padding: 14px 16px; position: relative; overflow: hidden; }
+.record-bg-num { position: absolute; right: -8px; top: 50%; transform: translateY(-50%); font-family: var(--serif); font-size: 5rem; color: var(--paper-dark); font-weight: 700; line-height: 1; pointer-events: none; user-select: none; }
+.record-top { display: flex; align-items: flex-start; gap: 12px; position: relative; }
+.record-thumb { width: 56px; height: 56px; background: var(--paper-dark); flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
 .record-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.record-main { flex: 1; }
-.record-species {
-  font-family: var(--serif);
-  font-size: 0.85rem;
-  color: var(--ink);
-  letter-spacing: 0.08em;
-  margin-bottom: 2px;
-}
-.record-size-row {
-  display: flex; align-items: baseline; gap: 4px;
-  margin-bottom: 4px;
-}
-.record-size-num {
-  font-family: 'Courier New', monospace;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--rust);
-  line-height: 1;
-}
-.record-size-unit {
-  font-size: 0.7rem;
-  color: var(--silver);
-  font-family: var(--serif);
-}
-.record-meta-row {
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
-.record-tag {
-  font-size: 0.6rem;
-  color: var(--silver);
-  letter-spacing: 0.04em;
-  font-family: var(--serif);
-  display: flex; align-items: center; gap: 3px;
-}
-.record-lure {
-  margin-top: 6px;
-  font-size: 0.68rem;
-  color: var(--moss);
-  font-family: var(--serif);
-  letter-spacing: 0.06em;
-  padding: 3px 8px;
-  border: 1px solid var(--moss);
-  display: inline-block;
-}
-.record-del {
-  position: absolute; top: 0; right: 0;
-  background: transparent; border: none;
-  color: var(--silver-light); font-size: 1rem;
-  cursor: pointer; padding: 4px;
-}
-
-.log-empty {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 12px; padding: 60px 20px; text-align: center;
-}
-.log-empty-jp {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  color: var(--ink-light);
-  letter-spacing: 0.15em;
-}
+.record-species { font-family: var(--serif); font-size: 0.85rem; color: var(--ink); letter-spacing: 0.08em; margin-bottom: 2px; }
+.record-size-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.record-size-num { font-family: 'Courier New', monospace; font-size: 1.6rem; font-weight: 700; color: var(--rust); line-height: 1; }
+.record-size-unit { font-size: 0.7rem; color: var(--silver); font-family: var(--serif); }
+.record-tag { font-size: 0.6rem; color: var(--silver); letter-spacing: 0.04em; font-family: var(--serif); }
+.record-lure { margin-top: 5px; font-size: 0.68rem; color: var(--moss); font-family: var(--serif); letter-spacing: 0.06em; padding: 3px 8px; border: 1px solid var(--moss); display: inline-block; }
+.record-del { position: absolute; top: 0; right: 0; background: transparent; border: none; color: var(--silver-light); font-size: 1rem; cursor: pointer; padding: 4px; }
+.log-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 60px 20px; text-align: center; }
+.log-empty-jp { font-family: var(--serif); font-size: 1.1rem; color: var(--ink-light); letter-spacing: 0.15em; }
 .log-empty p { font-size: 0.72rem; color: var(--silver); line-height: 1.8; }
 
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 70px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--ink);
-  color: var(--paper);
-  padding: 9px 20px;
-  font-size: 0.75rem;
-  font-family: var(--serif);
-  letter-spacing: 0.08em;
-  opacity: 0;
-  transition: opacity 0.25s;
-  z-index: 9999;
-  white-space: nowrap;
-  border-left: 3px solid var(--rust);
-  pointer-events: none;
-}
+.toast { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 9px 20px; font-size: 0.75rem; font-family: var(--serif); letter-spacing: 0.08em; opacity: 0; transition: opacity 0.25s; z-index: 9999; white-space: nowrap; border-left: 3px solid var(--rust); pointer-events: none; }
 .toast.show { opacity: 1; }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--paper); }
-::-webkit-scrollbar-thumb { background: var(--silver-light); }
+::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: var(--silver-light); }
 </style>
 </head>
 <body>
 
 <header class="app-header">
-  <div class="app-logo">
-    <span class="app-logo-jp">釣人手帖</span>
-    <span class="app-logo-en">TSURIBITO</span>
+  <div>
+    <span class="logo-jp">釣人手帖</span>
+    <span class="logo-en">TSURIBITO</span>
   </div>
-  <div class="header-rule"></div>
-  <span class="header-sub">FIELD LOG & MEASURE</span>
+  <span class="hdr-sub">FIELD LOG & MEASURE</span>
 </header>
 
 <nav class="app-nav">
   <div class="nav-item active" onclick="goPage('camera')">
-    <span class="nav-icon">📷</span>
-    <span class="nav-label">撮影</span>
+    <span class="nav-icon">📷</span><span class="nav-label">撮影</span>
   </div>
   <div class="nav-item" onclick="goPage('measure')">
-    <span class="nav-icon">📐</span>
-    <span class="nav-label">計測</span>
+    <span class="nav-icon">📐</span><span class="nav-label">計測</span>
   </div>
   <div class="nav-item" onclick="goPage('log')">
-    <span class="nav-icon">📋</span>
-    <span class="nav-label">釣果帖</span>
+    <span class="nav-icon">📋</span><span class="nav-label">釣果帖</span>
   </div>
 </nav>
 
-<!-- CAMERA PAGE -->
+<!-- CAMERA -->
 <div class="page active" id="page-camera">
   <div class="cam-viewport" id="camViewport">
     <video id="videoEl" autoplay muted playsinline></video>
     <canvas id="captureCanvas" style="display:none"></canvas>
     <div class="cam-guides" id="camGuides">
-      <div class="guide-grid">
-        <div class="g-line g-h g-h1"></div>
-        <div class="g-line g-h g-h2"></div>
-        <div class="g-line g-v g-v1"></div>
-        <div class="g-line g-v g-v2"></div>
-      </div>
-      <div class="guide-frame">
-        <div class="gf-corner gf-tl"></div>
-        <div class="gf-corner gf-tr"></div>
-        <div class="gf-corner gf-bl"></div>
-        <div class="gf-corner gf-br"></div>
-      </div>
-      <div class="guide-ref">
-        <div class="ref-hint">— 魚夾參照線 —</div>
-        <div class="ref-bar"></div>
-      </div>
-      <div class="cam-tip" id="camTip">
-        魚夾與魚平行放置，讓兩者同時在框內，按快門後至「計測」頁標記
-      </div>
+      <div class="g-line g-h g-h1"></div>
+      <div class="g-line g-h g-h2"></div>
+      <div class="g-line g-v g-v1"></div>
+      <div class="g-line g-v g-v2"></div>
+      <div class="cam-tip">📷 魚夾與魚平行放置，讓兩者都入鏡，按快門後至「計測」頁拖動紅線對齊魚夾</div>
     </div>
   </div>
   <div class="cam-bar">
     <div class="cam-bar-top">
-      <div class="ref-input-group">
-        <span class="ref-input-label">魚夾長度</span>
-        <input type="number" class="ref-input" id="refCmInput" value="20" min="1" max="200">
-        <span class="ref-unit">cm</span>
-      </div>
+      <span class="ref-label">魚夾長度</span>
+      <input type="number" class="ref-input" id="refCmInput" value="20" min="1" max="300">
+      <span class="ref-unit">cm</span>
       <button class="guide-toggle-btn on" id="guideToggle" onclick="toggleGuides()">輔助 ON</button>
     </div>
-    <div class="cam-bar-filters">
+    <div class="filter-strip">
       <button class="filter-chip active" onclick="applyFilter('none',this)">原色</button>
       <button class="filter-chip" onclick="applyFilter('vivid',this)">鮮彩</button>
       <button class="filter-chip" onclick="applyFilter('mist',this)">晨霧</button>
@@ -754,10 +223,8 @@ body {
       <button class="filter-chip" onclick="applyFilter('film',this)">底片</button>
       <button class="filter-chip" onclick="applyFilter('mono',this)">墨白</button>
     </div>
-    <div class="cam-bar-actions">
-      <label class="upload-label" for="fileInput">
-        <span class="ul-icon">🖼️</span>相冊
-      </label>
+    <div class="cam-actions">
+      <label class="upload-label" for="fileInput"><span class="ul-icon">🖼️</span>相冊</label>
       <input type="file" id="fileInput" accept="image/*" onchange="loadFromFile(event)">
       <button class="shutter-btn" onclick="takePhoto()"></button>
       <div style="width:44px"></div>
@@ -765,60 +232,59 @@ body {
   </div>
 </div>
 
-<!-- MEASURE PAGE -->
+<!-- MEASURE -->
 <div class="page" id="page-measure">
-  <div class="measure-scroll" id="measureScroll">
-    <div class="measure-photo-area" id="measurePhotoArea">
+  <div class="measure-scroll">
+
+    <div class="photo-wrap" id="photoWrap">
       <canvas id="measureCanvas"></canvas>
       <div class="measure-empty" id="measureEmpty">
         <div class="me-icon">🎣</div>
         <div class="measure-empty-title">尚無影像</div>
-        <p>先至「撮影」頁拍照<br>或從相冊選取現有照片</p>
-        <label for="fileInput2" style="background:var(--ink);color:var(--paper);padding:8px 20px;font-size:0.72rem;cursor:pointer;font-family:var(--serif);letter-spacing:0.1em;">
-          選取照片
-        </label>
-        <input type="file" id="fileInput2" accept="image/*" style="display:none" onchange="loadFromFile(event)">
+        <p>至「撮影」頁拍照<br>或從相冊選取</p>
+        <label class="pick-photo-btn" for="fileInput2">選取照片</label>
+        <input type="file" id="fileInput2" accept="image/*" onchange="loadFromFile(event)">
       </div>
     </div>
 
-    <div class="measure-steps">
-      <div class="step-row">
-        <div class="step-dot active" id="dot1">1</div>
-        <div class="step-text active" id="stxt1">點選魚夾兩端，建立比例基準</div>
-        <button class="step-btn ref active" id="refBtn" onclick="setMode('ref')">魚夾</button>
+    <div class="ruler-legend" id="rulerLegend" style="display:none">
+      <div class="legend-item">
+        <div class="legend-line ref-color"></div>
+        <span style="font-size:0.68rem;color:var(--ink);">紅線 = 魚夾</span>
       </div>
-      <div class="step-row">
-        <div class="step-dot" id="dot2">2</div>
-        <div class="step-text" id="stxt2">點選魚頭與魚尾，量測魚體</div>
-        <button class="step-btn fish" id="fishBtn" onclick="setMode('fish')">魚體</button>
+      <div class="legend-item">
+        <div class="legend-line fish-color"></div>
+        <span style="font-size:0.68rem;color:var(--ink);">藍線 = 魚體</span>
+      </div>
+      <span class="legend-hint">拖動端點調整 ↔</span>
+    </div>
+
+    <div class="result-strip" id="resultStrip">
+      <div>
+        <div class="rs-label">FISH LENGTH</div>
+        <div style="display:flex;align-items:baseline;gap:4px;">
+          <span class="rs-val" id="rVal">--</span>
+          <span class="rs-unit">cm</span>
+        </div>
+      </div>
+      <div class="rs-divider"></div>
+      <div class="rs-mini">
+        <span class="rs-mini-val" id="rRefPx">--</span>
+        <span class="rs-mini-label">魚夾像素</span>
+      </div>
+      <div class="rs-mini">
+        <span class="rs-mini-val" id="rFishPx">--</span>
+        <span class="rs-mini-label">魚體像素</span>
+      </div>
+      <div class="rs-mini">
+        <span class="rs-mini-val" id="rScale">--</span>
+        <span class="rs-mini-label">比例尺</span>
       </div>
     </div>
 
-    <div class="measure-actions">
-      <button class="mact-btn" onclick="resetMeasure()">重新標記</button>
-      <button class="mact-btn primary" onclick="confirmSave()">確認儲存</button>
-    </div>
-
-    <div class="result-panel" id="resultPanel">
-      <div class="result-eyebrow">FISH LENGTH</div>
-      <div class="result-main">
-        <span class="result-num" id="rNum">--</span>
-        <span class="result-cm">cm</span>
-      </div>
-      <div class="result-stats">
-        <div class="rstat">
-          <span class="rstat-val" id="rRefPx">--</span>
-          <span class="rstat-label">魚夾像素</span>
-        </div>
-        <div class="rstat">
-          <span class="rstat-val" id="rFishPx">--</span>
-          <span class="rstat-label">魚體像素</span>
-        </div>
-        <div class="rstat">
-          <span class="rstat-val" id="rScale">--</span>
-          <span class="rstat-label">比例尺</span>
-        </div>
-      </div>
+    <div class="measure-toolbar">
+      <button class="tb-btn" onclick="resetRulers()">🔄 重設尺規</button>
+      <button class="tb-btn primary" onclick="showLogForm()">記錄此釣果 →</button>
     </div>
 
     <div class="log-form" id="logForm" style="display:none">
@@ -829,24 +295,22 @@ body {
         <datalist id="speciesList">
           <option value="大口黑鱸（Bass）">
           <option value="吳郭魚（Tilapia）">
-          <option value="翠鳥鱒（鱒魚）">
-          <option value="錦鯉">
-          <option value="鯛魚">
-          <option value="烏魚">
+          <option value="鱒魚"><option value="錦鯉">
+          <option value="鯛魚"><option value="烏魚">
         </datalist>
       </div>
       <div class="field-row">
         <label class="field-label">使用路亞 / 餌料</label>
         <input class="field-input" id="fLure" placeholder="例：米諾 7cm 銀白、軟蟲 4inch">
       </div>
-      <div class="field-row-2col">
+      <div class="field-2col">
         <div class="field-row">
           <label class="field-label">釣獲時間</label>
           <input class="field-input" id="fTime" type="datetime-local">
         </div>
         <div class="field-row">
           <label class="field-label">魚體長度 (cm)</label>
-          <input class="field-input" id="fLength" type="number" step="0.1" placeholder="自動帶入">
+          <input class="field-input" id="fLength" type="number" step="0.1">
         </div>
       </div>
       <div class="field-row">
@@ -869,14 +333,13 @@ body {
         <label class="field-label">備注</label>
         <input class="field-input" id="fNote" placeholder="天氣、水況、心得…">
       </div>
-      <button class="save-record-btn" onclick="saveRecord()">記錄釣果 →</button>
+      <button class="save-btn" onclick="saveRecord()">儲存釣果紀錄 →</button>
     </div>
-
     <div style="height:20px"></div>
   </div>
 </div>
 
-<!-- LOG PAGE -->
+<!-- LOG -->
 <div class="page" id="page-log">
   <div class="log-scroll">
     <div class="log-header-bar">
@@ -890,48 +353,53 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== State =====
+// ============================================================
+//  State
+// ============================================================
 let videoStream = null;
 let activeFilter = 'none';
 let guidesOn = true;
-let measureImg = null;
-let measureMode = 'ref';
-let refPts = [];
-let fishPts = [];
-let currentGPS = null;
-let lastMeasuredCm = null;
 let capturedDataURL = null;
-let records = JSON.parse(localStorage.getItem('tsuribito_records') || '[]');
+let currentGPS = null;
+let records = JSON.parse(localStorage.getItem('tsuribito_v2') || '[]');
+
+// Ruler state
+let measureImg = null;
+let canvasW = 0, canvasH = 0;
+
+// Each ruler: { ax,ay, bx,by }  (canvas pixel coords)
+let refRuler  = null;  // red  — represents fish clip
+let fishRuler = null;  // blue — represents fish body
+let lastFishCm = null;
+
+// Drag state
+const HANDLE_R = 18; // touch radius px
+let dragging = null; // { ruler:'ref'|'fish', end:'a'|'b', ox,oy }
 
 const filterCSS = {
-  none: 'none',
-  vivid: 'saturate(1.8) contrast(1.1)',
-  mist: 'brightness(1.1) saturate(0.7) contrast(0.9)',
-  depth: 'saturate(1.4) hue-rotate(170deg) brightness(0.9)',
-  film: 'sepia(0.35) contrast(1.05) brightness(1.02)',
-  mono: 'grayscale(1) contrast(1.15)'
+  none:'none', vivid:'saturate(1.8) contrast(1.1)', mist:'brightness(1.1) saturate(0.7) contrast(0.9)',
+  depth:'saturate(1.4) hue-rotate(170deg) brightness(0.9)', film:'sepia(0.35) contrast(1.05)', mono:'grayscale(1) contrast(1.15)'
 };
 
-// ===== Camera =====
+// ============================================================
+//  Camera
+// ============================================================
 async function initCam() {
   try {
-    videoStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: {ideal:'environment'}, width:{ideal:1920} },
-      audio: false
-    });
+    videoStream = await navigator.mediaDevices.getUserMedia({ video:{facingMode:{ideal:'environment'},width:{ideal:1920}}, audio:false });
     document.getElementById('videoEl').srcObject = videoStream;
   } catch(e) {
     const vp = document.getElementById('camViewport');
-    const noStream = document.createElement('div');
-    noStream.className = 'cam-no-stream';
-    noStream.innerHTML = `<div class="big-icon">📷</div><div style="font-family:var(--serif);letter-spacing:0.1em;color:var(--paper-dark)">相機需要授權</div><p>請允許相機存取，或改用「相冊」上傳現有照片<br>前往「計測」頁操作</p>`;
-    vp.appendChild(noStream);
+    const d = document.createElement('div');
+    d.className = 'cam-no-stream';
+    d.innerHTML = `<div style="font-size:3.5rem">📷</div><div style="font-family:var(--serif);color:var(--paper-dark);letter-spacing:0.1em">相機需要授權</div><p>請允許相機，或改至「計測」頁上傳現有照片</p>`;
+    vp.appendChild(d);
   }
 }
 
 function applyFilter(name, btn) {
   activeFilter = name;
-  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('videoEl').style.filter = filterCSS[name];
 }
@@ -939,15 +407,14 @@ function applyFilter(name, btn) {
 function toggleGuides() {
   guidesOn = !guidesOn;
   const btn = document.getElementById('guideToggle');
-  const guides = document.getElementById('camGuides');
   btn.textContent = guidesOn ? '輔助 ON' : '輔助 OFF';
   btn.classList.toggle('on', guidesOn);
-  guides.style.display = guidesOn ? '' : 'none';
+  document.getElementById('camGuides').style.display = guidesOn ? '' : 'none';
 }
 
 function takePhoto() {
   const video = document.getElementById('videoEl');
-  if (!video.srcObject) { toast('請先允許相機存取'); return; }
+  if (!video.srcObject) { showToast('請先允許相機存取'); return; }
   const canvas = document.getElementById('captureCanvas');
   canvas.width = video.videoWidth || 1280;
   canvas.height = video.videoHeight || 720;
@@ -957,7 +424,7 @@ function takePhoto() {
   ctx.drawImage(video, 0, 0);
   capturedDataURL = canvas.toDataURL('image/jpeg', 0.92);
   loadImageToMeasure(capturedDataURL);
-  toast('快門！→ 前往計測頁標記');
+  showToast('快門！→ 前往計測頁拖動尺規');
   setTimeout(() => goPage('measure'), 700);
 }
 
@@ -965,276 +432,302 @@ function loadFromFile(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = ev => {
-    capturedDataURL = ev.target.result;
-    loadImageToMeasure(capturedDataURL);
-    goPage('measure');
-  };
+  reader.onload = ev => { capturedDataURL = ev.target.result; loadImageToMeasure(ev.target.result); goPage('measure'); };
   reader.readAsDataURL(file);
+  e.target.value = '';
 }
 
-// ===== Measure =====
+// ============================================================
+//  Measure canvas — load image
+// ============================================================
 function loadImageToMeasure(src) {
   const canvas = document.getElementById('measureCanvas');
-  const empty = document.getElementById('measureEmpty');
+  const empty  = document.getElementById('measureEmpty');
   const img = new Image();
   img.onload = () => {
     measureImg = img;
-    const area = document.getElementById('measurePhotoArea');
-    const maxW = area.clientWidth || window.innerWidth;
-    const maxH = 280;
+    const wrap = document.getElementById('photoWrap');
+    const maxW = wrap.clientWidth || window.innerWidth;
+    const maxH = Math.min(window.innerHeight * 0.45, 380);
     const scale = Math.min(maxW / img.width, maxH / img.height, 1);
-    canvas.width = Math.round(img.width * scale);
-    canvas.height = Math.round(img.height * scale);
+    canvasW = Math.round(img.width * scale);
+    canvasH = Math.round(img.height * scale);
+    canvas.width  = canvasW;
+    canvas.height = canvasH;
+    canvas.style.width  = canvasW + 'px';
+    canvas.style.height = canvasH + 'px';
     canvas.style.display = 'block';
     empty.style.display = 'none';
-    resetMeasure();
-    drawCanvas();
+    document.getElementById('rulerLegend').style.display = 'flex';
+    initRulers();
+    draw();
   };
   img.src = src;
 }
 
-function drawCanvas() {
+// ============================================================
+//  Ruler init — place default positions
+// ============================================================
+function initRulers() {
+  // Red ruler (fish clip) — upper third, 50% width
+  const rx1 = canvasW * 0.25, rx2 = canvasW * 0.75;
+  const ry  = canvasH * 0.30;
+  refRuler  = { ax: rx1, ay: ry, bx: rx2, by: ry };
+
+  // Blue ruler (fish body) — lower third, 70% width
+  const fx1 = canvasW * 0.15, fx2 = canvasW * 0.85;
+  const fy  = canvasH * 0.65;
+  fishRuler = { ax: fx1, ay: fy, bx: fx2, by: fy };
+
+  lastFishCm = null;
+  document.getElementById('resultStrip').classList.remove('show');
+  document.getElementById('logForm').style.display = 'none';
+  calcAndShow();
+}
+
+function resetRulers() { if (measureImg) initRulers(); }
+
+// ============================================================
+//  Draw
+// ============================================================
+function draw() {
   if (!measureImg) return;
-  const c = document.getElementById('measureCanvas');
-  const ctx = c.getContext('2d');
-  ctx.clearRect(0, 0, c.width, c.height);
-  ctx.drawImage(measureImg, 0, 0, c.width, c.height);
+  const canvas = document.getElementById('measureCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvasW, canvasH);
+  ctx.drawImage(measureImg, 0, 0, canvasW, canvasH);
+  drawRuler(ctx, refRuler,  '#C0402A', '魚夾');
+  drawRuler(ctx, fishRuler, '#3A80C0', '魚體');
+}
 
-  // ref points
-  refPts.forEach((p, i) => {
+function drawRuler(ctx, r, color, label) {
+  if (!r) return;
+  const len = Math.hypot(r.bx - r.ax, r.by - r.ay);
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(r.ax, r.ay);
+  ctx.lineTo(r.bx, r.by);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5;
+  ctx.setLineDash([]);
+  ctx.stroke();
+
+  // End ticks (perpendicular short lines)
+  [[r.ax,r.ay],[r.bx,r.by]].forEach(([px,py]) => {
+    const dx = r.bx - r.ax, dy = r.by - r.ay;
+    const nx = -dy/len*8, ny = dx/len*8;
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
-    ctx.fillStyle = '#4A6741'; ctx.fill();
-    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Courier New';
-    ctx.fillText(i===0?'C1':'C2', p.x+7, p.y-5);
+    ctx.moveTo(px-nx, py-ny);
+    ctx.lineTo(px+nx, py+ny);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
   });
-  if (refPts.length===2) {
-    ctx.beginPath();
-    ctx.moveTo(refPts[0].x, refPts[0].y);
-    ctx.lineTo(refPts[1].x, refPts[1].y);
-    ctx.strokeStyle='#4A6741'; ctx.lineWidth=1.5;
-    ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
-  }
 
-  // fish points
-  fishPts.forEach((p, i) => {
+  // Handles (circles at endpoints)
+  [[r.ax,r.ay],[r.bx,r.by]].forEach(([px,py]) => {
     ctx.beginPath();
-    ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
-    ctx.fillStyle = '#8B3A2A'; ctx.fill();
-    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Courier New';
-    ctx.fillText(i===0?'HEAD':'TAIL', p.x+7, p.y-5);
+    ctx.arc(px, py, 7, 0, Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
   });
-  if (fishPts.length===2) {
-    ctx.beginPath();
-    ctx.moveTo(fishPts[0].x, fishPts[0].y);
-    ctx.lineTo(fishPts[1].x, fishPts[1].y);
-    ctx.strokeStyle='#8B3A2A'; ctx.lineWidth=1.5;
-    ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
-  }
+
+  // Label at midpoint
+  const mx = (r.ax+r.bx)/2, my = (r.ay+r.by)/2;
+  const px_len = len.toFixed(0);
+  ctx.font = 'bold 11px Courier New';
+  const text = label;
+  const tw = ctx.measureText(text).width;
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(mx - tw/2 - 4, my - 16, tw+8, 18);
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, mx, my - 3);
+  ctx.textAlign = 'left';
 }
 
-// Touch + click
-document.getElementById('measureCanvas').addEventListener('click', handleCanvasInput);
-document.getElementById('measureCanvas').addEventListener('touchend', function(e){
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  const rect = this.getBoundingClientRect();
-  const x = t.clientX - rect.left;
-  const y = t.clientY - rect.top;
-  handlePoint(x, y);
-});
-
-function handleCanvasInput(e) {
-  const rect = e.target.getBoundingClientRect();
-  handlePoint(e.clientX - rect.left, e.clientY - rect.top);
-}
-
-function handlePoint(x, y) {
-  if (!measureImg) return;
-  if (measureMode==='ref' && refPts.length<2) {
-    refPts.push({x,y});
-    if (refPts.length===2) { setMode('fish'); markStep(1,'done'); markStep(2,'active'); }
-  } else if (measureMode==='fish' && fishPts.length<2) {
-    fishPts.push({x,y});
-    if (fishPts.length===2) calcMeasure();
-  }
-  drawCanvas();
-}
-
-function calcMeasure() {
-  const refPx = dist(refPts[0], refPts[1]);
-  const fishPx = dist(fishPts[0], fishPts[1]);
-  const refCm = parseFloat(document.getElementById('refCmInput').value) || 20;
-  const scale = refPx / refCm;
+// ============================================================
+//  Calc result
+// ============================================================
+function calcAndShow() {
+  if (!refRuler || !fishRuler) return;
+  const refPx  = Math.hypot(refRuler.bx - refRuler.ax, refRuler.by - refRuler.ay);
+  const fishPx = Math.hypot(fishRuler.bx - fishRuler.ax, fishRuler.by - fishRuler.ay);
+  if (refPx < 5) return;
+  const refCm  = parseFloat(document.getElementById('refCmInput').value) || 20;
+  const scale  = refPx / refCm;
   const fishCm = fishPx / scale;
-  lastMeasuredCm = fishCm;
+  lastFishCm = fishCm;
 
-  document.getElementById('rNum').textContent = fishCm.toFixed(1);
-  document.getElementById('rRefPx').textContent = refPx.toFixed(0)+'px';
+  document.getElementById('rVal').textContent  = fishCm.toFixed(1);
+  document.getElementById('rRefPx').textContent  = refPx.toFixed(0)+'px';
   document.getElementById('rFishPx').textContent = fishPx.toFixed(0)+'px';
-  document.getElementById('rScale').textContent = scale.toFixed(1)+'px/cm';
-  document.getElementById('resultPanel').classList.add('show');
-  document.getElementById('logForm').style.display = 'flex';
-  document.getElementById('fLength').value = fishCm.toFixed(1);
+  document.getElementById('rScale').textContent  = scale.toFixed(1)+'px/cm';
+  document.getElementById('resultStrip').classList.add('show');
+}
 
-  // set default time
+// ============================================================
+//  Pointer / touch interaction
+// ============================================================
+const MC = document.getElementById('measureCanvas');
+
+function getCanvasXY(e) {
+  const rect = MC.getBoundingClientRect();
+  const scaleX = canvasW / rect.width;
+  const scaleY = canvasH / rect.height;
+  let cx, cy;
+  if (e.touches) {
+    cx = (e.touches[0].clientX - rect.left) * scaleX;
+    cy = (e.touches[0].clientY - rect.top)  * scaleY;
+  } else {
+    cx = (e.clientX - rect.left) * scaleX;
+    cy = (e.clientY - rect.top)  * scaleY;
+  }
+  return { x: cx, y: cy };
+}
+
+function hitHandle(rx, ry, cx, cy) {
+  return Math.hypot(rx - cx, ry - cy) < HANDLE_R;
+}
+
+function findHandle(cx, cy) {
+  if (!refRuler || !fishRuler) return null;
+  if (hitHandle(refRuler.ax,  refRuler.ay,  cx, cy)) return { ruler:'ref',  end:'a' };
+  if (hitHandle(refRuler.bx,  refRuler.by,  cx, cy)) return { ruler:'ref',  end:'b' };
+  if (hitHandle(fishRuler.ax, fishRuler.ay, cx, cy)) return { ruler:'fish', end:'a' };
+  if (hitHandle(fishRuler.bx, fishRuler.by, cx, cy)) return { ruler:'fish', end:'b' };
+  return null;
+}
+
+function onPointerDown(e) {
+  if (!measureImg) return;
+  e.preventDefault();
+  const {x,y} = getCanvasXY(e);
+  const hit = findHandle(x, y);
+  if (hit) { dragging = hit; }
+}
+
+function onPointerMove(e) {
+  if (!dragging || !measureImg) return;
+  e.preventDefault();
+  const {x,y} = getCanvasXY(e);
+  const cx = Math.max(0, Math.min(canvasW, x));
+  const cy = Math.max(0, Math.min(canvasH, y));
+  const r = dragging.ruler === 'ref' ? refRuler : fishRuler;
+  if (dragging.end === 'a') { r.ax = cx; r.ay = cy; }
+  else                      { r.bx = cx; r.by = cy; }
+  draw();
+  calcAndShow();
+}
+
+function onPointerUp(e) { dragging = null; }
+
+MC.addEventListener('mousedown',  onPointerDown);
+MC.addEventListener('mousemove',  onPointerMove);
+MC.addEventListener('mouseup',    onPointerUp);
+MC.addEventListener('touchstart', onPointerDown, {passive:false});
+MC.addEventListener('touchmove',  onPointerMove, {passive:false});
+MC.addEventListener('touchend',   onPointerUp);
+
+// Also recalc when ref cm input changes
+document.getElementById('refCmInput').addEventListener('input', () => { draw(); calcAndShow(); });
+
+// ============================================================
+//  Log form
+// ============================================================
+function showLogForm() {
+  if (!lastFishCm) { showToast('請先拖動尺規對齊魚夾與魚體'); return; }
+  const form = document.getElementById('logForm');
+  form.style.display = 'flex';
+  document.getElementById('fLength').value = lastFishCm.toFixed(1);
   const now = new Date();
-  const local = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
-  document.getElementById('fTime').value = local;
-
-  markStep(2,'done');
-  toast(`計測完成：${fishCm.toFixed(1)} cm`);
-
-  setTimeout(() => {
-    document.getElementById('resultPanel').scrollIntoView({behavior:'smooth', block:'nearest'});
-  }, 200);
+  document.getElementById('fTime').value = new Date(now - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  setTimeout(()=>form.scrollIntoView({behavior:'smooth', block:'start'}), 100);
 }
 
-function dist(a,b){ return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2); }
-
-function setMode(m) {
-  measureMode = m;
-  document.getElementById('refBtn').classList.toggle('active', m==='ref');
-  document.getElementById('fishBtn').classList.toggle('active', m==='fish');
-}
-
-function resetMeasure() {
-  refPts=[]; fishPts=[]; measureMode='ref';
-  lastMeasuredCm=null;
-  setMode('ref');
-  markStep(1,'active'); markStep(2,'inactive');
-  document.getElementById('resultPanel').classList.remove('show');
-  document.getElementById('logForm').style.display='none';
-  drawCanvas();
-}
-
-function markStep(n, state) {
-  const dot = document.getElementById('dot'+n);
-  const txt = document.getElementById('stxt'+n);
-  dot.className = 'step-dot';
-  if (state==='active') { dot.classList.add('active'); dot.textContent=n; txt.className='step-text active'; }
-  else if (state==='done') { dot.classList.add('done'); dot.textContent='✓'; txt.className='step-text'; }
-  else { dot.textContent=n; txt.className='step-text'; }
-}
-
-// ===== GPS =====
 function getGPS() {
-  if (!navigator.geolocation) { toast('此裝置不支援 GPS'); return; }
-  toast('定位中…');
+  if (!navigator.geolocation) { showToast('此裝置不支援 GPS'); return; }
+  showToast('定位中…');
   navigator.geolocation.getCurrentPosition(pos => {
-    currentGPS = { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: pos.coords.accuracy };
-    document.getElementById('gpsDisplay').textContent =
-      `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+    currentGPS = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    document.getElementById('gpsDisplay').textContent = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
     document.getElementById('privacyRow').style.display = 'flex';
-    toast('定位成功');
-  }, err => {
-    toast('定位失敗，請檢查權限');
-  });
+    showToast('定位成功');
+  }, () => showToast('定位失敗，請檢查權限'));
 }
 
-function getBlurredGPS(gps, level) {
-  if (!gps) return null;
-  if (level==='hide') return null;
-  if (level==='exact') return gps;
-  if (level==='city') {
-    // round to ~10km precision
-    return { lat: Math.round(gps.lat*10)/10, lng: Math.round(gps.lng*10)/10, blurred: 'city' };
-  }
-  if (level==='blur') {
-    // random offset ±0.045deg ≈ ±5km
-    const r = () => (Math.random()-0.5)*0.09;
-    return { lat: +(gps.lat+r()).toFixed(4), lng: +(gps.lng+r()).toFixed(4), blurred: '5km' };
-  }
-  return gps;
-}
-
-// ===== Save =====
-function confirmSave() {
-  if (!lastMeasuredCm) { toast('請先完成計測'); return; }
-  document.getElementById('logForm').style.display='flex';
-  document.getElementById('logForm').scrollIntoView({behavior:'smooth', block:'start'});
+function applyPrivacy(gps, level) {
+  if (!gps || level==='hide') return null;
+  if (level==='exact') return {...gps};
+  if (level==='city')  return { lat: Math.round(gps.lat*10)/10, lng: Math.round(gps.lng*10)/10, blurred:'city' };
+  const r = ()=>(Math.random()-0.5)*0.09;
+  return { lat: +(gps.lat+r()).toFixed(4), lng: +(gps.lng+r()).toFixed(4), blurred:'±5km' };
 }
 
 function saveRecord() {
-  const species = document.getElementById('fSpecies').value.trim();
-  const lure = document.getElementById('fLure').value.trim();
-  const time = document.getElementById('fTime').value;
   const length = parseFloat(document.getElementById('fLength').value);
-  const note = document.getElementById('fNote').value.trim();
+  if (!length) { showToast('請確認魚體長度'); return; }
   const privacy = document.getElementById('privacySelect').value;
-
-  if (!length) { toast('請確認魚體長度'); return; }
-
   const rec = {
     id: Date.now(),
-    species: species || '未知魚種',
-    lure: lure || '',
-    time: time || new Date().toISOString(),
-    length: length,
-    note: note,
-    gps: currentGPS,
-    gpsPrivacy: privacy,
-    photo: capturedDataURL || null,
-    createdAt: new Date().toISOString()
+    species: document.getElementById('fSpecies').value.trim() || '未知魚種',
+    lure:    document.getElementById('fLure').value.trim(),
+    time:    document.getElementById('fTime').value || new Date().toISOString(),
+    length:  length,
+    note:    document.getElementById('fNote').value.trim(),
+    gps:     applyPrivacy(currentGPS, privacy),
+    photo:   capturedDataURL || null
   };
-
   records.unshift(rec);
-  localStorage.setItem('tsuribito_records', JSON.stringify(records));
+  localStorage.setItem('tsuribito_v2', JSON.stringify(records));
   renderLog();
-  toast('釣果記錄完成 →');
-  resetMeasure();
-  document.getElementById('fSpecies').value='';
-  document.getElementById('fLure').value='';
-  document.getElementById('fNote').value='';
+  showToast('釣果記錄完成！');
+  // reset form
+  ['fSpecies','fLure','fNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('logForm').style.display='none';
   currentGPS=null;
   document.getElementById('gpsDisplay').textContent='尚未取得位置';
   document.getElementById('privacyRow').style.display='none';
   setTimeout(()=>goPage('log'), 600);
 }
 
-// ===== Render Log =====
+// ============================================================
+//  Log render
+// ============================================================
 function renderLog() {
-  const list = document.getElementById('logList');
+  const list  = document.getElementById('logList');
   const count = document.getElementById('logCount');
   count.textContent = records.length + ' 筆記錄';
-
-  if (records.length===0) {
-    list.innerHTML = `<div class="log-empty">
-      <div class="log-empty-jp">まだ記録がない</div>
-      <p>尚無釣果記錄<br>拍照量測後記錄你的第一尾魚吧</p>
-    </div>`;
+  if (!records.length) {
+    list.innerHTML = `<div class="log-empty"><div class="log-empty-jp">まだ記録がない</div><p>尚無釣果記錄<br>拍照量測後記錄你的第一尾魚吧</p></div>`;
     return;
   }
-
   list.innerHTML = records.map(r => {
-    const d = new Date(r.time||r.createdAt);
-    const dateStr = d.toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'});
-    const timeStr = d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-    const gpsStr = r.gps ? `📍 ${r.gps.blurred ? '(' + r.gps.blurred + ')' : ''} ${r.gps.lat}, ${r.gps.lng}` : '';
-    const bgNum = r.length ? r.length.toFixed(0) : '--';
-    const thumb = r.photo
-      ? `<img src="${r.photo}" alt="">`
-      : '🐟';
-    return `
-    <div class="record-spread" onclick="">
-      <div class="record-spread-bg">${bgNum}</div>
+    const d = new Date(r.time||r.createdAt||Date.now());
+    const ds = d.toLocaleDateString('zh-TW',{month:'2-digit',day:'2-digit'});
+    const ts = d.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+    const gpsStr = r.gps ? `📍 ${r.gps.blurred?'('+r.gps.blurred+') ':''}${r.gps.lat}, ${r.gps.lng}` : '';
+    const thumb  = r.photo ? `<img src="${r.photo}" alt="">` : '🐟';
+    return `<div class="record-spread">
+      <div class="record-bg-num">${r.length?r.length.toFixed(0):'--'}</div>
       <div class="record-top">
         <div class="record-thumb">${thumb}</div>
-        <div class="record-main">
+        <div style="flex:1">
           <div class="record-species">${r.species}</div>
           <div class="record-size-row">
-            <span class="record-size-num">${r.length ? r.length.toFixed(1) : '--'}</span>
+            <span class="record-size-num">${r.length?r.length.toFixed(1):'--'}</span>
             <span class="record-size-unit">cm</span>
           </div>
-          <div class="record-meta-row">
-            <span class="record-tag">📅 ${dateStr} ${timeStr}</span>
-            ${gpsStr ? `<span class="record-tag">${gpsStr}</span>` : ''}
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span class="record-tag">📅 ${ds} ${ts}</span>
+            ${gpsStr?`<span class="record-tag">${gpsStr}</span>`:''}
           </div>
-          ${r.lure ? `<div class="record-lure">${r.lure}</div>` : ''}
-          ${r.note ? `<div style="font-size:0.68rem;color:var(--silver);margin-top:5px;font-family:var(--serif);">${r.note}</div>` : ''}
+          ${r.lure?`<div class="record-lure">${r.lure}</div>`:''}
+          ${r.note?`<div style="font-size:0.68rem;color:var(--silver);margin-top:5px;font-family:var(--serif)">${r.note}</div>`:''}
         </div>
         <button class="record-del" onclick="delRecord(${r.id},event)">✕</button>
       </div>
@@ -1245,29 +738,31 @@ function renderLog() {
 function delRecord(id, e) {
   e.stopPropagation();
   records = records.filter(r=>r.id!==id);
-  localStorage.setItem('tsuribito_records', JSON.stringify(records));
+  localStorage.setItem('tsuribito_v2', JSON.stringify(records));
   renderLog();
 }
 
-// ===== Navigation =====
+// ============================================================
+//  Navigation & utils
+// ============================================================
 function goPage(name) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  const pages = ['camera','measure','log'];
-  document.querySelectorAll('.nav-item')[pages.indexOf(name)].classList.add('active');
+  ['camera','measure','log'].forEach((n,i)=>{
+    if(n===name) document.querySelectorAll('.nav-item')[i].classList.add('active');
+  });
   if (name==='log') renderLog();
 }
 
-// ===== Toast =====
-function toast(msg) {
+function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2400);
 }
 
-// ===== Init =====
+// Init
 initCam();
 renderLog();
 </script>
