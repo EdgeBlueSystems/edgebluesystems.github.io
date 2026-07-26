@@ -315,8 +315,20 @@ function addRow() { bonusRules.push({ name: "新組別", score: 0 }); renderBonu
 function removeRow(index) { if(bonusRules.length <= 1) return alert("至少保留一組"); bonusRules.splice(index, 1); renderBonusTable(); saveAll(); }
 
 function syncBonusRules() {
+    // 依最新加分規則，重新套用到所有球員（tag 有對應規則者）
+    let updated = 0;
+    players.forEach((p, idx) => {
+        const rule = bonusRules.find(r => r.name === p.tag);
+        if (rule && p.bonus !== rule.score) {
+            p.bonus = rule.score;
+            updated++;
+        }
+        // 重算總分
+        p.total = p.scores.reduce((a, b) => a + b, 0) + p.bonus;
+    });
+    saveAll();
     initSystem();
-    alert("加分規則與下拉選單已同步。");
+    alert(`加分規則已同步！共更新 ${updated} 位球員的加分。`);
 }
 
 function refreshSelectors() {
@@ -507,6 +519,14 @@ function getStability(scores) {
 }
 
 function manualSettle() {
+    // 結算前保險：依最新加分規則重算所有球員的加分與總分
+    players.forEach(p => {
+        const rule = bonusRules.find(r => r.name === p.tag);
+        if (rule) p.bonus = rule.score;
+        p.total = p.scores.reduce((a, b) => a + b, 0) + p.bonus;
+    });
+    saveAll();
+
     const pLimit = parseInt(document.getElementById('prizeCount').value);
     const ratioB = parseFloat(document.getElementById('manualRatio').value);
     const ratioC = parseFloat(document.getElementById('ratioC').value);
@@ -517,10 +537,13 @@ function manualSettle() {
 
     players.forEach(p => p.award = "");
 
-    // 依總分排序，同分以穩定度（最高最低差距小）優先
-    let pool = [...players].filter(p => p.total > 0).sort((a, b) =>
-        b.total !== a.total ? b.total - a.total : getStability(a.scores) - getStability(b.scores)
-    );
+    // 依總分排序，同分以最後一局分數高低決定
+    let pool = [...players].filter(p => p.total > 0).sort((a, b) => {
+        if (b.total !== a.total) return b.total - a.total;
+        const lastA = a.scores[a.scores.length - 1] || 0;
+        const lastB = b.scores[b.scores.length - 1] || 0;
+        return lastB - lastA;
+    });
 
     // 全局已得獎 Set，所有獎項互斥
     let awardedIds = new Set();
